@@ -100,6 +100,22 @@
   h1, h2, h3, h4 {
     color: var(--color-primary);
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.section-accent-bar {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-accent);
+  margin-top: 6px;
+  border-radius: 2px;
 }
