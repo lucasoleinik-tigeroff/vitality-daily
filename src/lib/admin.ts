@@ -2,14 +2,18 @@ import { supabase } from "@/integrations/supabase/client";
 
 export async function isAdmin(userId: string | undefined | null): Promise<boolean> {
   if (!userId) return false;
-  const { data, error } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .eq("role", "admin")
-    .maybeSingle();
-  if (error) return false;
-  return !!data;
+  // Use SECURITY DEFINER RPC so the check doesn't depend on user_roles RLS
+  // visibility or on multiple-row edge cases. Returns true if ANY row in
+  // user_roles matches (userId, 'admin').
+  const { data, error } = await supabase.rpc("has_role", {
+    _user_id: userId,
+    _role: "admin",
+  });
+  if (error) {
+    console.error("[isAdmin] has_role rpc failed", error);
+    return false;
+  }
+  return data === true;
 }
 
 export interface AdminLogEntry {
