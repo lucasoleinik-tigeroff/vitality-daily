@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { LegalModal } from "@/components/LegalModals";
+import { AvatarUpload } from "@/components/AvatarUpload";
 import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import { ACTIVITY_LABELS, type ActivityLevel } from "@/lib/health";
@@ -20,36 +21,25 @@ interface ProfileFull {
   weight_lbs: number | null;
   waist_inches: number | null;
   activity_level: ActivityLevel | null;
-}
-interface Baseline {
-  bmi: number;
-  bmi_category: string;
-  tdee_kcal: number;
-  hydration_target_oz: number;
-  hr_moderate_low: number;
-  hr_moderate_high: number;
-  hr_vigorous_low: number;
-  hr_vigorous_high: number;
-  waist_risk_category: string;
+  avatar_url: string | null;
 }
 
 function Settings() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [p, setP] = useState<ProfileFull | null>(null);
-  const [b, setB] = useState<Baseline | null>(null);
   const [legal, setLegal] = useState<"medical" | "terms" | "privacy" | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [pr, hm] = await Promise.all([
-        supabase.from("profiles").select("name,email,age,height_feet,height_inches,weight_lbs,waist_inches,activity_level").eq("id", user.id).maybeSingle(),
-        supabase.from("user_health_metrics").select("bmi,bmi_category,tdee_kcal,hydration_target_oz,hr_moderate_low,hr_moderate_high,hr_vigorous_low,hr_vigorous_high,waist_risk_category").eq("user_id", user.id).order("snapshot_date", { ascending: false }).limit(1).maybeSingle(),
-      ]);
-      if (pr.data) setP(pr.data as ProfileFull);
-      if (hm.data) setB(hm.data as Baseline);
+      const { data } = await supabase
+        .from("profiles")
+        .select("name,email,age,height_feet,height_inches,weight_lbs,waist_inches,activity_level,avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (data) setP(data as ProfileFull);
     })();
   }, [user]);
 
@@ -75,14 +65,22 @@ function Settings() {
     navigate({ to: "/" });
   }
 
-  if (!p) return <div className="px-5 py-10 text-center text-muted-foreground">Loading…</div>;
+  if (!p || !user) return <div className="px-5 py-10 text-center" style={{ color: "#6B6760" }}>Loading…</div>;
 
   return (
     <div className="px-5 pt-5 pb-28">
-      <Link to="/app" className="inline-flex items-center gap-1 text-sm text-accent">
+      <Link to="/app" className="inline-flex items-center gap-1 text-sm" style={{ color: "#D97A34" }}>
         <ChevronLeft size={16} /> Back
       </Link>
-      <h1 className="mt-3 text-2xl font-bold">Profile & Settings</h1>
+      <h1 className="mt-3 text-2xl font-bold" style={{ letterSpacing: "-0.02em" }}>Profile & Settings</h1>
+
+      <div className="mt-6">
+        <AvatarUpload
+          userId={user.id}
+          avatarUrl={p.avatar_url}
+          onChange={(url) => setP({ ...p, avatar_url: url })}
+        />
+      </div>
 
       <Section title="Account">
         <Field label="Name"><input value={p.name ?? ""} onChange={(e) => setP({ ...p, name: e.target.value })} className="input" /></Field>
@@ -108,9 +106,9 @@ function Settings() {
         <Link to="/app/baseline" className="flex items-center justify-between p-3 rounded-md border border-border bg-background text-sm">
           <span>
             <span className="block font-semibold text-primary">View your computed health metrics</span>
-            <span className="block text-xs text-muted-foreground mt-0.5">BMI, TDEE, hydration, heart rate zones, waist risk</span>
+            <span className="block text-xs mt-0.5" style={{ color: "#6B6760" }}>BMI, TDEE, hydration, heart rate zones, waist risk</span>
           </span>
-          <ChevronLeft size={16} className="rotate-180 text-muted-foreground" />
+          <ChevronLeft size={16} className="rotate-180" color="#8C8780" />
         </Link>
       </Section>
 
@@ -120,17 +118,17 @@ function Settings() {
         <button onClick={() => setLegal("medical")} className="w-full text-left p-3 rounded-md border border-border bg-background text-sm">Medical Disclaimer</button>
       </Section>
 
-      <Section title="Support">
-        <a href="mailto:support@vitalman.app" className="block p-3 rounded-md border border-border bg-background text-sm text-accent">support@vitalman.app</a>
-      </Section>
-
-      <button onClick={handleSignOut} className="mt-8 w-full h-11 rounded-md border-2 border-primary text-primary font-semibold">
+      <button
+        onClick={handleSignOut}
+        className="mt-8 w-full h-11 rounded-md font-semibold"
+        style={{ background: "#FFFFFF", color: "#0F2A44", border: "1px solid #0F2A44" }}
+      >
         Sign out
       </button>
 
       <LegalModal type={legal} onClose={() => setLegal(null)} />
 
-      <style>{`.input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--color-input); border-radius: 8px; background: var(--color-background); }`}</style>
+      <style>{`.input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--color-input); border-radius: 8px; background: var(--color-background); } .input:focus { outline: none; border-color: var(--color-primary); }`}</style>
     </div>
   );
 }
@@ -138,8 +136,9 @@ function Settings() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mt-6">
-      <h2 className="text-sm uppercase tracking-wide text-muted-foreground mb-3">{title}</h2>
-      <div className="space-y-3">{children}</div>
+      <h2 className="section-label">{title}</h2>
+      <span className="section-accent-bar mb-3" />
+      <div className="space-y-3 mt-3">{children}</div>
     </div>
   );
 }
@@ -148,14 +147,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     <div>
       <label className="block text-sm font-medium mb-1.5">{label}</label>
       {children}
-    </div>
-  );
-}
-function Row({ k, v }: { k: string; v: string }) {
-  return (
-    <div className="flex justify-between py-2 border-b border-border last:border-0">
-      <span className="text-muted-foreground">{k}</span>
-      <span className="font-semibold text-primary">{v}</span>
     </div>
   );
 }
