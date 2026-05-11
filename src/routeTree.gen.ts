@@ -15,6 +15,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OnboardingIndexRouteImport } from './routes/onboarding.index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as OnboardingBaselineRouteImport } from './routes/onboarding.baseline'
@@ -63,6 +64,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OnboardingRoute,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
@@ -178,12 +184,12 @@ export interface FileRoutesByFullPath {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/admin/cross-sell': typeof AdminCrossSellRoute
@@ -202,6 +208,7 @@ export interface FileRoutesByTo {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/onboarding': typeof OnboardingIndexRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
@@ -229,6 +236,7 @@ export interface FileRoutesById {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
@@ -257,12 +265,12 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin/'
     | '/app/'
+    | '/onboarding/'
     | '/admin/users/$id'
     | '/app/coach/guide/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/onboarding'
     | '/signin'
     | '/signup'
     | '/admin/cross-sell'
@@ -281,6 +289,7 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin'
     | '/app'
+    | '/onboarding'
     | '/admin/users/$id'
     | '/app/coach/guide/$id'
   id:
@@ -307,6 +316,7 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin/'
     | '/app/'
+    | '/onboarding/'
     | '/admin/users/$id'
     | '/app/coach/guide/$id'
   fileRoutesById: FileRoutesById
@@ -363,6 +373,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/': {
+      id: '/onboarding/'
+      path: '/'
+      fullPath: '/onboarding/'
+      preLoaderRoute: typeof OnboardingIndexRouteImport
+      parentRoute: typeof OnboardingRoute
     }
     '/app/': {
       id: '/app/'
@@ -565,10 +582,12 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface OnboardingRouteChildren {
   OnboardingBaselineRoute: typeof OnboardingBaselineRoute
+  OnboardingIndexRoute: typeof OnboardingIndexRoute
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
   OnboardingBaselineRoute: OnboardingBaselineRoute,
+  OnboardingIndexRoute: OnboardingIndexRoute,
 }
 
 const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
