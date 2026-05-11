@@ -153,8 +153,9 @@ function Home() {
         </div>
       </div>
 
-      {/* Today's Protocol — placeholder until protocols table seeded */}
-      <ProtocolCard />
+      {/* Today's Protocol */}
+      <ProtocolCard userId={user?.id ?? null} />
+
 
       {/* Coach Tip */}
       <div className="mt-4 p-4 rounded-xl bg-surface border border-border">
@@ -243,12 +244,44 @@ function TrendBars({ trend, journeyStart, today }: { trend: Score[]; journeyStar
   );
 }
 
-function ProtocolCard() {
-  // Phase 1: render an empty state until protocols are seeded by admin (Phase 3)
+function ProtocolCard({ userId }: { userId: string | null }) {
+  const [protocol, setProtocol] = useState<{ name: string; items: string[] } | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data: p } = await supabase
+        .from("profiles")
+        .select("assigned_protocol_id")
+        .eq("id", userId)
+        .maybeSingle();
+      const assignedId = (p as { assigned_protocol_id: string | null } | null)?.assigned_protocol_id ?? null;
+      const q = supabase.from("protocols").select("name,items").eq("status", "published");
+      const { data } = assignedId
+        ? await q.eq("id", assignedId).maybeSingle()
+        : await q.eq("target_segment", "default").order("created_at", { ascending: true }).limit(1).maybeSingle();
+      if (data) setProtocol(data as { name: string; items: string[] });
+    })();
+  }, [userId]);
+
   return (
     <div className="mt-4 p-4 rounded-xl bg-surface border border-border">
       <div className="text-xs uppercase tracking-wide text-muted-foreground">Today's Protocol</div>
-      <p className="mt-2 text-sm text-muted-foreground">Your daily protocol will appear here once one is assigned by your coach.</p>
+      {protocol ? (
+        <>
+          <h3 className="mt-2 text-base font-semibold text-primary">{protocol.name}</h3>
+          <ul className="mt-2 space-y-1.5">
+            {protocol.items.map((it, i) => (
+              <li key={i} className="text-sm text-foreground flex gap-2">
+                <span className="text-muted-foreground">{i + 1}.</span>
+                <span>{it}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p className="mt-2 text-sm text-muted-foreground">Your daily protocol will appear here once one is assigned by your coach.</p>
+      )}
     </div>
   );
 }

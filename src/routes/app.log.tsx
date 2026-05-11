@@ -95,7 +95,12 @@ function LogPage() {
       .order("score_date", { ascending: false })
       .limit(7);
     const avg = prior && prior.length > 0 ? prior.reduce((s, r) => s + r.score, 0) / prior.length : breakdown.total;
-    const status = breakdown.total < 50 ? "needs_attention" : breakdown.total > avg ? "improving" : "stable";
+    const status =
+      breakdown.total < 60
+        ? "needs_attention"
+        : breakdown.total > avg && breakdown.total >= 60
+        ? "improving"
+        : "stable";
 
     await supabase.from("vitality_scores").upsert({
       user_id: user.id,
