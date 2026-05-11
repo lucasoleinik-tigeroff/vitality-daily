@@ -13,14 +13,17 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as OnboardingBaselineRouteImport } from './routes/onboarding.baseline'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppLogRouteImport } from './routes/app.log'
 import { Route as AppCoachRouteImport } from './routes/app.coach'
 import { Route as AppBaselineRouteImport } from './routes/app.baseline'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AppCoachGuideIdRouteImport } from './routes/app.coach.guide.$id'
 
 const SignupRoute = SignupRouteImport.update({
@@ -43,6 +46,11 @@ const AppRoute = AppRouteImport.update({
   path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -52,6 +60,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const OnboardingBaselineRoute = OnboardingBaselineRouteImport.update({
   id: '/baseline',
@@ -83,6 +96,11 @@ const AppBaselineRoute = AppBaselineRouteImport.update({
   path: '/baseline',
   getParentRoute: () => AppRoute,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AppCoachGuideIdRoute = AppCoachGuideIdRouteImport.update({
   id: '/guide/$id',
   path: '/guide/$id',
@@ -91,16 +109,19 @@ const AppCoachGuideIdRoute = AppCoachGuideIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/admin/login': typeof AdminLoginRoute
   '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRouteWithChildren
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
   '/app/settings': typeof AppSettingsRoute
   '/onboarding/baseline': typeof OnboardingBaselineRoute
+  '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
@@ -109,28 +130,33 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/admin/login': typeof AdminLoginRoute
   '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRouteWithChildren
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
   '/app/settings': typeof AppSettingsRoute
   '/onboarding/baseline': typeof OnboardingBaselineRoute
+  '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/admin/login': typeof AdminLoginRoute
   '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRouteWithChildren
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
   '/app/settings': typeof AppSettingsRoute
   '/onboarding/baseline': typeof OnboardingBaselineRoute
+  '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
@@ -138,16 +164,19 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/app'
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/admin/login'
     | '/app/baseline'
     | '/app/coach'
     | '/app/log'
     | '/app/progress'
     | '/app/settings'
     | '/onboarding/baseline'
+    | '/admin/'
     | '/app/'
     | '/app/coach/guide/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -156,33 +185,39 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/admin/login'
     | '/app/baseline'
     | '/app/coach'
     | '/app/log'
     | '/app/progress'
     | '/app/settings'
     | '/onboarding/baseline'
+    | '/admin'
     | '/app'
     | '/app/coach/guide/$id'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/app'
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/admin/login'
     | '/app/baseline'
     | '/app/coach'
     | '/app/log'
     | '/app/progress'
     | '/app/settings'
     | '/onboarding/baseline'
+    | '/admin/'
     | '/app/'
     | '/app/coach/guide/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
   OnboardingRoute: typeof OnboardingRouteWithChildren
   SigninRoute: typeof SigninRoute
@@ -219,6 +254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -232,6 +274,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/onboarding/baseline': {
       id: '/onboarding/baseline'
@@ -275,6 +324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBaselineRouteImport
       parentRoute: typeof AppRoute
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/app/coach/guide/$id': {
       id: '/app/coach/guide/$id'
       path: '/guide/$id'
@@ -284,6 +340,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface AppCoachRouteChildren {
   AppCoachGuideIdRoute: typeof AppCoachGuideIdRoute
@@ -331,6 +399,7 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
   OnboardingRoute: OnboardingRouteWithChildren,
   SigninRoute: SigninRoute,
