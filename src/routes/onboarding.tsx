@@ -80,45 +80,51 @@ function Onboarding() {
   }
 
   async function finish() {
-    if (!user) return;
+    if (!user || saving) return;
     setSaving(true);
-    const baseline = computeBaseline({
-      age: +s.age,
-      heightFeet: +s.feet,
-      heightInches: +s.inches,
-      weightLbs: +s.weight,
-      waistInches: +s.waist,
-      activity: s.activity as ActivityLevel,
-    });
-    const now = new Date().toISOString();
-    const { error: pErr } = await supabase.from("profiles").update({
-      age: +s.age,
-      height_feet: +s.feet,
-      height_inches: +s.inches,
-      weight_lbs: +s.weight,
-      waist_inches: +s.waist,
-      activity_level: s.activity as ActivityLevel,
-      main_concern: s.concern,
-      main_goal: s.goal,
-      current_habits: s.habits,
-      onboarding_completed: true,
-      terms_accepted_at: now,
-      privacy_accepted_at: now,
-    }).eq("id", user.id);
+    try {
+      const baseline = computeBaseline({
+        age: +s.age,
+        heightFeet: +s.feet,
+        heightInches: +s.inches,
+        weightLbs: +s.weight,
+        waistInches: +s.waist,
+        activity: s.activity as ActivityLevel,
+      });
+      const now = new Date().toISOString();
+      const { error: pErr } = await supabase.from("profiles").update({
+        age: +s.age,
+        height_feet: +s.feet,
+        height_inches: +s.inches,
+        weight_lbs: +s.weight,
+        waist_inches: +s.waist,
+        activity_level: s.activity as ActivityLevel,
+        main_concern: s.concern,
+        main_goal: s.goal,
+        current_habits: s.habits,
+        onboarding_completed: true,
+        terms_accepted_at: now,
+        privacy_accepted_at: now,
+      }).eq("id", user.id);
+      if (pErr) throw pErr;
 
-    if (pErr) { toast.error(pErr.message); setSaving(false); return; }
+      const { error: mErr } = await supabase.from("user_health_metrics").insert({
+        user_id: user.id,
+        weight_lbs: +s.weight,
+        waist_inches: +s.waist,
+        activity_level: s.activity as ActivityLevel,
+        ...baseline,
+      });
+      if (mErr) throw mErr;
 
-    const { error: mErr } = await supabase.from("user_health_metrics").insert({
-      user_id: user.id,
-      weight_lbs: +s.weight,
-      waist_inches: +s.waist,
-      activity_level: s.activity as ActivityLevel,
-      ...baseline,
-    });
-    if (mErr) { toast.error(mErr.message); setSaving(false); return; }
-
-    setSaving(false);
-    navigate({ to: "/onboarding/baseline" });
+      // Navigate with replace so back button can't return to onboarding.
+      await navigate({ to: "/onboarding/baseline", replace: true });
+    } catch (err) {
+      console.error("[onboarding.finish] failed", err);
+      const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      toast.error(msg);
+      setSaving(false);
+    }
   }
 
   if (loading || !user) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading…</div>;
