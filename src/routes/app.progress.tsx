@@ -62,7 +62,7 @@ function ProgressPage() {
     return { avg, best, streak: profile?.streak_count ?? 0 };
   }, [filteredScores, profile]);
 
-  const summary = useMemo(() => buildWeeklySummary(scores, logs, logCount), [scores, logs, logCount]);
+  const summary = useMemo(() => buildWeeklySummary(scores, logs, completions, logCount), [scores, logs, completions, logCount]);
   const eligible = logCount >= 14;
   const latestMetrics = metricsHist.at(-1);
 
@@ -353,7 +353,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function buildWeeklySummary(scores: ScoreRow[], logs: LogRow[], logCount: number): string {
+function buildWeeklySummary(scores: ScoreRow[], logs: LogRow[], completions: CompletionRow[], logCount: number): string {
   if (logCount < 7) return "Your weekly summary will appear after you've logged 7 days.";
   const cutoff7 = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
   const cutoff14 = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
@@ -363,12 +363,14 @@ function buildWeeklySummary(scores: ScoreRow[], logs: LogRow[], logCount: number
   const avg = recent.length ? Math.round(recent.reduce((s, r) => s + r.score, 0) / recent.length) : 0;
   const sleep = recentLogs.filter((l) => l.sleep_hours != null);
   const avgSleep = sleep.length ? (sleep.reduce((s, l) => s + Number(l.sleep_hours), 0) / sleep.length).toFixed(1) : "—";
-  const completed = 0; // Not pulling protocol completions here; using count of recent logs as proxy.
-  const proxyCompleted = recentLogs.length;
+  // Real protocol completions: count distinct days in last 7 where every item was completed.
+  const completedDays = completions.filter(
+    (c) => c.completion_date >= cutoff7 && c.total_items > 0 && c.completed_items.length === c.total_items
+  ).length;
   const priorAvg = prior.length ? prior.reduce((s, r) => s + r.score, 0) / prior.length : avg;
   const delta = Math.round(avg - priorAvg);
   let trend = "";
   if (delta > 2) trend = ` Your overall score improved by ${delta} compared to the previous week.`;
   else if (delta < -2) trend = ` Your overall score dropped by ${Math.abs(delta)} — focus on it this week.`;
-  return `Your average score last week was ${avg}. You logged ${proxyCompleted} out of 7 days. Your sleep averaged ${avgSleep} hours.${trend}`;
+  return `Your average score last week was ${avg}. You completed your full protocol on ${completedDays} of 7 days. Your sleep averaged ${avgSleep} hours.${trend}`;
 }
