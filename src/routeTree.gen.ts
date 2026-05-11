@@ -23,7 +23,15 @@ import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppLogRouteImport } from './routes/app.log'
 import { Route as AppCoachRouteImport } from './routes/app.coach'
 import { Route as AppBaselineRouteImport } from './routes/app.baseline'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminTipsRouteImport } from './routes/admin.tips'
+import { Route as AdminProtocolsRouteImport } from './routes/admin.protocols'
+import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
+import { Route as AdminLogsRouteImport } from './routes/admin.logs'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminGuidesRouteImport } from './routes/admin.guides'
+import { Route as AdminCrossSellRouteImport } from './routes/admin.cross-sell'
+import { Route as AdminUsersIdRouteImport } from './routes/admin.users.$id'
 import { Route as AppCoachGuideIdRouteImport } from './routes/app.coach.guide.$id'
 
 const SignupRoute = SignupRouteImport.update({
@@ -96,10 +104,50 @@ const AppBaselineRoute = AppBaselineRouteImport.update({
   path: '/baseline',
   getParentRoute: () => AppRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTipsRoute = AdminTipsRouteImport.update({
+  id: '/tips',
+  path: '/tips',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProtocolsRoute = AdminProtocolsRouteImport.update({
+  id: '/protocols',
+  path: '/protocols',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMessagesRoute = AdminMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLogsRoute = AdminLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AdminRoute,
+} as any)
+const AdminGuidesRoute = AdminGuidesRouteImport.update({
+  id: '/guides',
+  path: '/guides',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCrossSellRoute = AdminCrossSellRouteImport.update({
+  id: '/cross-sell',
+  path: '/cross-sell',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminUsersRoute,
 } as any)
 const AppCoachGuideIdRoute = AppCoachGuideIdRouteImport.update({
   id: '/guide/$id',
@@ -114,7 +162,14 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/admin/cross-sell': typeof AdminCrossSellRoute
+  '/admin/guides': typeof AdminGuidesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/logs': typeof AdminLogsRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/protocols': typeof AdminProtocolsRoute
+  '/admin/tips': typeof AdminTipsRoute
+  '/admin/users': typeof AdminUsersRouteWithChildren
   '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRouteWithChildren
   '/app/log': typeof AppLogRoute
@@ -123,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRoutesByTo {
@@ -130,7 +186,14 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/admin/cross-sell': typeof AdminCrossSellRoute
+  '/admin/guides': typeof AdminGuidesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/logs': typeof AdminLogsRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/protocols': typeof AdminProtocolsRoute
+  '/admin/tips': typeof AdminTipsRoute
+  '/admin/users': typeof AdminUsersRouteWithChildren
   '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRouteWithChildren
   '/app/log': typeof AppLogRoute
@@ -139,6 +202,7 @@ export interface FileRoutesByTo {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRoutesById {
@@ -149,7 +213,14 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/admin/cross-sell': typeof AdminCrossSellRoute
+  '/admin/guides': typeof AdminGuidesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/logs': typeof AdminLogsRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/protocols': typeof AdminProtocolsRoute
+  '/admin/tips': typeof AdminTipsRoute
+  '/admin/users': typeof AdminUsersRouteWithChildren
   '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRouteWithChildren
   '/app/log': typeof AppLogRoute
@@ -158,6 +229,7 @@ export interface FileRoutesById {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRouteTypes {
@@ -169,7 +241,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/admin/cross-sell'
+    | '/admin/guides'
     | '/admin/login'
+    | '/admin/logs'
+    | '/admin/messages'
+    | '/admin/protocols'
+    | '/admin/tips'
+    | '/admin/users'
     | '/app/baseline'
     | '/app/coach'
     | '/app/log'
@@ -178,6 +257,7 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin/'
     | '/app/'
+    | '/admin/users/$id'
     | '/app/coach/guide/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -185,7 +265,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/admin/cross-sell'
+    | '/admin/guides'
     | '/admin/login'
+    | '/admin/logs'
+    | '/admin/messages'
+    | '/admin/protocols'
+    | '/admin/tips'
+    | '/admin/users'
     | '/app/baseline'
     | '/app/coach'
     | '/app/log'
@@ -194,6 +281,7 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin'
     | '/app'
+    | '/admin/users/$id'
     | '/app/coach/guide/$id'
   id:
     | '__root__'
@@ -203,7 +291,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/admin/cross-sell'
+    | '/admin/guides'
     | '/admin/login'
+    | '/admin/logs'
+    | '/admin/messages'
+    | '/admin/protocols'
+    | '/admin/tips'
+    | '/admin/users'
     | '/app/baseline'
     | '/app/coach'
     | '/app/log'
@@ -212,6 +307,7 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin/'
     | '/app/'
+    | '/admin/users/$id'
     | '/app/coach/guide/$id'
   fileRoutesById: FileRoutesById
 }
@@ -324,12 +420,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBaselineRouteImport
       parentRoute: typeof AppRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/tips': {
+      id: '/admin/tips'
+      path: '/tips'
+      fullPath: '/admin/tips'
+      preLoaderRoute: typeof AdminTipsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/protocols': {
+      id: '/admin/protocols'
+      path: '/protocols'
+      fullPath: '/admin/protocols'
+      preLoaderRoute: typeof AdminProtocolsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/messages': {
+      id: '/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/logs': {
+      id: '/admin/logs'
+      path: '/logs'
+      fullPath: '/admin/logs'
+      preLoaderRoute: typeof AdminLogsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/admin/guides': {
+      id: '/admin/guides'
+      path: '/guides'
+      fullPath: '/admin/guides'
+      preLoaderRoute: typeof AdminGuidesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cross-sell': {
+      id: '/admin/cross-sell'
+      path: '/cross-sell'
+      fullPath: '/admin/cross-sell'
+      preLoaderRoute: typeof AdminCrossSellRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users/$id': {
+      id: '/admin/users/$id'
+      path: '/$id'
+      fullPath: '/admin/users/$id'
+      preLoaderRoute: typeof AdminUsersIdRouteImport
+      parentRoute: typeof AdminUsersRoute
     }
     '/app/coach/guide/$id': {
       id: '/app/coach/guide/$id'
@@ -341,13 +493,39 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminUsersRouteChildren {
+  AdminUsersIdRoute: typeof AdminUsersIdRoute
+}
+
+const AdminUsersRouteChildren: AdminUsersRouteChildren = {
+  AdminUsersIdRoute: AdminUsersIdRoute,
+}
+
+const AdminUsersRouteWithChildren = AdminUsersRoute._addFileChildren(
+  AdminUsersRouteChildren,
+)
+
 interface AdminRouteChildren {
+  AdminCrossSellRoute: typeof AdminCrossSellRoute
+  AdminGuidesRoute: typeof AdminGuidesRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminLogsRoute: typeof AdminLogsRoute
+  AdminMessagesRoute: typeof AdminMessagesRoute
+  AdminProtocolsRoute: typeof AdminProtocolsRoute
+  AdminTipsRoute: typeof AdminTipsRoute
+  AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminCrossSellRoute: AdminCrossSellRoute,
+  AdminGuidesRoute: AdminGuidesRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminLogsRoute: AdminLogsRoute,
+  AdminMessagesRoute: AdminMessagesRoute,
+  AdminProtocolsRoute: AdminProtocolsRoute,
+  AdminTipsRoute: AdminTipsRoute,
+  AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }
 

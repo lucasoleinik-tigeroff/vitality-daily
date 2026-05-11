@@ -67,7 +67,7 @@ function AdminGuides() {
       body_text: ct === "text" ? (editing.body_text ?? null) : null,
       content_type: ct,
       unlock_day: editing.unlock_day ?? 0,
-      status: (editing.status ?? "draft") as string,
+      status: (editing.status ?? "draft") as "draft" | "published" | "coming_soon",
     };
     let id = editing.id;
     if (id) {

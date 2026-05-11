@@ -32,7 +32,7 @@ function AdminMessages() {
 
   async function save() {
     if (!editing || !user || !editing.title || !editing.body) { toast.error("Title and body required"); return; }
-    const payload = { title: editing.title, body: editing.body, target_week: editing.target_week ?? null, status: editing.status ?? "published" };
+    const payload = { title: editing.title, body: editing.body, target_week: editing.target_week ?? null, status: (editing.status ?? "published") as "draft" | "published" | "coming_soon" };
     if (editing.id) {
       const { error } = await supabase.from("coach_messages").update(payload).eq("id", editing.id);
       if (error) { toast.error(error.message); return; }

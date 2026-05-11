@@ -29,7 +29,7 @@ function AdminProtocols() {
       name: editing.name, description: editing.description ?? null,
       items: (editing.items ?? []).filter((x) => x.trim() !== ""),
       target_segment: editing.target_segment ?? null,
-      status: editing.status ?? "draft",
+      status: (editing.status ?? "draft") as "draft" | "published" | "coming_soon",
     };
     if (editing.id) {
       const { error } = await supabase.from("protocols").update(payload).eq("id", editing.id);

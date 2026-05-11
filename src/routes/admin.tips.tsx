@@ -68,7 +68,7 @@ function AdminTips() {
 
   async function save() {
     if (!editing || !user || !editing.title || !editing.body) { toast.error("Title and body required"); return; }
-    const payload = { title: editing.title, body: editing.body, target_metric: editing.target_metric ?? "general", status: editing.status ?? "published" };
+    const payload = { title: editing.title, body: editing.body, target_metric: editing.target_metric ?? "general", status: (editing.status ?? "published") as "draft" | "published" | "coming_soon" };
     if (editing.id) {
       const { error } = await supabase.from("coach_tips").update(payload).eq("id", editing.id);
       if (error) { toast.error(error.message); return; }
