@@ -281,6 +281,7 @@ export type Database = {
         Row: {
           activity_level: Database["public"]["Enums"]["activity_level"] | null
           age: number | null
+          assigned_protocol_id: string | null
           created_at: string
           current_habits: string[] | null
           email: string
@@ -304,6 +305,7 @@ export type Database = {
         Insert: {
           activity_level?: Database["public"]["Enums"]["activity_level"] | null
           age?: number | null
+          assigned_protocol_id?: string | null
           created_at?: string
           current_habits?: string[] | null
           email: string
@@ -327,6 +329,7 @@ export type Database = {
         Update: {
           activity_level?: Database["public"]["Enums"]["activity_level"] | null
           age?: number | null
+          assigned_protocol_id?: string | null
           created_at?: string
           current_habits?: string[] | null
           email?: string
@@ -347,7 +350,15 @@ export type Database = {
           waist_inches?: number | null
           weight_lbs?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_assigned_protocol_id_fkey"
+            columns: ["assigned_protocol_id"]
+            isOneToOne: false
+            referencedRelation: "protocols"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       protocol_completions: {
         Row: {
