@@ -6,7 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tool
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Phase2Card } from "@/components/Phase2Card";
-import { todayIsoDate, calcAllMetrics, type ActivityLevel, ACTIVITY_LABELS } from "@/lib/health";
+import { todayIsoDate, computeBaseline, type ActivityLevel, ACTIVITY_LABELS } from "@/lib/health";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/progress")({
