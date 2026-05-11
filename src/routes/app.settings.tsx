@@ -104,18 +104,14 @@ function Settings() {
         </button>
       </Section>
 
-      <Section title="Health Baseline">
-        {b ? (
-          <div className="space-y-2 text-sm">
-            <Row k="BMI" v={`${b.bmi} (${b.bmi_category})`} />
-            <Row k="TDEE" v={`${b.tdee_kcal} kcal/day`} />
-            <Row k="Hydration target" v={`${b.hydration_target_oz} oz`} />
-            <Row k="Moderate HR zone" v={`${b.hr_moderate_low}–${b.hr_moderate_high} bpm`} />
-            <Row k="Vigorous HR zone" v={`${b.hr_vigorous_low}–${b.hr_vigorous_high} bpm`} />
-            <Row k="Waist risk" v={b.waist_risk_category} />
-            <p className="text-xs text-muted-foreground italic mt-3">For educational purposes only. Consult a healthcare provider for medical evaluation.</p>
-          </div>
-        ) : <p className="text-sm text-muted-foreground">No baseline yet.</p>}
+      <Section title="Your Baseline">
+        <Link to="/app/baseline" className="flex items-center justify-between p-3 rounded-md border border-border bg-background text-sm">
+          <span>
+            <span className="block font-semibold text-primary">View your computed health metrics</span>
+            <span className="block text-xs text-muted-foreground mt-0.5">BMI, TDEE, hydration, heart rate zones, waist risk</span>
+          </span>
+          <ChevronLeft size={16} className="rotate-180 text-muted-foreground" />
+        </Link>
       </Section>
 
       <Section title="Legal">
