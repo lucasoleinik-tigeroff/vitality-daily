@@ -6,7 +6,7 @@ import { computeBaseline, type ActivityLevel } from "@/lib/health";
 import { LegalModal } from "@/components/LegalModals";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/onboarding")({
+export const Route = createFileRoute("/onboarding/")({
   component: Onboarding,
 });
 

@@ -11,10 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OnboardingIndexRouteImport } from './routes/onboarding.index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as OnboardingBaselineRouteImport } from './routes/onboarding.baseline'
@@ -44,11 +44,6 @@ const SigninRoute = SigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -64,6 +59,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
+  id: '/onboarding/',
+  path: '/onboarding/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -75,9 +75,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const OnboardingBaselineRoute = OnboardingBaselineRouteImport.update({
-  id: '/baseline',
-  path: '/baseline',
-  getParentRoute: () => OnboardingRoute,
+  id: '/onboarding/baseline',
+  path: '/onboarding/baseline',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
@@ -159,7 +159,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
-  '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/admin/cross-sell': typeof AdminCrossSellRoute
@@ -178,12 +177,12 @@ export interface FileRoutesByFullPath {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/admin/cross-sell': typeof AdminCrossSellRoute
@@ -202,6 +201,7 @@ export interface FileRoutesByTo {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/onboarding': typeof OnboardingIndexRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
@@ -210,7 +210,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
-  '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/admin/cross-sell': typeof AdminCrossSellRoute
@@ -229,6 +228,7 @@ export interface FileRoutesById {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
   '/admin/users/$id': typeof AdminUsersIdRoute
   '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
@@ -238,7 +238,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
-    | '/onboarding'
     | '/signin'
     | '/signup'
     | '/admin/cross-sell'
@@ -257,12 +256,12 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin/'
     | '/app/'
+    | '/onboarding/'
     | '/admin/users/$id'
     | '/app/coach/guide/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/onboarding'
     | '/signin'
     | '/signup'
     | '/admin/cross-sell'
@@ -281,6 +280,7 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin'
     | '/app'
+    | '/onboarding'
     | '/admin/users/$id'
     | '/app/coach/guide/$id'
   id:
@@ -288,7 +288,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
-    | '/onboarding'
     | '/signin'
     | '/signup'
     | '/admin/cross-sell'
@@ -307,6 +306,7 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/admin/'
     | '/app/'
+    | '/onboarding/'
     | '/admin/users/$id'
     | '/app/coach/guide/$id'
   fileRoutesById: FileRoutesById
@@ -315,9 +315,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
-  OnboardingRoute: typeof OnboardingRouteWithChildren
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
+  OnboardingBaselineRoute: typeof OnboardingBaselineRoute
+  OnboardingIndexRoute: typeof OnboardingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -334,13 +335,6 @@ declare module '@tanstack/react-router' {
       path: '/signin'
       fullPath: '/signin'
       preLoaderRoute: typeof SigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -364,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/': {
+      id: '/onboarding/'
+      path: '/onboarding'
+      fullPath: '/onboarding/'
+      preLoaderRoute: typeof OnboardingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/': {
       id: '/app/'
       path: '/'
@@ -380,10 +381,10 @@ declare module '@tanstack/react-router' {
     }
     '/onboarding/baseline': {
       id: '/onboarding/baseline'
-      path: '/baseline'
+      path: '/onboarding/baseline'
       fullPath: '/onboarding/baseline'
       preLoaderRoute: typeof OnboardingBaselineRouteImport
-      parentRoute: typeof OnboardingRoute
+      parentRoute: typeof rootRouteImport
     }
     '/app/settings': {
       id: '/app/settings'
@@ -563,26 +564,25 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
-interface OnboardingRouteChildren {
-  OnboardingBaselineRoute: typeof OnboardingBaselineRoute
-}
-
-const OnboardingRouteChildren: OnboardingRouteChildren = {
-  OnboardingBaselineRoute: OnboardingBaselineRoute,
-}
-
-const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
-  OnboardingRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
-  OnboardingRoute: OnboardingRouteWithChildren,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
+  OnboardingBaselineRoute: OnboardingBaselineRoute,
+  OnboardingIndexRoute: OnboardingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
