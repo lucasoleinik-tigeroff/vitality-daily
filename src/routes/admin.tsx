@@ -56,7 +56,7 @@ function AdminLayout() {
           {NAV.map((n) => {
             const active = n.exact ? path === n.to : path.startsWith(n.to);
             return (
-              <Link key={n.to} to={n.to}
+              <Link key={n.to} to={n.to as "/admin"}
                 className="flex items-center gap-2 px-3 py-2 rounded text-sm"
                 style={{
                   background: active ? "var(--color-primary)" : "transparent",
