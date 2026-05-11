@@ -279,13 +279,13 @@ function BodyMetricsEditor({
     }
     setSaving(true);
     const w = Number(weight), wa = Number(waist);
-    const m = calcAllMetrics({
+    const m = computeBaseline({
       age: profile.age,
       heightFeet: profile.height_feet,
       heightInches: profile.height_inches ?? 0,
       weightLbs: w,
       waistInches: wa,
-      activityLevel: activity,
+      activity,
     });
     const { error } = await supabase.from("user_health_metrics").insert({
       user_id: userId,
@@ -293,16 +293,16 @@ function BodyMetricsEditor({
       waist_inches: wa,
       activity_level: activity,
       bmi: m.bmi,
-      bmi_category: m.bmiCategory,
-      bmr_kcal: m.bmr,
-      tdee_kcal: m.tdee,
-      hydration_target_oz: m.hydrationOz,
-      hr_max: m.hrMax,
-      hr_moderate_low: m.hrModerateLow,
-      hr_moderate_high: m.hrModerateHigh,
-      hr_vigorous_low: m.hrVigorousLow,
-      hr_vigorous_high: m.hrVigorousHigh,
-      waist_risk_category: m.waistRisk,
+      bmi_category: m.bmi_category,
+      bmr_kcal: m.bmr_kcal,
+      tdee_kcal: m.tdee_kcal,
+      hydration_target_oz: m.hydration_target_oz,
+      hr_max: m.hr_max,
+      hr_moderate_low: m.hr_moderate_low,
+      hr_moderate_high: m.hr_moderate_high,
+      hr_vigorous_low: m.hr_vigorous_low,
+      hr_vigorous_high: m.hr_vigorous_high,
+      waist_risk_category: m.waist_risk_category,
     });
     await supabase.from("profiles").update({ weight_lbs: w, waist_inches: wa, activity_level: activity }).eq("id", userId);
     setSaving(false);
