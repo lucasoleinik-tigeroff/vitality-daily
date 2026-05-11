@@ -41,7 +41,7 @@ function Baseline() {
     })();
   }, [user, loading, navigate]);
 
-  if (!m) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading your baseline…</div>;
+  
 
   const items = [
     { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: m.bmi_category, note: "BMI is a general indicator; combine with waist measurement for a fuller picture." },
