@@ -61,7 +61,7 @@ function AdminProtocols() {
         "Drink water before each meal",
         "Lights out by 11pm",
       ],
-      status: "published",
+      status: "published" as const,
     });
     await logAdminAction(user.id, { action: "seed", entity_type: "protocol", details: { name: "Starter Protocol" } });
     load(); toast.success("Seeded");

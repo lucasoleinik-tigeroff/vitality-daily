@@ -100,7 +100,7 @@ function AdminGuides() {
       await supabase.from("guides").insert({
         title: g.title!, subtitle: g.subtitle ?? null, description: g.description ?? null,
         category: g.category ?? null, content_type: g.content_type ?? "text",
-        unlock_day: g.unlock_day ?? 0, status: g.status ?? "published",
+        unlock_day: g.unlock_day ?? 0, status: (g.status ?? "published") as "draft" | "published" | "coming_soon",
       });
     }
     await logAdminAction(user.id, { action: "seed", entity_type: "guides", details: { count: DEFAULT_LIBRARY.length } });
