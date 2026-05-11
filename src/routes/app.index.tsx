@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { User as UserIcon, Moon, Activity, Droplet, Brain } from "lucide-react";
 import { LegalModal } from "@/components/LegalModals";
+import { StreakChip } from "@/components/StreakChip";
 import { todayIsoDate } from "@/lib/health";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
 
@@ -15,6 +16,7 @@ interface Profile {
   name: string | null;
   streak_count: number;
   journey_start_date: string;
+  avatar_url: string | null;
 }
 interface Metrics { hydration_target_oz: number }
 interface Log {
@@ -45,7 +47,7 @@ function Home() {
     (async () => {
       const today = todayIsoDate();
       const [p, hm, dl, vs] = await Promise.all([
-        supabase.from("profiles").select("name,streak_count,journey_start_date").eq("id", user.id).maybeSingle(),
+        supabase.from("profiles").select("name,streak_count,journey_start_date,avatar_url").eq("id", user.id).maybeSingle(),
         supabase.from("user_health_metrics").select("hydration_target_oz").eq("user_id", user.id).order("snapshot_date", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("daily_logs").select("sleep_hours,sleep_quality,stress_level,activity_minutes,hydration_oz,supplement_taken").eq("user_id", user.id).eq("log_date", today).maybeSingle(),
         supabase.from("vitality_scores").select("score_date,score,status").eq("user_id", user.id).order("score_date", { ascending: false }).limit(7),
@@ -93,7 +95,15 @@ function Home() {
     : 1;
 
   const score = todayScore?.score ?? null;
-  const status = todayScore?.status ?? "stable";
+  // Derive status from current score so it always matches the latest threshold rule.
+  const status: "improving" | "stable" | "needs_attention" =
+    score == null
+      ? "stable"
+      : score < 60
+      ? "needs_attention"
+      : todayScore?.status === "improving"
+      ? "improving"
+      : "stable";
 
   const hydrationTarget = metrics?.hydration_target_oz ?? 64;
   const hydrationCurrent = todayLog?.hydration_oz ?? 0;
@@ -102,24 +112,46 @@ function Home() {
   const activityMin = todayLog?.activity_minutes ?? 0;
 
   const statusLabel = status === "improving" ? "Improving" : status === "needs_attention" ? "Needs Attention" : "Stable";
-  const statusColor = status === "improving" ? "var(--color-success)" : status === "needs_attention" ? "var(--color-warning)" : "var(--color-accent)";
+  const statusColor = status === "improving" ? "var(--color-accent)" : status === "needs_attention" ? "var(--color-warning)" : "var(--color-primary)";
 
   return (
     <div className="px-5 pt-5 pb-24">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold leading-tight">VitalMan</h1>
-          <p className="text-xs text-muted-foreground">Men's Health Coach</p>
+          <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>VitalMan</h1>
+          <p className="text-xs" style={{ color: "#6B6760" }}>Men's Health Coach</p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-surface border border-border">
-            {profile?.streak_count ?? 0}d streak
-          </span>
-          <Link to="/app/settings" className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center">
-            <UserIcon size={18} color="var(--color-primary)" />
+          <StreakChip count={profile?.streak_count ?? 0} />
+          <Link
+            to="/app/settings"
+            className="w-8 h-8 rounded-full overflow-hidden border flex items-center justify-center"
+            style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
+          >
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <UserIcon size={16} color="var(--color-primary)" />
+            )}
           </Link>
         </div>
+      </div>
+
+      {/* Vitality Score */}
+      <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border text-center">
+        <div className="section-label">Vitality Score</div>
+        <div
+          className="mt-2 text-6xl text-primary leading-none"
+          style={{ fontWeight: 800, letterSpacing: "-0.03em" }}
+        >
+          {score ?? "—"}
+        </div>
+        <div className="mt-3 text-sm" style={{ color: "#6B6760" }}>Today's Score</div>
+        <div className="mt-2 inline-block text-xs font-semibold px-3 py-1 rounded-full" style={{ background: statusColor, color: "white" }}>
+          {statusLabel}
+        </div>
+        <div className="mt-3 text-xs" style={{ color: "#6B6760" }}>Day {dayOfJourney} of your journey</div>
       </div>
 
       {/* Vitality Score */}
