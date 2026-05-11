@@ -74,12 +74,14 @@ function CoachPage() {
         const min = Math.min(...PRIORITY.map((k) => breakdown[k]));
         weakest = PRIORITY.find((k) => breakdown[k] === min) ?? weakestMetric(breakdown);
       }
+      type TipRow = { id: string; title: string; body: string; target_metric: string };
       const recentIds = new Set((ct.data ?? []).map((r) => r.tip_id));
-      let pickedTip: { id: string; title: string; body: string; target_metric: string } | null = null;
+      let pickedTip: TipRow | null = null;
       for (const target of [weakest, "general"]) {
         const { data: tips } = await supabase.from("coach_tips").select("id,title,body,target_metric").eq("status", "published").eq("target_metric", target);
-        const fresh = (tips ?? []).find((t) => !recentIds.has(t.id)) ?? (tips ?? [])[0];
-        if (fresh) { pickedTip = fresh as typeof pickedTip; break; }
+        const list = (tips ?? []) as TipRow[];
+        const fresh = list.find((t) => !recentIds.has(t.id)) ?? list[0];
+        if (fresh) { pickedTip = fresh; break; }
       }
       if (pickedTip) {
         setTip(pickedTip);
