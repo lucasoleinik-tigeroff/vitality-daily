@@ -7,6 +7,7 @@ import { LegalModal } from "@/components/LegalModals";
 import { StreakChip } from "@/components/StreakChip";
 import { todayIsoDate } from "@/lib/health";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
+import { Phase2Banner } from "@/components/Phase2Banner";
 
 export const Route = createFileRoute("/app/")({
   component: Home,
@@ -137,6 +138,9 @@ function Home() {
           </Link>
         </div>
       </div>
+
+      {/* Day-14 Phase 2 banner */}
+      {user && <Phase2Banner userId={user.id} journeyStart={profile?.journey_start_date ?? null} />}
 
       {/* Vitality Score */}
       <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border text-center">
