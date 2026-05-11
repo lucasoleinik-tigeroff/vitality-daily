@@ -16,15 +16,29 @@ export function BottomNav() {
         {tabs.map((t) => {
           const active = t.exact ? path === t.to : path.startsWith(t.to);
           const Icon = t.icon;
+          const color = active ? "var(--color-accent)" : "#8C8780";
           return (
             <Link
               key={t.to}
               to={t.to}
-              className="flex flex-col items-center gap-1 py-2.5 text-xs"
-              style={{ color: active ? "var(--color-primary)" : "var(--color-muted-foreground)" }}
+              className="relative flex flex-col items-center gap-1 py-2.5 text-xs"
+              style={{ color }}
             >
+              {active && (
+                <span
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    width: 18,
+                    height: 2,
+                    background: "var(--color-accent)",
+                    borderRadius: 2,
+                  }}
+                />
+              )}
               <Icon size={22} strokeWidth={active ? 2.25 : 1.75} />
-              <span style={{ fontWeight: active ? 600 : 400 }}>{t.label}</span>
+              <span style={{ fontWeight: active ? 600 : 500 }}>{t.label}</span>
             </Link>
           );
         })}

@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { User as UserIcon, Moon, Activity, Droplet, Brain } from "lucide-react";
 import { LegalModal } from "@/components/LegalModals";
+import { StreakChip } from "@/components/StreakChip";
 import { todayIsoDate } from "@/lib/health";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
 
@@ -15,6 +16,7 @@ interface Profile {
   name: string | null;
   streak_count: number;
   journey_start_date: string;
+  avatar_url: string | null;
 }
 interface Metrics { hydration_target_oz: number }
 interface Log {
@@ -45,7 +47,7 @@ function Home() {
     (async () => {
       const today = todayIsoDate();
       const [p, hm, dl, vs] = await Promise.all([
-        supabase.from("profiles").select("name,streak_count,journey_start_date").eq("id", user.id).maybeSingle(),
+        supabase.from("profiles").select("name,streak_count,journey_start_date,avatar_url").eq("id", user.id).maybeSingle(),
         supabase.from("user_health_metrics").select("hydration_target_oz").eq("user_id", user.id).order("snapshot_date", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("daily_logs").select("sleep_hours,sleep_quality,stress_level,activity_minutes,hydration_oz,supplement_taken").eq("user_id", user.id).eq("log_date", today).maybeSingle(),
         supabase.from("vitality_scores").select("score_date,score,status").eq("user_id", user.id).order("score_date", { ascending: false }).limit(7),
@@ -93,7 +95,15 @@ function Home() {
     : 1;
 
   const score = todayScore?.score ?? null;
-  const status = todayScore?.status ?? "stable";
+  // Derive status from current score so it always matches the latest threshold rule.
+  const status: "improving" | "stable" | "needs_attention" =
+    score == null
+      ? "stable"
+      : score < 60
+      ? "needs_attention"
+      : todayScore?.status === "improving"
+      ? "improving"
+      : "stable";
 
   const hydrationTarget = metrics?.hydration_target_oz ?? 64;
   const hydrationCurrent = todayLog?.hydration_oz ?? 0;
@@ -102,41 +112,52 @@ function Home() {
   const activityMin = todayLog?.activity_minutes ?? 0;
 
   const statusLabel = status === "improving" ? "Improving" : status === "needs_attention" ? "Needs Attention" : "Stable";
-  const statusColor = status === "improving" ? "var(--color-success)" : status === "needs_attention" ? "var(--color-warning)" : "var(--color-accent)";
+  const statusColor = status === "improving" ? "var(--color-accent)" : status === "needs_attention" ? "var(--color-warning)" : "var(--color-primary)";
 
   return (
     <div className="px-5 pt-5 pb-24">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold leading-tight">VitalMan</h1>
-          <p className="text-xs text-muted-foreground">Men's Health Coach</p>
+          <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>VitalMan</h1>
+          <p className="text-xs" style={{ color: "#6B6760" }}>Men's Health Coach</p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-surface border border-border">
-            {profile?.streak_count ?? 0}d streak
-          </span>
-          <Link to="/app/settings" className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center">
-            <UserIcon size={18} color="var(--color-primary)" />
+          <StreakChip count={profile?.streak_count ?? 0} />
+          <Link
+            to="/app/settings"
+            className="w-8 h-8 rounded-full overflow-hidden border flex items-center justify-center"
+            style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
+          >
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <UserIcon size={16} color="var(--color-primary)" />
+            )}
           </Link>
         </div>
       </div>
 
       {/* Vitality Score */}
-      <div className="mt-5 p-5 rounded-xl bg-surface border border-border text-center">
-        <div className="text-xs uppercase tracking-wide text-muted-foreground">Vitality Score</div>
-        <div className="mt-2 text-6xl font-bold text-primary leading-none">{score ?? "—"}</div>
-        <div className="mt-3 text-sm text-muted-foreground">Today's Score</div>
+      <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border text-center">
+        <div className="section-label">Vitality Score</div>
+        <div
+          className="mt-2 text-6xl text-primary leading-none"
+          style={{ fontWeight: 800, letterSpacing: "-0.03em" }}
+        >
+          {score ?? "—"}
+        </div>
+        <div className="mt-3 text-sm" style={{ color: "#6B6760" }}>Today's Score</div>
         <div className="mt-2 inline-block text-xs font-semibold px-3 py-1 rounded-full" style={{ background: statusColor, color: "white" }}>
           {statusLabel}
         </div>
-        <div className="mt-3 text-xs text-muted-foreground">Day {dayOfJourney} of your journey</div>
+        <div className="mt-3 text-xs" style={{ color: "#6B6760" }}>Day {dayOfJourney} of your journey</div>
       </div>
 
       {/* 7-day trend */}
-      <div className="mt-4 p-4 rounded-xl bg-surface border border-border">
+      <div className="mt-4 p-5 rounded-[14px] bg-surface border border-border">
         <div className="flex items-center justify-between">
-          <div className="text-xs uppercase tracking-wide text-muted-foreground">7-Day Trend</div>
+          <div className="section-label">7-Day Trend</div>
           <div className="text-2xl font-bold text-primary">{score ?? "—"}</div>
         </div>
         <TrendBars trend={trend} journeyStart={profile?.journey_start_date ?? null} today={todayIsoDate()} />
@@ -144,7 +165,7 @@ function Home() {
 
       {/* Today's Metrics */}
       <div className="mt-4">
-        <div className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Today's Metrics</div>
+        <div className="section-label mb-2">Today's Metrics</div>
         <div className="grid grid-cols-2 gap-3">
           <MetricTile icon={Moon} label="Sleep" value={sleepHours != null ? `${sleepHours}h` : "—"} sub={todayLog?.sleep_quality ?? "Not logged"} />
           <MetricTile icon={Brain} label="Stress" value={stress ? capitalize(stress) : "—"} sub={stress === "low" ? "OK" : stress ? "" : "Not logged"} />
@@ -156,17 +177,16 @@ function Home() {
       {/* Today's Protocol */}
       <ProtocolCard userId={user?.id ?? null} />
 
-
       {/* Coach Tip */}
-      <div className="mt-4 p-4 rounded-xl bg-surface border border-border">
-        <div className="text-xs uppercase tracking-wide text-muted-foreground">Coach Tip</div>
+      <div className="mt-4 p-5 rounded-[14px] bg-surface border border-border">
+        <div className="section-label">Coach Tip</div>
         {tip ? (
           <>
-            <h3 className="mt-2 text-base font-semibold text-primary">{tip.title}</h3>
+            <h3 className="mt-2 text-base font-semibold text-primary" style={{ fontWeight: 600, fontSize: 16 }}>{tip.title}</h3>
             <p className="mt-1 text-sm text-foreground leading-relaxed">{tip.body}</p>
           </>
         ) : (
-          <p className="mt-2 text-sm text-muted-foreground">Your coach tips will appear here as you log your daily habits.</p>
+          <p className="mt-2 text-sm" style={{ color: "#6B6760" }}>Your coach tips will appear here as you log your daily habits.</p>
         )}
       </div>
 
@@ -177,7 +197,11 @@ function Home() {
         {todayLog ? "Update today's log" : "Log today"}
       </button>
 
-      <button onClick={() => setLegal("medical")} className="mt-6 w-full text-center text-xs text-muted-foreground underline">
+      <button
+        onClick={() => setLegal("medical")}
+        className="mt-6 w-full text-center text-xs underline"
+        style={{ color: "#6B6760" }}
+      >
         Medical Disclaimer
       </button>
 
@@ -188,13 +212,13 @@ function Home() {
 
 function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-function MetricTile({ icon: Icon, label, value, sub }: { icon: React.ComponentType<{ size?: number; color?: string }>; label: string; value: string; sub: string }) {
+function MetricTile({ icon: Icon, label, value, sub }: { icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>; label: string; value: string; sub: string }) {
   return (
-    <Link to="/app/log" className="p-3 rounded-xl bg-surface border border-border block">
-      <Icon size={20} color="var(--color-accent)" />
-      <div className="mt-1 text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
+    <Link to="/app/log" className="p-4 rounded-[14px] bg-surface border border-border block">
+      <Icon size={22} color="var(--color-accent)" strokeWidth={1.75} />
+      <div className="mt-1.5 section-label" style={{ fontSize: 10 }}>{label}</div>
       <div className="text-base font-bold text-primary leading-tight">{value}</div>
-      <div className="text-xs text-muted-foreground">{sub}</div>
+      <div className="text-xs" style={{ color: "#6B6760" }}>{sub}</div>
     </Link>
   );
 }
@@ -226,9 +250,9 @@ function TrendBars({ trend, journeyStart, today }: { trend: Score[]; journeyStar
         const hasData = !d.beforeJourney && d.score != null;
         const bg = hasData
           ? d.isToday
-            ? "var(--color-primary)"
-            : "var(--color-accent)"
-          : "#E5E9EE";
+            ? "#0F2A44"
+            : "#C4B59E"
+          : "#ECE6DC";
         const heightPct = hasData ? Math.max(4, d.score!) : 100;
         return (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -265,22 +289,22 @@ function ProtocolCard({ userId }: { userId: string | null }) {
   }, [userId]);
 
   return (
-    <div className="mt-4 p-4 rounded-xl bg-surface border border-border">
-      <div className="text-xs uppercase tracking-wide text-muted-foreground">Today's Protocol</div>
+    <div className="mt-4 p-5 rounded-[14px] bg-surface border border-border">
+      <div className="section-label">Today's Protocol</div>
       {protocol ? (
         <>
-          <h3 className="mt-2 text-base font-semibold text-primary">{protocol.name}</h3>
+          <h3 className="mt-2 text-primary" style={{ fontWeight: 600, fontSize: 16 }}>{protocol.name}</h3>
           <ul className="mt-2 space-y-1.5">
             {protocol.items.map((it, i) => (
               <li key={i} className="text-sm text-foreground flex gap-2">
-                <span className="text-muted-foreground">{i + 1}.</span>
+                <span style={{ color: "#6B6760" }}>{i + 1}.</span>
                 <span>{it}</span>
               </li>
             ))}
           </ul>
         </>
       ) : (
-        <p className="mt-2 text-sm text-muted-foreground">Your daily protocol will appear here once one is assigned by your coach.</p>
+        <p className="mt-2 text-sm" style={{ color: "#6B6760" }}>Your daily protocol will appear here once one is assigned by your coach.</p>
       )}
     </div>
   );

@@ -282,6 +282,7 @@ export type Database = {
           activity_level: Database["public"]["Enums"]["activity_level"] | null
           age: number | null
           assigned_protocol_id: string | null
+          avatar_url: string | null
           created_at: string
           current_habits: string[] | null
           email: string
@@ -306,6 +307,7 @@ export type Database = {
           activity_level?: Database["public"]["Enums"]["activity_level"] | null
           age?: number | null
           assigned_protocol_id?: string | null
+          avatar_url?: string | null
           created_at?: string
           current_habits?: string[] | null
           email: string
@@ -330,6 +332,7 @@ export type Database = {
           activity_level?: Database["public"]["Enums"]["activity_level"] | null
           age?: number | null
           assigned_protocol_id?: string | null
+          avatar_url?: string | null
           created_at?: string
           current_habits?: string[] | null
           email?: string
