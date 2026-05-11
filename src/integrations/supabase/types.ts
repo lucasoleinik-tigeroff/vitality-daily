@@ -312,18 +312,21 @@ export type Database = {
       guide_access: {
         Row: {
           accessed_at: string
+          accessed_on: string | null
           guide_id: string
           id: string
           user_id: string
         }
         Insert: {
           accessed_at?: string
+          accessed_on?: string | null
           guide_id: string
           id?: string
           user_id: string
         }
         Update: {
           accessed_at?: string
+          accessed_on?: string | null
           guide_id?: string
           id?: string
           user_id?: string
