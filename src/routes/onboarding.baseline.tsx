@@ -41,15 +41,15 @@ function Baseline() {
     })();
   }, [user, loading, navigate]);
 
-  if (!m) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading your baseline…</div>;
+  
 
-  const items = [
+  const items = m ? [
     { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: m.bmi_category, note: "BMI is a general indicator; combine with waist measurement for a fuller picture." },
     { label: "Estimated daily calorie burn", value: `${m.tdee_kcal} kcal/day`, sub: "TDEE", note: "This is a general estimate of calories burned per day. Actual needs vary." },
     { label: "Daily hydration target", value: `${m.hydration_target_oz} oz`, sub: "Personalized to your body weight", note: "Adjust based on climate and individual needs." },
     { label: "Target heart rate zones", value: `${m.hr_moderate_low}–${m.hr_moderate_high} bpm`, sub: `Vigorous: ${m.hr_vigorous_low}–${m.hr_vigorous_high} bpm`, note: "Consult a doctor before starting any vigorous exercise program." },
     { label: "Waist risk category", value: m.waist_risk_category, sub: "Correlated with vascular health", note: "Talk to your doctor for medical evaluation." },
-  ];
+  ] : [];
 
   return (
     <div className="min-h-screen bg-background px-6 py-8 max-w-[768px] mx-auto pb-24">
@@ -57,6 +57,7 @@ function Baseline() {
       <p className="text-sm text-muted-foreground mt-1">Here's where you're starting from.</p>
 
       <div className="mt-6 space-y-3">
+        {!m && <p className="text-sm text-muted-foreground">Preparing your baseline…</p>}
         {items.map((it) => (
           <div key={it.label} className="p-4 rounded-xl bg-surface border border-border">
             <div className="text-xs uppercase tracking-wide text-muted-foreground">{it.label}</div>
