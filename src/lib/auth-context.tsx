@@ -19,16 +19,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+    const finish = () => { if (mounted) setLoading(false); };
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (!mounted) return;
       setSession(s);
       setUser(s?.user ?? null);
+      // Any auth event (INITIAL_SESSION, SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED) means we're ready.
+      finish();
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    });
-    return () => sub.subscription.unsubscribe();
+
+    supabase.auth.getSession()
+      .then(({ data }) => {
+        if (!mounted) return;
+        setSession(data.session);
+        setUser(data.session?.user ?? null);
+      })
+      .catch((e) => { console.error("[auth] getSession failed", e); })
+      .finally(finish);
+
+    // Safety net: never let the app hang on the loading screen.
+    const timeout = setTimeout(finish, 3000);
+
+    return () => {
+      mounted = false;
+      clearTimeout(timeout);
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
