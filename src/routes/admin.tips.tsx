@@ -90,7 +90,7 @@ function AdminTips() {
 
   async function seed() {
     if (!user || !confirm("Seed 30 starter tips?")) return;
-    for (const t of SEED_TIPS) await supabase.from("coach_tips").insert(t);
+    for (const t of SEED_TIPS) await supabase.from("coach_tips").insert({ ...t, status: t.status as "draft" | "published" | "coming_soon" });
     await logAdminAction(user.id, { action: "seed", entity_type: "coach_tips", details: { count: SEED_TIPS.length } });
     load(); toast.success("Seeded");
   }
