@@ -20,6 +20,7 @@ import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppLogRouteImport } from './routes/app.log'
 import { Route as AppCoachRouteImport } from './routes/app.coach'
+import { Route as AppBaselineRouteImport } from './routes/app.baseline'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -76,6 +77,11 @@ const AppCoachRoute = AppCoachRouteImport.update({
   path: '/coach',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBaselineRoute = AppBaselineRouteImport.update({
+  id: '/baseline',
+  path: '/baseline',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRoute
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRoute
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/app/baseline': typeof AppBaselineRoute
   '/app/coach': typeof AppCoachRoute
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/app/baseline'
     | '/app/coach'
     | '/app/log'
     | '/app/progress'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/app/baseline'
     | '/app/coach'
     | '/app/log'
     | '/app/progress'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/signin'
     | '/signup'
+    | '/app/baseline'
     | '/app/coach'
     | '/app/log'
     | '/app/progress'
@@ -244,10 +256,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCoachRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/baseline': {
+      id: '/app/baseline'
+      path: '/baseline'
+      fullPath: '/app/baseline'
+      preLoaderRoute: typeof AppBaselineRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppBaselineRoute: typeof AppBaselineRoute
   AppCoachRoute: typeof AppCoachRoute
   AppLogRoute: typeof AppLogRoute
   AppProgressRoute: typeof AppProgressRoute
@@ -256,6 +276,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppBaselineRoute: AppBaselineRoute,
   AppCoachRoute: AppCoachRoute,
   AppLogRoute: AppLogRoute,
   AppProgressRoute: AppProgressRoute,
@@ -287,3 +308,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

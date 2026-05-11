@@ -1,0 +1,75 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { ChevronLeft } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { supabase } from "@/integrations/supabase/client";
+
+export const Route = createFileRoute("/app/baseline")({
+  component: BaselineView,
+});
+
+interface Metrics {
+  bmi: number;
+  bmi_category: string;
+  tdee_kcal: number;
+  hydration_target_oz: number;
+  hr_moderate_low: number;
+  hr_moderate_high: number;
+  hr_vigorous_low: number;
+  hr_vigorous_high: number;
+  waist_risk_category: string;
+}
+
+const FOR_EDU = "For educational purposes only. Consult a healthcare provider for medical evaluation.";
+
+function BaselineView() {
+  const { user } = useAuth();
+  const [m, setM] = useState<Metrics | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("user_health_metrics")
+        .select("bmi,bmi_category,tdee_kcal,hydration_target_oz,hr_moderate_low,hr_moderate_high,hr_vigorous_low,hr_vigorous_high,waist_risk_category")
+        .eq("user_id", user.id)
+        .order("snapshot_date", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (data) setM(data as Metrics);
+    })();
+  }, [user]);
+
+  return (
+    <div className="px-5 pt-5 pb-28">
+      <Link to="/app/settings" className="inline-flex items-center gap-1 text-sm text-accent">
+        <ChevronLeft size={16} /> Back
+      </Link>
+      <h1 className="mt-3 text-2xl font-bold">Your Baseline</h1>
+      <p className="text-sm text-muted-foreground mt-1">A read-only view of your computed health metrics.</p>
+
+      {!m ? (
+        <p className="mt-8 text-sm text-muted-foreground">No baseline metrics yet. Complete onboarding or update your body metrics on the Progress screen.</p>
+      ) : (
+        <div className="mt-6 space-y-3">
+          {[
+            { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: m.bmi_category, note: "BMI is a general indicator; combine with waist measurement for a fuller picture." },
+            { label: "Estimated daily calorie burn", value: `${m.tdee_kcal} kcal/day`, sub: "TDEE", note: "This is a general estimate of calories burned per day. Actual needs vary." },
+            { label: "Daily hydration target", value: `${m.hydration_target_oz} oz`, sub: "Personalized to your body weight", note: "Adjust based on climate and individual needs." },
+            { label: "Target heart rate zones", value: `${m.hr_moderate_low}–${m.hr_moderate_high} bpm`, sub: `Vigorous: ${m.hr_vigorous_low}–${m.hr_vigorous_high} bpm`, note: "Consult a doctor before starting any vigorous exercise program." },
+            { label: "Waist risk category", value: m.waist_risk_category, sub: "Correlated with vascular health", note: "Talk to your doctor for medical evaluation." },
+          ].map((it) => (
+            <div key={it.label} className="p-4 rounded-xl bg-surface border border-border">
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">{it.label}</div>
+              <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+                <span className="text-2xl font-bold text-primary">{it.value}</span>
+                <span className="text-sm text-muted-foreground">{it.sub}</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">{it.note} <span className="italic">{FOR_EDU}</span></p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

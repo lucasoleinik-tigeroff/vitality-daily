@@ -76,8 +76,8 @@ export function computeVitalityScore(input: ScoreInput): ScoreBreakdown {
 }
 
 export function scoreStatus(today: number, rolling7Avg: number): "improving" | "stable" | "needs_attention" {
-  if (today < 50) return "needs_attention";
-  if (today > rolling7Avg) return "improving";
+  if (today < 60) return "needs_attention";
+  if (today > rolling7Avg && today >= 60) return "improving";
   return "stable";
 }
 
