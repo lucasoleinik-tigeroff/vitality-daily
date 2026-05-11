@@ -125,6 +125,35 @@ export type Database = {
         }
         Relationships: []
       }
+      coach_tip_shows: {
+        Row: {
+          id: string
+          shown_at: string
+          tip_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          shown_at?: string
+          tip_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          shown_at?: string
+          tip_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_tip_shows_tip_id_fkey"
+            columns: ["tip_id"]
+            isOneToOne: false
+            referencedRelation: "coach_tips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coach_tips: {
         Row: {
           body: string
@@ -151,6 +180,80 @@ export type Database = {
           status?: Database["public"]["Enums"]["content_status"]
           target_metric?: string
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cross_sell_impressions: {
+        Row: {
+          clicked: boolean
+          clicked_at: string | null
+          concern: string
+          id: string
+          product_id: string | null
+          shown_at: string
+          user_id: string
+        }
+        Insert: {
+          clicked?: boolean
+          clicked_at?: string | null
+          concern: string
+          id?: string
+          product_id?: string | null
+          shown_at?: string
+          user_id: string
+        }
+        Update: {
+          clicked?: boolean
+          clicked_at?: string | null
+          concern?: string
+          id?: string
+          product_id?: string | null
+          shown_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cross_sell_impressions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "cross_sell_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cross_sell_products: {
+        Row: {
+          active: boolean
+          body_text: string
+          concern: string
+          created_at: string
+          cta_url: string
+          headline: string
+          id: string
+          product_name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          body_text?: string
+          concern: string
+          created_at?: string
+          cta_url?: string
+          headline?: string
+          id?: string
+          product_name?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          body_text?: string
+          concern?: string
+          created_at?: string
+          cta_url?: string
+          headline?: string
+          id?: string
+          product_name?: string
           updated_at?: string
         }
         Relationships: []
@@ -206,74 +309,104 @@ export type Database = {
         }
         Relationships: []
       }
-      ebook_access: {
+      guide_access: {
         Row: {
           accessed_at: string
-          ebook_id: string
+          guide_id: string
           id: string
           user_id: string
         }
         Insert: {
           accessed_at?: string
-          ebook_id: string
+          guide_id: string
           id?: string
           user_id: string
         }
         Update: {
           accessed_at?: string
-          ebook_id?: string
+          guide_id?: string
           id?: string
           user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "ebook_access_ebook_id_fkey"
-            columns: ["ebook_id"]
+            columns: ["guide_id"]
             isOneToOne: false
-            referencedRelation: "ebooks"
+            referencedRelation: "guides"
             referencedColumns: ["id"]
           },
         ]
       }
-      ebooks: {
+      guides: {
         Row: {
+          body_text: string | null
           category: string | null
+          content_type: string
           cover_url: string | null
           created_at: string
           description: string | null
+          external_url: string | null
           file_url: string | null
           id: string
           publish_date: string | null
           status: Database["public"]["Enums"]["content_status"]
+          subtitle: string | null
           tags: string[] | null
           title: string
+          unlock_day: number
           updated_at: string
         }
         Insert: {
+          body_text?: string | null
           category?: string | null
+          content_type?: string
           cover_url?: string | null
           created_at?: string
           description?: string | null
+          external_url?: string | null
           file_url?: string | null
           id?: string
           publish_date?: string | null
           status?: Database["public"]["Enums"]["content_status"]
+          subtitle?: string | null
           tags?: string[] | null
           title: string
+          unlock_day?: number
           updated_at?: string
         }
         Update: {
+          body_text?: string | null
           category?: string | null
+          content_type?: string
           cover_url?: string | null
           created_at?: string
           description?: string | null
+          external_url?: string | null
           file_url?: string | null
           id?: string
           publish_date?: string | null
           status?: Database["public"]["Enums"]["content_status"]
+          subtitle?: string | null
           tags?: string[] | null
           title?: string
+          unlock_day?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      phase2_notifications_sent: {
+        Row: {
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          sent_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -557,6 +690,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      user_journey_day: { Args: { _user_id: string }; Returns: number }
     }
     Enums: {
       activity_level:
@@ -565,7 +699,7 @@ export type Database = {
         | "moderately_active"
         | "very_active"
       app_role: "admin" | "user"
-      content_status: "draft" | "published"
+      content_status: "draft" | "published" | "coming_soon"
       score_status: "improving" | "stable" | "needs_attention"
       sleep_quality: "poor" | "ok" | "great"
       stress_level: "low" | "medium" | "high"
@@ -704,7 +838,7 @@ export const Constants = {
         "very_active",
       ],
       app_role: ["admin", "user"],
-      content_status: ["draft", "published"],
+      content_status: ["draft", "published", "coming_soon"],
       score_status: ["improving", "stable", "needs_attention"],
       sleep_quality: ["poor", "ok", "great"],
       stress_level: ["low", "medium", "high"],
