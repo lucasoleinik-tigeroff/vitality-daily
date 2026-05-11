@@ -3,9 +3,9 @@ import { Home, ClipboardList, MessageCircle, TrendingUp } from "lucide-react";
 
 const tabs = [
   { to: "/app", label: "Home", icon: Home, exact: true },
-  { to: "/app/log", label: "Log", icon: ClipboardList },
-  { to: "/app/coach", label: "Coach", icon: MessageCircle },
-  { to: "/app/progress", label: "Progress", icon: TrendingUp },
+  { to: "/app/log", label: "Log", icon: ClipboardList, exact: false },
+  { to: "/app/coach", label: "Coach", icon: MessageCircle, exact: false },
+  { to: "/app/progress", label: "Progress", icon: TrendingUp, exact: false },
 ] as const;
 
 export function BottomNav() {
