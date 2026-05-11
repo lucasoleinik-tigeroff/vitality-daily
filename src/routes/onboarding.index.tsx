@@ -82,6 +82,14 @@ function Onboarding() {
   async function finish() {
     if (!user || saving) return;
     setSaving(true);
+
+    // Safety net: never let the button stay disabled forever.
+    const safety = setTimeout(() => {
+      console.error("[onboarding.finish] timed out after 8s");
+      toast.error("This is taking longer than expected. Please try again.");
+      setSaving(false);
+    }, 8000);
+
     try {
       const baseline = computeBaseline({
         age: +s.age,
@@ -117,9 +125,11 @@ function Onboarding() {
       });
       if (mErr) throw mErr;
 
+      clearTimeout(safety);
       // Navigate with replace so back button can't return to onboarding.
-      await navigate({ to: "/onboarding/baseline", replace: true });
+      navigate({ to: "/onboarding/baseline", replace: true });
     } catch (err) {
+      clearTimeout(safety);
       console.error("[onboarding.finish] failed", err);
       const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
       toast.error(msg);
