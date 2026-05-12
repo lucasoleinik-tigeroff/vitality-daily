@@ -11,12 +11,15 @@ const tabs = [
 export function BottomNav() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-40">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-40"
+      style={{ background: "#080606", borderTop: "1px solid #0E3A56" }}
+    >
       <div className="max-w-[768px] mx-auto grid grid-cols-4">
         {tabs.map((t) => {
           const active = t.exact ? path === t.to : path.startsWith(t.to);
           const Icon = t.icon;
-          const color = active ? "var(--color-accent)" : "#8FA8B8";
+          const color = active ? "#770101" : "#4A6070";
           return (
             <Link
               key={t.to}
@@ -32,7 +35,7 @@ export function BottomNav() {
                     top: 0,
                     width: 18,
                     height: 2,
-                    background: "var(--color-accent)",
+                    background: "#770101",
                     borderRadius: 2,
                   }}
                 />
