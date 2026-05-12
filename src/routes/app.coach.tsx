@@ -56,8 +56,7 @@ function CoachPage() {
       setLogCount(lc.count ?? 0);
 
       const week = currentJourneyWeek(p.data?.journey_start_date);
-      const wm = await supabase.from("coach_messages").select("title,body").eq("status", "published").eq("target_week", week).maybeSingle();
-      setMessage(wm.data ?? { title: "Keep going", body: "You're building momentum. Check back next week for new guidance." });
+      setMessage(weeklyMessage(week));
 
       const hydrationTarget = m.data?.hydration_target_oz ?? 64;
       let weakest: string = "general";
