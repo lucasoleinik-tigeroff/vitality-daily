@@ -8,6 +8,7 @@ import { StreakChip } from "@/components/StreakChip";
 import { todayIsoDate } from "@/lib/health";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
 import { Phase2Banner } from "@/components/Phase2Banner";
+import { VitalityArc } from "@/components/VitalityArc";
 
 export const Route = createFileRoute("/app/")({
   component: Home,
@@ -106,14 +107,12 @@ function Home() {
       ? "improving"
       : "stable";
 
-  const hydrationTarget = metrics?.hydration_target_oz ?? 64;
+  // Standardized daily hydration target.
+  const hydrationTarget = 64;
   const hydrationCurrent = todayLog?.hydration_oz ?? 0;
   const sleepHours = todayLog?.sleep_hours ?? null;
   const stress = todayLog?.stress_level ?? null;
   const activityMin = todayLog?.activity_minutes ?? 0;
-
-  const statusLabel = status === "improving" ? "Improving" : status === "needs_attention" ? "Needs Attention" : "Stable";
-  const statusColor = status === "improving" ? "var(--color-accent)" : status === "needs_attention" ? "var(--color-warning)" : "var(--color-primary)";
 
   return (
     <div className="px-5 pt-5 pb-24">
@@ -143,19 +142,11 @@ function Home() {
       {user && <Phase2Banner userId={user.id} journeyStart={profile?.journey_start_date ?? null} />}
 
       {/* Vitality Score */}
-      <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border text-center">
-        <div className="section-label">Vitality Score</div>
-        <div
-          className="mt-2 text-6xl text-primary leading-none"
-          style={{ fontWeight: 800, letterSpacing: "-0.03em" }}
-        >
-          {score ?? "—"}
+      <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border">
+        <div className="section-label text-center">Vitality Score</div>
+        <div className="mt-2">
+          <VitalityArc score={score} journeyDay={dayOfJourney} />
         </div>
-        <div className="mt-3 text-sm" style={{ color: "#8FA8B8" }}>Today's Score</div>
-        <div className="mt-2 inline-block text-xs font-semibold px-3 py-1 rounded-full" style={{ background: statusColor, color: "white" }}>
-          {statusLabel}
-        </div>
-        <div className="mt-3 text-xs" style={{ color: "#8FA8B8" }}>Day {dayOfJourney} of your journey</div>
       </div>
 
       {/* 7-day trend */}
