@@ -125,8 +125,16 @@ function Onboarding() {
       });
       if (mErr) throw mErr;
 
+      // Cria o vitality score inicial para o usuário não ver "—" no dashboard.
+      const today = new Date().toISOString().split("T")[0];
+      await supabase.from("vitality_scores").upsert({
+        user_id: user.id,
+        score_date: today,
+        score: 50,
+        status: "stable",
+      }, { onConflict: "user_id,score_date" });
+
       clearTimeout(safety);
-      // Navigate with replace so back button can't return to onboarding.
       navigate({ to: "/onboarding/baseline", replace: true });
     } catch (err) {
       clearTimeout(safety);

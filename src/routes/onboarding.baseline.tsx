@@ -71,7 +71,9 @@ function Baseline() {
       </div>
 
       <button
-        onClick={() => navigate({ to: "/app", replace: true })}
+        onClick={async () => {
+          await navigate({ to: "/app/", replace: true });
+        }}
         className="fixed bottom-6 left-6 right-6 max-w-[720px] mx-auto h-12 rounded-md bg-primary text-primary-foreground font-semibold"
       >
         Go to my dashboard
