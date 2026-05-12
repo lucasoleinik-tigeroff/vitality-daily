@@ -30,7 +30,7 @@ export function Phase2Banner({ userId, journeyStart }: Props) {
         navigate({ to: "/app/coach" });
       }}
       className="mt-3 w-full text-left px-4 py-3 rounded-[10px] flex items-center justify-between"
-      style={{ background: "#D97A34", color: "white" }}
+      style={{ background: "#770101", color: "white" }}
     >
       <span className="text-sm font-semibold">You've reached Day 14 — explore your Coach hub</span>
       <span className="text-sm">→</span>

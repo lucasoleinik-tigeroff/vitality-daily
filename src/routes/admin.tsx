@@ -50,7 +50,7 @@ function AdminLayout() {
       <aside className="w-60 shrink-0 border-r bg-white" style={{ borderColor: "var(--color-border)" }}>
         <div className="p-5 border-b" style={{ borderColor: "var(--color-border)" }}>
           <div className="font-bold text-primary">VitalMan Admin</div>
-          <div className="text-xs" style={{ color: "#6B6760" }}>{user?.email}</div>
+          <div className="text-xs" style={{ color: "#8FA8B8" }}>{user?.email}</div>
         </div>
         <nav className="p-2 flex flex-col gap-0.5">
           {NAV.map((n) => {
@@ -60,7 +60,7 @@ function AdminLayout() {
                 className="flex items-center gap-2 px-3 py-2 rounded text-sm"
                 style={{
                   background: active ? "var(--color-primary)" : "transparent",
-                  color: active ? "white" : "#14181F",
+                  color: active ? "white" : "#F0EDDE",
                 }}>
                 <n.icon size={16} /> {n.label}
               </Link>
@@ -69,7 +69,7 @@ function AdminLayout() {
           <button
             onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin/login" }); }}
             className="flex items-center gap-2 px-3 py-2 rounded text-sm mt-4"
-            style={{ color: "#14181F" }}
+            style={{ color: "#F0EDDE" }}
           >
             <LogOut size={16} /> Sign out
           </button>

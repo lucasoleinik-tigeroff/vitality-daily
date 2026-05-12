@@ -48,24 +48,24 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
     <>
       <div
         className="relative rounded-[14px] p-5"
-        style={{ background: "#FFF4E8", border: "1.5px solid #D97A34" }}
+        style={{ background: "#0E3A56", border: "1.5px solid #770101" }}
       >
-        <button onClick={dismiss} aria-label="Dismiss" className="absolute top-3 right-3"><X size={16} color="#8C8780" /></button>
+        <button onClick={dismiss} aria-label="Dismiss" className="absolute top-3 right-3"><X size={16} color="#8FA8B8" /></button>
         <span
           className="inline-block px-2.5 py-1 rounded-full text-white"
-          style={{ background: "#B8621F", fontWeight: 600, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" }}
+          style={{ background: "#5C0101", fontWeight: 600, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" }}
         >
           Phase 2 Ready
         </span>
-        <h3 className={`mt-3 font-bold leading-snug ${compact ? "text-base" : "text-lg"}`} style={{ color: "#14181F" }}>
+        <h3 className={`mt-3 font-bold leading-snug ${compact ? "text-base" : "text-lg"}`} style={{ color: "#F0EDDE" }}>
           {data.product.headline}
         </h3>
         {!compact && (
-          <p className="mt-2 text-sm leading-relaxed" style={{ color: "#14181F" }}>{data.product.body_text}</p>
+          <p className="mt-2 text-sm leading-relaxed" style={{ color: "#F0EDDE" }}>{data.product.body_text}</p>
         )}
         <div
           className="mt-3"
-          style={{ color: "#6B6760", fontWeight: 600, fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase" }}
+          style={{ color: "#8FA8B8", fontWeight: 600, fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase" }}
         >
           {data.product.product_name}
         </div>
@@ -76,13 +76,13 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
         >
           See My Phase 2
         </button>
-        <p className="mt-3 text-center" style={{ color: "#8C8780", fontSize: 11 }}>
+        <p className="mt-3 text-center" style={{ color: "#8FA8B8", fontSize: 11 }}>
           Based on your 14-day data · Optional upgrade
         </p>
         <button
           onClick={() => setWhyOpen(true)}
           className="mt-1 w-full text-center underline"
-          style={{ color: "#6B6760", fontWeight: 500, fontSize: 11 }}
+          style={{ color: "#8FA8B8", fontWeight: 500, fontSize: 11 }}
         >
           Why am I seeing this?
         </button>

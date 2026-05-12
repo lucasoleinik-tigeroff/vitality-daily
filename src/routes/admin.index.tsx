@@ -46,7 +46,7 @@ function Dashboard() {
       <div className="mt-5 grid grid-cols-2 md:grid-cols-5 gap-3">
         {kpis.map((k) => (
           <div key={k.label} className="bg-white rounded-[14px] border p-4" style={{ borderColor: "var(--color-border)" }}>
-            <div className="text-xs uppercase tracking-wide" style={{ color: "#6B6760" }}>{k.label}</div>
+            <div className="text-xs uppercase tracking-wide" style={{ color: "#8FA8B8" }}>{k.label}</div>
             <div className="mt-1 text-2xl font-bold text-primary">{k.value}</div>
           </div>
         ))}
@@ -55,7 +55,7 @@ function Dashboard() {
       <div className="mt-6 bg-white rounded-[14px] border p-4" style={{ borderColor: "var(--color-border)" }}>
         <div className="font-semibold text-primary">Recent signups (30d)</div>
         <table className="w-full mt-3 text-sm">
-          <thead><tr className="text-left" style={{ color: "#6B6760" }}>
+          <thead><tr className="text-left" style={{ color: "#8FA8B8" }}>
             <th className="py-2">When</th><th>Email</th><th>Name</th>
           </tr></thead>
           <tbody>
@@ -66,7 +66,7 @@ function Dashboard() {
                 <td>{r.name ?? "—"}</td>
               </tr>
             ))}
-            {recentSignups.length === 0 && <tr><td colSpan={3} className="py-3 text-center" style={{ color: "#6B6760" }}>No recent signups.</td></tr>}
+            {recentSignups.length === 0 && <tr><td colSpan={3} className="py-3 text-center" style={{ color: "#8FA8B8" }}>No recent signups.</td></tr>}
           </tbody>
         </table>
       </div>

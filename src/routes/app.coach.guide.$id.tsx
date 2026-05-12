@@ -62,7 +62,7 @@ function GuideViewer() {
     setTimeout(() => navigate({ to: "/app/coach" }), 800);
   };
 
-  if (!guide) return <div className="px-5 pt-5 pb-24 text-sm" style={{ color: "#6B6760" }}>Loading...</div>;
+  if (!guide) return <div className="px-5 pt-5 pb-24 text-sm" style={{ color: "#8FA8B8" }}>Loading...</div>;
 
   const RightIcon = guide.content_type === "pdf" ? Download : guide.content_type === "link" ? ExternalLink : null;
 
@@ -81,15 +81,15 @@ function GuideViewer() {
           <iframe src={guide.file_url} title={guide.title} className="w-full" style={{ height: "70vh", border: "none" }} />
         )}
         {guide.content_type === "pdf" && !guide.file_url && (
-          <p className="text-sm" style={{ color: "#6B6760" }}>This PDF is not yet available.</p>
+          <p className="text-sm" style={{ color: "#8FA8B8" }}>This PDF is not yet available.</p>
         )}
 
         {guide.content_type === "link" && (
           <div>
             <h1 className="text-[22px] font-bold text-primary leading-tight">{guide.title}</h1>
-            {guide.subtitle && <p className="mt-1 text-[15px]" style={{ color: "#6B6760" }}>{guide.subtitle}</p>}
+            {guide.subtitle && <p className="mt-1 text-[15px]" style={{ color: "#8FA8B8" }}>{guide.subtitle}</p>}
             {guide.description && (
-              <p className="mt-4 text-[15px]" style={{ lineHeight: 1.6, color: "#14181F" }}>{guide.description}</p>
+              <p className="mt-4 text-[15px]" style={{ lineHeight: 1.6, color: "#F0EDDE" }}>{guide.description}</p>
             )}
             <button
               onClick={() => guide.external_url && window.open(guide.external_url, "_blank", "noopener,noreferrer")}
@@ -103,16 +103,16 @@ function GuideViewer() {
 
         {guide.content_type === "text" && (
           <div className="max-w-[680px] mx-auto">
-            <h1 className="text-2xl font-bold" style={{ color: "#14181F" }}>{guide.title}</h1>
-            {guide.subtitle && <p className="mt-1 text-[15px]" style={{ color: "#6B6760" }}>{guide.subtitle}</p>}
-            <div className="prose prose-sm mt-4 max-w-none" style={{ color: "#14181F" }}>
+            <h1 className="text-2xl font-bold" style={{ color: "#F0EDDE" }}>{guide.title}</h1>
+            {guide.subtitle && <p className="mt-1 text-[15px]" style={{ color: "#8FA8B8" }}>{guide.subtitle}</p>}
+            <div className="prose prose-sm mt-4 max-w-none" style={{ color: "#F0EDDE" }}>
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{guide.body_text ?? ""}</ReactMarkdown>
             </div>
           </div>
         )}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white p-4" style={{ borderTop: "1px solid #ECE6DC" }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-white p-4" style={{ borderTop: "1px solid #0E3A56" }}>
         <div className="max-w-[768px] mx-auto">
           <button
             onClick={markRead}

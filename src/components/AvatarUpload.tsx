@@ -101,12 +101,12 @@ export function AvatarUpload({ userId, avatarUrl, onChange }: Props) {
     <div className="flex flex-col items-center">
       <div
         className="rounded-full overflow-hidden flex items-center justify-center"
-        style={{ width: 96, height: 96, background: "#FAF8F5" }}
+        style={{ width: 96, height: 96, background: "#023048" }}
       >
         {avatarUrl ? (
           <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
         ) : (
-          <UserIcon size={40} color="#8C8780" strokeWidth={1.5} />
+          <UserIcon size={40} color="#8FA8B8" strokeWidth={1.5} />
         )}
       </div>
       <input
@@ -121,7 +121,7 @@ export function AvatarUpload({ userId, avatarUrl, onChange }: Props) {
         disabled={busy}
         onClick={() => inputRef.current?.click()}
         className="mt-3 disabled:opacity-50"
-        style={{ color: "#D97A34", fontWeight: 500, fontSize: 13 }}
+        style={{ color: "#770101", fontWeight: 500, fontSize: 13 }}
       >
         {busy ? "Working…" : avatarUrl ? "Change photo" : "Change photo"}
       </button>
@@ -131,7 +131,7 @@ export function AvatarUpload({ userId, avatarUrl, onChange }: Props) {
           disabled={busy}
           onClick={handleRemove}
           className="mt-1 disabled:opacity-50"
-          style={{ color: "#6B6760", fontSize: 12 }}
+          style={{ color: "#8FA8B8", fontSize: 12 }}
         >
           Remove photo
         </button>

@@ -16,7 +16,7 @@ export function BottomNav() {
         {tabs.map((t) => {
           const active = t.exact ? path === t.to : path.startsWith(t.to);
           const Icon = t.icon;
-          const color = active ? "var(--color-accent)" : "#8C8780";
+          const color = active ? "var(--color-accent)" : "#8FA8B8";
           return (
             <Link
               key={t.to}

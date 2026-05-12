@@ -81,7 +81,7 @@ function AdminProtocols() {
 
       <div className="mt-5 bg-white rounded-[14px] border" style={{ borderColor: "var(--color-border)" }}>
         <table className="w-full text-sm">
-          <thead><tr className="text-left" style={{ color: "#6B6760" }}><th className="p-3">Name</th><th>Items</th><th>Status</th><th></th></tr></thead>
+          <thead><tr className="text-left" style={{ color: "#8FA8B8" }}><th className="p-3">Name</th><th>Items</th><th>Status</th><th></th></tr></thead>
           <tbody>
             {list.map((p) => (
               <tr key={p.id} className="border-t" style={{ borderColor: "var(--color-border)" }}>
@@ -91,7 +91,7 @@ function AdminProtocols() {
                 <td><button className="text-red-600 p-2" onClick={() => remove(p)}><Trash2 size={14}/></button></td>
               </tr>
             ))}
-            {list.length === 0 && <tr><td colSpan={4} className="p-4 text-center" style={{ color: "#6B6760" }}>No protocols.</td></tr>}
+            {list.length === 0 && <tr><td colSpan={4} className="p-4 text-center" style={{ color: "#8FA8B8" }}>No protocols.</td></tr>}
           </tbody>
         </table>
       </div>
