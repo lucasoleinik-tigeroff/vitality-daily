@@ -2,8 +2,7 @@
 @source "../src";
 
 /*
- * VitalMan design system.
- * Mobile-first. No animations, no dark mode, no gradients.
+ * VitalMan design system — Burnt Wood (dark masculine).
  */
 
 @theme inline {
@@ -47,43 +46,46 @@
 :root {
   --radius: 14px;
 
-  /* VitalMan v2 — navy + burnt orange */
-  --background: oklch(1 0 0);                    /* #FFFFFF */
-  --foreground: oklch(0.20 0.01 255);            /* #14181F */
-  --surface: oklch(0.978 0.008 80);              /* #FAF8F5 warm off-white */
-  --card: oklch(0.978 0.008 80);                 /* #FAF8F5 */
-  --card-foreground: oklch(0.20 0.01 255);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.01 255);
+  /* Burnt Wood dark masculine palette */
+  --background: #0A0808;
+  --foreground: #F0EDDE;
+  --surface: #023048;
+  --card: #023048;
+  --card-foreground: #F0EDDE;
+  --popover: #023048;
+  --popover-foreground: #F0EDDE;
 
-  --primary: oklch(0.255 0.06 255);              /* #0F2A44 deep navy */
-  --primary-foreground: oklch(1 0 0);
-  --primary-hover: oklch(0.30 0.06 255);         /* #1A3A5C */
+  --primary: #770101;
+  --primary-foreground: #F0EDDE;
+  --primary-hover: #5C0101;
 
-  --secondary: oklch(0.94 0.012 80);             /* light beige */
-  --secondary-foreground: oklch(0.255 0.06 255);
+  --secondary: #0E3A56;
+  --secondary-foreground: #F0EDDE;
 
-  --muted: oklch(0.95 0.01 80);
-  --muted-foreground: oklch(0.60 0.012 80);      /* #8C8780 captions */
-  --text-secondary: oklch(0.50 0.012 80);        /* #6B6760 */
+  --muted: #0E3A56;
+  --muted-foreground: #8FA8B8;
+  --text-secondary: #8FA8B8;
 
-  --accent: oklch(0.66 0.14 55);                 /* #D97A34 burnt orange */
-  --accent-foreground: oklch(1 0 0);
-  --accent-hover: oklch(0.57 0.14 50);           /* #B8621F */
+  --accent: #770101;
+  --accent-foreground: #F0EDDE;
+  --accent-hover: #5C0101;
 
-  --success: oklch(0.52 0.10 155);               /* #2F7D5B */
-  --success-foreground: oklch(1 0 0);
+  --success: #2E7D5A;
+  --success-foreground: #F0EDDE;
 
-  --warning: oklch(0.62 0.13 60);                /* #C97A1F */
-  --warning-foreground: oklch(1 0 0);
+  --warning: #C8973A;
+  --warning-foreground: #0A0808;
 
-  --destructive: oklch(0.52 0.16 25);            /* #B33A2F */
-  --destructive-foreground: oklch(1 0 0);
+  --destructive: #8B1A1A;
+  --destructive-foreground: #F0EDDE;
 
-  --border: oklch(0.91 0.012 80);                /* #E8E2D9 warm beige */
-  --input: oklch(0.91 0.012 80);
-  --divider: oklch(0.93 0.012 80);               /* #ECE6DC */
-  --ring: oklch(0.255 0.06 255);
+  --border: #0E3A56;
+  --input: #0E3A56;
+  --divider: #0E3A56;
+  --ring: #770101;
+
+  --nav-bg: #080606;
+  --tab-inactive: #4A6070;
 }
 
 @layer base {
@@ -98,9 +100,14 @@
   }
 
   h1, h2, h3, h4 {
-    color: var(--color-primary);
+    color: var(--color-foreground);
     font-weight: 700;
     letter-spacing: -0.02em;
+  }
+
+  input, select, textarea {
+    color: var(--color-foreground);
+    background-color: #0E3A56;
   }
 }
 
