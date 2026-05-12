@@ -283,3 +283,22 @@ function GuideCard({ guide, journeyDay }: { guide: Guide; journeyDay: number }) 
   if (available) return <Link to="/app/coach/guide/$id" params={{ id: guide.id }}>{card}</Link>;
   return <div onClick={() => alert(locked ? `This guide unlocks at Day ${guide.unlock_day}. Keep going.` : "Coming soon")}>{card}</div>;
 }
+
+function weeklyMessage(week: number): { title: string; body: string } {
+  if (week <= 1) return {
+    title: "Week 1: Build the Habit",
+    body: "Show up every day, even when you don't feel like it. The first 7 days are the hardest — and the most important. Your only job this week is to log.",
+  };
+  if (week === 2) return {
+    title: "Week 2: Hydration is the First Domino",
+    body: "When you drink enough, everything else gets easier. Energy improves. Sleep improves. Focus sharpens. Hit 64 oz every single day this week.",
+  };
+  if (week === 3) return {
+    title: "Week 3: Protect Your Recovery Window",
+    body: "Sleep is not rest — it's repair. Cortisol drops, testosterone rebuilds, and cells regenerate only during quality sleep. Lights out by 10:30pm this week.",
+  };
+  return {
+    title: "Week 4: Consistency Over Perfection",
+    body: "You've built the foundation. A 90% week beats a missed week every time. Don't break the chain — keep logging, keep moving.",
+  };
+}
