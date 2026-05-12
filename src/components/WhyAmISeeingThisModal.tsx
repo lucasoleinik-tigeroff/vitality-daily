@@ -5,7 +5,7 @@ export function WhyAmISeeingThisModal({ open, onClose }: { open: boolean; onClos
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl max-w-md w-full p-5" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-card rounded-2xl max-w-md w-full p-5" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold text-primary">Why am I seeing this?</h3>
           <button onClick={onClose} aria-label="Close"><X size={18} color="#8FA8B8" /></button>

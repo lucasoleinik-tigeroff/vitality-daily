@@ -177,7 +177,7 @@ function CoachPage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search guides..."
             className="w-full h-10 rounded-md border pl-9 pr-3 text-sm"
-            style={{ background: "white", borderColor: "#0E3A56", color: "#F0EDDE" }}
+            style={{ background: "#023048", borderColor: "#0E3A56", color: "#F0EDDE" }}
           />
         </div>
         <div className="mt-3 -mx-5 px-5 flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
@@ -191,7 +191,7 @@ function CoachPage() {
                 style={
                   active
                     ? { background: "var(--color-primary)", color: "white", fontWeight: 600 }
-                    : { background: "white", border: "1px solid #0E3A56", color: "#8FA8B8", fontWeight: 500 }
+                    : { background: "#023048", border: "1px solid #0E3A56", color: "#8FA8B8", fontWeight: 500 }
                 }
               >
                 {c}
@@ -200,7 +200,7 @@ function CoachPage() {
           })}
         </div>
 
-        <div className="mt-3 rounded-[14px] bg-white border border-border overflow-hidden">
+        <div className="mt-3 rounded-[14px] bg-card border border-border overflow-hidden">
           {filteredBrowse.length === 0 ? (
             <div className="p-5 text-center" style={{ color: "#8FA8B8", fontSize: 14 }}>No guides match your filters.</div>
           ) : (
@@ -245,7 +245,7 @@ function GuideCard({ guide, journeyDay }: { guide: Guide; journeyDay: number }) 
 
   const card = (
     <div
-      className="rounded-xl bg-white border border-border overflow-hidden flex-shrink-0 flex flex-col"
+      className="rounded-xl bg-card border border-border overflow-hidden flex-shrink-0 flex flex-col"
       style={{ width: 240, height: 280 }}
     >
       <div className="w-full flex items-center justify-center" style={{ height: 140, background: "#023048" }}>

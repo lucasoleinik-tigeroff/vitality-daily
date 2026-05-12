@@ -86,7 +86,7 @@ function ProgressPage() {
                 style={
                   active
                     ? { background: "#770101", color: "white", fontWeight: 600 }
-                    : { background: "white", border: "1px solid #0E3A56", color: "#8FA8B8", fontWeight: 500 }
+                    : { background: "#023048", border: "1px solid #0E3A56", color: "#8FA8B8", fontWeight: 500 }
                 }
               >
                 {r} days
@@ -326,7 +326,7 @@ function BodyMetricsEditor({
       </button>
       {confirming && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setConfirming(false)}>
-          <div className="bg-white rounded-xl p-5 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-card rounded-xl p-5 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-base font-semibold text-primary">Confirm update</h3>
             <p className="mt-2 text-sm" style={{ color: "#F0EDDE" }}>
               Updating your body metrics will recalculate your personalized targets (hydration, calorie burn, heart rate zones). Continue?

@@ -68,7 +68,7 @@ function GuideViewer() {
 
   return (
     <div className="min-h-screen flex flex-col pb-24">
-      <div className="flex items-center justify-between p-4 bg-white border-b border-border">
+      <div className="flex items-center justify-between p-4 bg-card border-b border-border">
         <button onClick={() => navigate({ to: "/app/coach" })} aria-label="Back">
           <ArrowLeft size={24} color="var(--color-primary)" />
         </button>
@@ -112,7 +112,7 @@ function GuideViewer() {
         )}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white p-4" style={{ borderTop: "1px solid #0E3A56" }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-card p-4" style={{ borderTop: "1px solid #0E3A56" }}>
         <div className="max-w-[768px] mx-auto">
           <button
             onClick={markRead}
