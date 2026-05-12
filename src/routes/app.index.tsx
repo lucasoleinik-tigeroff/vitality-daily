@@ -97,15 +97,6 @@ function Home() {
     : 1;
 
   const score = todayScore?.score ?? null;
-  // Derive status from current score so it always matches the latest threshold rule.
-  const status: "improving" | "stable" | "needs_attention" =
-    score == null
-      ? "stable"
-      : score < 60
-      ? "needs_attention"
-      : todayScore?.status === "improving"
-      ? "improving"
-      : "stable";
 
   // Standardized daily hydration target.
   const hydrationTarget = 64;
