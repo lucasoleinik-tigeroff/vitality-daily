@@ -37,36 +37,38 @@ function Index() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col" style={{ background: "#0A0808" }}>
       <main className="flex-1 flex flex-col items-center justify-center px-6 max-w-[768px] w-full mx-auto">
         <div className="w-full max-w-[420px] text-center">
-          <h1 className="text-4xl font-bold tracking-tight">VitalMan</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Men's Health Coach</p>
+          <h1 className="text-4xl font-bold tracking-tight" style={{ color: "#F0EDDE" }}>VitalMan</h1>
+          <p className="mt-2 text-sm" style={{ color: "#8FA8B8" }}>Men's Health Coach</p>
 
-          <h2 className="mt-12 text-2xl font-bold leading-tight text-primary">
+          <h2 className="mt-12 text-2xl font-bold leading-tight" style={{ color: "#F0EDDE" }}>
             Your daily companion for men's vitality
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">
+          <p className="mt-3 text-base" style={{ color: "#8FA8B8" }}>
             Track. Improve. Feel the difference.
           </p>
 
           <div className="mt-10 flex flex-col gap-3">
             <Link
               to="/signup"
-              className="h-12 inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground font-semibold text-base"
+              className="h-12 inline-flex items-center justify-center rounded-md font-bold text-base"
+              style={{ background: "#770101", color: "#F0EDDE" }}
             >
               Get Started
             </Link>
             <Link
               to="/signin"
-              className="h-12 inline-flex items-center justify-center rounded-md border-2 border-primary text-primary font-semibold text-base"
+              className="h-12 inline-flex items-center justify-center rounded-md font-semibold text-base"
+              style={{ background: "transparent", border: "2px solid #770101", color: "#770101" }}
             >
               Sign In
             </Link>
           </div>
         </div>
       </main>
-      <footer className="py-6 text-center text-xs text-muted-foreground">
+      <footer className="py-6 text-center text-xs" style={{ color: "#8FA8B8" }}>
         For adults 18+. Wellness coaching only — not medical advice.
       </footer>
     </div>
