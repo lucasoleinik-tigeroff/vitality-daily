@@ -52,10 +52,9 @@ export function calcBmrTdee(
   };
 }
 
-export function calcHydrationOz(weightLbs: number, activityMinutes = 0) {
-  let oz = weightLbs * 0.5;
-  if (activityMinutes > 30) oz += 12;
-  return Math.round(oz / 8) * 8;
+export function calcHydrationOz(_weightLbs: number, _activityMinutes = 0) {
+  // Standardized daily water target across the app.
+  return 64;
 }
 
 export function calcHrZones(age: number) {

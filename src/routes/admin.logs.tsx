@@ -32,10 +32,10 @@ function AdminLogs() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-primary">Audit Logs</h1>
-      <div className="text-sm mt-1" style={{ color: "#6B6760" }}>{total} total entries</div>
+      <div className="text-sm mt-1" style={{ color: "#8FA8B8" }}>{total} total entries</div>
       <div className="mt-4 bg-white border rounded-[14px]" style={{ borderColor: "var(--color-border)" }}>
         <table className="w-full text-sm">
-          <thead><tr className="text-left" style={{ color: "#6B6760" }}>
+          <thead><tr className="text-left" style={{ color: "#8FA8B8" }}>
             <th className="p-3">When</th><th>Admin</th><th>Action</th><th>Entity</th><th>Details</th>
           </tr></thead>
           <tbody>
@@ -48,7 +48,7 @@ function AdminLogs() {
                 <td className="font-mono text-xs max-w-md truncate">{r.details ? JSON.stringify(r.details) : "—"}</td>
               </tr>
             ))}
-            {rows.length === 0 && <tr><td colSpan={5} className="p-4 text-center" style={{ color: "#6B6760" }}>No entries.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={5} className="p-4 text-center" style={{ color: "#8FA8B8" }}>No entries.</td></tr>}
           </tbody>
         </table>
       </div>

@@ -8,6 +8,7 @@ import { StreakChip } from "@/components/StreakChip";
 import { todayIsoDate } from "@/lib/health";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
 import { Phase2Banner } from "@/components/Phase2Banner";
+import { VitalityArc } from "@/components/VitalityArc";
 
 export const Route = createFileRoute("/app/")({
   component: Home,
@@ -96,24 +97,13 @@ function Home() {
     : 1;
 
   const score = todayScore?.score ?? null;
-  // Derive status from current score so it always matches the latest threshold rule.
-  const status: "improving" | "stable" | "needs_attention" =
-    score == null
-      ? "stable"
-      : score < 60
-      ? "needs_attention"
-      : todayScore?.status === "improving"
-      ? "improving"
-      : "stable";
 
-  const hydrationTarget = metrics?.hydration_target_oz ?? 64;
+  // Standardized daily hydration target.
+  const hydrationTarget = 64;
   const hydrationCurrent = todayLog?.hydration_oz ?? 0;
   const sleepHours = todayLog?.sleep_hours ?? null;
   const stress = todayLog?.stress_level ?? null;
   const activityMin = todayLog?.activity_minutes ?? 0;
-
-  const statusLabel = status === "improving" ? "Improving" : status === "needs_attention" ? "Needs Attention" : "Stable";
-  const statusColor = status === "improving" ? "var(--color-accent)" : status === "needs_attention" ? "var(--color-warning)" : "var(--color-primary)";
 
   return (
     <div className="px-5 pt-5 pb-24">
@@ -121,7 +111,7 @@ function Home() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>VitalMan</h1>
-          <p className="text-xs" style={{ color: "#6B6760" }}>Men's Health Coach</p>
+          <p className="text-xs" style={{ color: "#8FA8B8" }}>Men's Health Coach</p>
         </div>
         <div className="flex items-center gap-3">
           <StreakChip count={profile?.streak_count ?? 0} />
@@ -143,19 +133,11 @@ function Home() {
       {user && <Phase2Banner userId={user.id} journeyStart={profile?.journey_start_date ?? null} />}
 
       {/* Vitality Score */}
-      <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border text-center">
-        <div className="section-label">Vitality Score</div>
-        <div
-          className="mt-2 text-6xl text-primary leading-none"
-          style={{ fontWeight: 800, letterSpacing: "-0.03em" }}
-        >
-          {score ?? "—"}
+      <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border">
+        <div className="section-label text-center">Vitality Score</div>
+        <div className="mt-2">
+          <VitalityArc score={score} journeyDay={dayOfJourney} />
         </div>
-        <div className="mt-3 text-sm" style={{ color: "#6B6760" }}>Today's Score</div>
-        <div className="mt-2 inline-block text-xs font-semibold px-3 py-1 rounded-full" style={{ background: statusColor, color: "white" }}>
-          {statusLabel}
-        </div>
-        <div className="mt-3 text-xs" style={{ color: "#6B6760" }}>Day {dayOfJourney} of your journey</div>
       </div>
 
       {/* 7-day trend */}
@@ -190,7 +172,7 @@ function Home() {
             <p className="mt-1 text-sm text-foreground leading-relaxed">{tip.body}</p>
           </>
         ) : (
-          <p className="mt-2 text-sm" style={{ color: "#6B6760" }}>Your coach tips will appear here as you log your daily habits.</p>
+          <p className="mt-2 text-sm" style={{ color: "#8FA8B8" }}>Your coach tips will appear here as you log your daily habits.</p>
         )}
       </div>
 
@@ -204,7 +186,7 @@ function Home() {
       <button
         onClick={() => setLegal("medical")}
         className="mt-6 w-full text-center text-xs underline"
-        style={{ color: "#6B6760" }}
+        style={{ color: "#8FA8B8" }}
       >
         Medical Disclaimer
       </button>
@@ -222,7 +204,7 @@ function MetricTile({ icon: Icon, label, value, sub }: { icon: React.ComponentTy
       <Icon size={22} color="var(--color-accent)" strokeWidth={1.75} />
       <div className="mt-1.5 section-label" style={{ fontSize: 10 }}>{label}</div>
       <div className="text-base font-bold text-primary leading-tight">{value}</div>
-      <div className="text-xs" style={{ color: "#6B6760" }}>{sub}</div>
+      <div className="text-xs" style={{ color: "#8FA8B8" }}>{sub}</div>
     </Link>
   );
 }
@@ -254,9 +236,9 @@ function TrendBars({ trend, journeyStart, today }: { trend: Score[]; journeyStar
         const hasData = !d.beforeJourney && d.score != null;
         const bg = hasData
           ? d.isToday
-            ? "#0F2A44"
-            : "#C4B59E"
-          : "#ECE6DC";
+            ? "#770101"
+            : "#0E3A56"
+          : "#0E3A56";
         const heightPct = hasData ? Math.max(4, d.score!) : 100;
         return (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -301,14 +283,14 @@ function ProtocolCard({ userId }: { userId: string | null }) {
           <ul className="mt-2 space-y-1.5">
             {protocol.items.map((it, i) => (
               <li key={i} className="text-sm text-foreground flex gap-2">
-                <span style={{ color: "#6B6760" }}>{i + 1}.</span>
+                <span style={{ color: "#8FA8B8" }}>{i + 1}.</span>
                 <span>{it}</span>
               </li>
             ))}
           </ul>
         </>
       ) : (
-        <p className="mt-2 text-sm" style={{ color: "#6B6760" }}>Your daily protocol will appear here once one is assigned by your coach.</p>
+        <p className="mt-2 text-sm" style={{ color: "#8FA8B8" }}>Your daily protocol will appear here once one is assigned by your coach.</p>
       )}
     </div>
   );

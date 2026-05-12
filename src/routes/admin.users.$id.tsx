@@ -47,13 +47,13 @@ function UserDetail() {
     load();
   }
 
-  if (!profile) return <div className="text-sm" style={{ color: "#6B6760" }}>Loading…</div>;
+  if (!profile) return <div className="text-sm" style={{ color: "#8FA8B8" }}>Loading…</div>;
 
   return (
     <div>
       <Link to="/admin/users" className="text-sm flex items-center gap-1 text-primary"><ChevronLeft size={14}/> Back to users</Link>
       <h1 className="mt-2 text-2xl font-bold text-primary">{profile.name ?? profile.email}</h1>
-      <div className="text-sm" style={{ color: "#6B6760" }}>{profile.email}</div>
+      <div className="text-sm" style={{ color: "#8FA8B8" }}>{profile.email}</div>
 
       <div className="mt-5 grid md:grid-cols-3 gap-4">
         <Card label="Status" value={profile.status}/>
@@ -70,14 +70,14 @@ function UserDetail() {
 
       <div className="mt-6 flex gap-2">
         <button onClick={() => setStatus("active")} className="px-3 h-9 rounded border text-sm" style={{ borderColor: "var(--color-border)" }}>Activate</button>
-        <button onClick={() => setStatus("suspended")} className="px-3 h-9 rounded border text-sm" style={{ borderColor: "var(--color-border)", color: "#D97A34" }}>Suspend</button>
+        <button onClick={() => setStatus("suspended")} className="px-3 h-9 rounded border text-sm" style={{ borderColor: "var(--color-border)", color: "#770101" }}>Suspend</button>
         <button onClick={() => setStatus("deleted")} className="px-3 h-9 rounded border text-sm" style={{ borderColor: "var(--color-border)", color: "#dc2626" }}>Soft-delete</button>
       </div>
 
       <div className="mt-6 bg-white border rounded-[14px] p-4" style={{ borderColor: "var(--color-border)" }}>
         <div className="font-semibold text-primary">Recent logs</div>
         <table className="w-full mt-3 text-sm">
-          <thead><tr className="text-left" style={{ color: "#6B6760" }}><th className="py-2">Date</th><th>Sleep</th><th>Activity</th><th>Hydration</th></tr></thead>
+          <thead><tr className="text-left" style={{ color: "#8FA8B8" }}><th className="py-2">Date</th><th>Sleep</th><th>Activity</th><th>Hydration</th></tr></thead>
           <tbody>
             {logs.map((l) => (
               <tr key={l.log_date} className="border-t" style={{ borderColor: "var(--color-border)" }}>
@@ -87,7 +87,7 @@ function UserDetail() {
                 <td>{l.hydration_oz ?? 0}oz</td>
               </tr>
             ))}
-            {logs.length === 0 && <tr><td colSpan={4} className="py-3 text-center" style={{ color: "#6B6760" }}>No logs yet.</td></tr>}
+            {logs.length === 0 && <tr><td colSpan={4} className="py-3 text-center" style={{ color: "#8FA8B8" }}>No logs yet.</td></tr>}
           </tbody>
         </table>
       </div>
@@ -98,7 +98,7 @@ function UserDetail() {
 function Card({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white border rounded-[14px] p-4" style={{ borderColor: "var(--color-border)" }}>
-      <div className="text-xs uppercase tracking-wide" style={{ color: "#6B6760" }}>{label}</div>
+      <div className="text-xs uppercase tracking-wide" style={{ color: "#8FA8B8" }}>{label}</div>
       <div className="mt-1 text-base font-semibold text-primary">{value}</div>
     </div>
   );

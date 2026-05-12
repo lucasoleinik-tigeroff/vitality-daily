@@ -130,6 +130,21 @@ function LogPage() {
 
     setSaving(false);
     toast.success(`Saved. Today's score: ${breakdown.total}`);
+
+    // Notify when user reaches their 14th saved log (Phase 2 unlock).
+    if (!existing) {
+      const { count } = await supabase
+        .from("daily_logs")
+        .select("log_date", { count: "exact", head: true })
+        .eq("user_id", user.id);
+      if (count === 14) {
+        toast("Phase 2 is available for you", {
+          description: "We analyzed your 14-day journey. Your personalized next step is ready.",
+          action: { label: "Open Coach", onClick: () => navigate({ to: "/app/coach" }) },
+        });
+      }
+    }
+
     navigate({ to: "/app" });
   }
 
@@ -183,8 +198,8 @@ function LogPage() {
               <Plus size={18} />
             </button>
           </div>
-          <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ background: "#ECE6DC" }}>
-            <div className="h-full" style={{ width: `${hydrationPct}%`, background: "#D97A34" }} />
+          <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ background: "#0E3A56" }}>
+            <div className="h-full" style={{ width: `${hydrationPct}%`, background: "#770101" }} />
           </div>
           <p className="mt-1 text-xs text-muted-foreground text-center">{hydrationOz} oz of {hydrationTarget} oz target</p>
         </Card>

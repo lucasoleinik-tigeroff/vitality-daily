@@ -56,11 +56,11 @@ function AdminCrossSell() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-primary">Cross-sell Products</h1>
-      <p className="text-sm mt-1" style={{ color: "#6B6760" }}>One product per concern. Active rows must have a valid URL.</p>
+      <p className="text-sm mt-1" style={{ color: "#8FA8B8" }}>One product per concern. Active rows must have a valid URL.</p>
       <div className="mt-5 grid gap-4">
         {CONCERNS.map((c) => {
           const r = rows[c];
-          if (!r) return <div key={c} className="text-sm" style={{ color: "#6B6760" }}>Loading {c}…</div>;
+          if (!r) return <div key={c} className="text-sm" style={{ color: "#8FA8B8" }}>Loading {c}…</div>;
           return (
             <div key={c} className="bg-white border rounded-[14px] p-4" style={{ borderColor: "var(--color-border)" }}>
               <div className="flex items-center justify-between">
@@ -87,5 +87,5 @@ function AdminCrossSell() {
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <label className="block"><div className="text-xs mb-1" style={{ color: "#6B6760" }}>{label}</div>{children}</label>;
+  return <label className="block"><div className="text-xs mb-1" style={{ color: "#8FA8B8" }}>{label}</div>{children}</label>;
 }

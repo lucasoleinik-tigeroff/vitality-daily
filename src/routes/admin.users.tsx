@@ -31,7 +31,7 @@ function AdminUsers() {
       </div>
       <div className="mt-4 bg-white border rounded-[14px]" style={{ borderColor: "var(--color-border)" }}>
         <table className="w-full text-sm">
-          <thead><tr className="text-left" style={{ color: "#6B6760" }}>
+          <thead><tr className="text-left" style={{ color: "#8FA8B8" }}>
             <th className="p-3">Email</th><th>Name</th><th>Status</th><th>Streak</th><th>Joined</th><th></th>
           </tr></thead>
           <tbody>
@@ -45,7 +45,7 @@ function AdminUsers() {
                 <td><Link to="/admin/users/$id" params={{ id: r.id }} className="text-primary underline">View</Link></td>
               </tr>
             ))}
-            {rows.length === 0 && <tr><td colSpan={6} className="p-4 text-center" style={{ color: "#6B6760" }}>No users.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={6} className="p-4 text-center" style={{ color: "#8FA8B8" }}>No users.</td></tr>}
           </tbody>
         </table>
       </div>

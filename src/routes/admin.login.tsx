@@ -33,7 +33,7 @@ function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#F4EFE6" }}>
       <form onSubmit={submit} className="w-full max-w-sm bg-white p-6 rounded-[14px] border" style={{ borderColor: "var(--color-border)" }}>
         <h1 className="text-xl font-bold text-primary">VitalMan Admin</h1>
-        <p className="text-sm mt-1" style={{ color: "#6B6760" }}>Sign in with an admin account.</p>
+        <p className="text-sm mt-1" style={{ color: "#8FA8B8" }}>Sign in with an admin account.</p>
         <label className="block text-xs mt-4 mb-1">Email</label>
         <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
           className="w-full h-10 px-3 border rounded" style={{ borderColor: "var(--color-border)" }} />

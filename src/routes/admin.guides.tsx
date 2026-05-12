@@ -125,7 +125,7 @@ function AdminGuides() {
 
       <div className="mt-5 bg-white rounded-[14px] border" style={{ borderColor: "var(--color-border)" }}>
         <table className="w-full text-sm">
-          <thead><tr className="text-left" style={{ color: "#6B6760" }}>
+          <thead><tr className="text-left" style={{ color: "#8FA8B8" }}>
             <th className="p-3">Title</th><th>Category</th><th>Type</th><th>Unlock day</th><th>Status</th><th></th>
           </tr></thead>
           <tbody>
@@ -139,7 +139,7 @@ function AdminGuides() {
                 <td><button onClick={() => remove(g)} className="text-red-600 p-2"><Trash2 size={14} /></button></td>
               </tr>
             ))}
-            {list.length === 0 && <tr><td colSpan={6} className="p-4 text-center" style={{ color: "#6B6760" }}>No guides yet.</td></tr>}
+            {list.length === 0 && <tr><td colSpan={6} className="p-4 text-center" style={{ color: "#8FA8B8" }}>No guides yet.</td></tr>}
           </tbody>
         </table>
       </div>
@@ -192,5 +192,5 @@ function AdminGuides() {
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <label className="block"><div className="text-xs mb-1" style={{ color: "#6B6760" }}>{label}</div>{children}</label>;
+  return <label className="block"><div className="text-xs mb-1" style={{ color: "#8FA8B8" }}>{label}</div>{children}</label>;
 }
