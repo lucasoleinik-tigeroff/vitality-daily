@@ -13,10 +13,59 @@ export interface CrossSellResult {
     id: string;
     product_name: string;
     headline: string;
+    subline: string;
     body_text: string;
     cta_url: string;
   };
 }
+
+const PRODUCTS: Record<Concern, CrossSellResult["product"]> = {
+  sleep_recovery: {
+    id: "breatheasex",
+    product_name: "BreatheaseX",
+    headline: "Your recovery window is broken.",
+    subline: "Sleep starts with breath.",
+    body_text:
+      "Over 14 days, your sleep data shows you're not recovering fully. Your Phase 2 targets the root cause — respiratory and overnight recovery support.",
+    cta_url: "BREATHEASEX_URL",
+  },
+  stress_cognitive: {
+    id: "marobrain",
+    product_name: "Marobrain",
+    headline: "Chronic stress is your hidden blocker.",
+    subline: "Your focus and memory are paying the price.",
+    body_text:
+      "Your logs show sustained high stress over 14 days. Elevated cortisol affects memory, focus, and vitality. Phase 2 targets cognitive resilience.",
+    cta_url: "MAROBRAIN_URL",
+  },
+  metabolism_weight: {
+    id: "lipotrine",
+    product_name: "Lipotrine",
+    headline: "Movement is your missing piece.",
+    subline: "Your metabolism needs more than habit.",
+    body_text:
+      "Your activity data shows your metabolism needs support beyond routine. Phase 2 addresses what lifestyle changes alone can't fully reach.",
+    cta_url: "LIPOTRINE_URL",
+  },
+  hydration_metabolism: {
+    id: "lipobliss",
+    product_name: "Lipobliss",
+    headline: "Low hydration is slowing your metabolism.",
+    subline: "Your cells are running below capacity.",
+    body_text:
+      "14 days of data shows your hydration is consistently low — a key driver of sluggish metabolism and weight retention. Phase 2 targets metabolic support from the inside out.",
+    cta_url: "LIPOBLISS_URL",
+  },
+  amplify: {
+    id: "vigorlong_prostafense",
+    product_name: "VigorLong + Prostafense",
+    headline: "You've built the foundation.",
+    subline: "Time to amplify your protocol.",
+    body_text:
+      "Your habits are solid. Phase 2 delivers a more advanced support formula for men who've already built consistency. Add more firepower to your daily protocol.",
+    cta_url: "VIGORLONG_PROSTAFENSE_URL",
+  },
+};
 
 const CACHE = new Map<string, { at: number; value: CrossSellResult | null }>();
 const TTL = 60 * 60 * 1000;
@@ -56,36 +105,19 @@ export async function getCrossSell(userId: string): Promise<CrossSellResult | nu
   const avgActivity = logs.reduce((s, l) => s + (l.activity_minutes ?? 0), 0) / logs.length;
   const avgHydration = logs.reduce((s, l) => s + (l.hydration_oz ?? 0), 0) / logs.length;
 
-  const priority: Concern[] = [];
-  if (avgSleep < 6 || poorSleepDays >= 8) priority.push("sleep_recovery");
-  if (stressDom === "high" && highStressDays >= 10) priority.push("stress_cognitive");
-  if (avgActivity < 10) priority.push("metabolism_weight");
-  if (avgHydration < 32) priority.push("hydration_metabolism");
-  priority.push("amplify");
+  let concern: Concern = "amplify";
+  if (avgSleep < 6 || poorSleepDays >= 8) concern = "sleep_recovery";
+  else if (stressDom === "high" && highStressDays >= 10) concern = "stress_cognitive";
+  else if (avgActivity < 10) concern = "metabolism_weight";
+  else if (avgHydration < 32) concern = "hydration_metabolism";
 
-  const { data: products } = await supabase
-    .from("cross_sell_products")
-    .select("id,concern,product_name,headline,body_text,cta_url,active")
-    .eq("active", true);
-
-  const byConcern = new Map((products ?? []).map((p) => [p.concern, p]));
-  for (const c of priority) {
-    const p = byConcern.get(c);
-    if (p) {
-      const value: CrossSellResult = {
-        concern: c,
-        product: { id: p.id, product_name: p.product_name, headline: p.headline, body_text: p.body_text, cta_url: p.cta_url },
-      };
-      CACHE.set(userId, { at: Date.now(), value });
-      return value;
-    }
-  }
-  CACHE.set(userId, { at: Date.now(), value: null });
-  return null;
+  const value: CrossSellResult = { concern, product: PRODUCTS[concern] };
+  CACHE.set(userId, { at: Date.now(), value });
+  return value;
 }
 
 export async function logImpression(userId: string, concern: Concern, productId: string) {
-  await supabase.from("cross_sell_impressions").insert({ user_id: userId, concern, product_id: productId });
+  await supabase.from("cross_sell_impressions").insert({ user_id: userId, concern, product_id: productId }).then(() => {}, () => {});
 }
 
 export async function logClick(userId: string, productId: string) {
@@ -94,5 +126,6 @@ export async function logClick(userId: string, productId: string) {
     .update({ clicked: true, clicked_at: new Date().toISOString() })
     .eq("user_id", userId)
     .eq("product_id", productId)
-    .eq("clicked", false);
+    .eq("clicked", false)
+    .then(() => {}, () => {});
 }

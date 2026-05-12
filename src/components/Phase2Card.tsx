@@ -44,45 +44,60 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
     if (data.product.cta_url) window.open(data.product.cta_url, "_blank", "noopener,noreferrer");
   };
 
+  const GOLD = "#C8973A";
+  const DARK = "#0F1923";
+
   return (
     <>
-      <div
-        className="relative rounded-[14px] p-5"
-        style={{ background: "#0E3A56", border: "1.5px solid #770101" }}
-      >
-        <button onClick={dismiss} aria-label="Dismiss" className="absolute top-3 right-3"><X size={16} color="#8FA8B8" /></button>
+      <div className="relative rounded-[14px] p-5" style={{ background: GOLD, color: DARK }}>
+        <button onClick={dismiss} aria-label="Dismiss" className="absolute top-3 right-3">
+          <X size={16} color={DARK} />
+        </button>
         <span
-          className="inline-block px-2.5 py-1 rounded-full text-white"
-          style={{ background: "#5C0101", fontWeight: 600, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase" }}
+          className="inline-block px-2.5 py-1 rounded-full"
+          style={{
+            background: DARK,
+            color: GOLD,
+            fontWeight: 700,
+            fontSize: 10,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+          }}
         >
           Phase 2 Ready
         </span>
-        <h3 className={`mt-3 font-bold leading-snug ${compact ? "text-base" : "text-lg"}`} style={{ color: "#F0EDDE" }}>
+        <h3 className="mt-3 font-bold leading-snug" style={{ color: DARK, fontSize: "1.1rem" }}>
           {data.product.headline}
         </h3>
+        <p className="mt-1" style={{ color: DARK, fontSize: "0.9rem", fontWeight: 500, opacity: 0.85 }}>
+          {data.product.subline}
+        </p>
         {!compact && (
-          <p className="mt-2 text-sm leading-relaxed" style={{ color: "#F0EDDE" }}>{data.product.body_text}</p>
+          <p className="mt-2 leading-relaxed" style={{ color: DARK, fontSize: "0.85rem" }}>
+            {data.product.body_text}
+          </p>
         )}
         <div
           className="mt-3"
-          style={{ color: "#8FA8B8", fontWeight: 600, fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase" }}
+          style={{ color: DARK, fontWeight: 700, fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}
         >
           {data.product.product_name}
         </div>
         <button
           onClick={handleClick}
           disabled={!data.product.cta_url}
-          className="mt-4 w-full h-11 rounded-md bg-primary text-primary-foreground font-semibold text-[15px] disabled:opacity-60"
+          className="mt-4 w-full h-11 rounded-md font-semibold text-[15px] disabled:opacity-60"
+          style={{ background: DARK, color: GOLD }}
         >
-          See My Phase 2
+          See My Phase 2 →
         </button>
-        <p className="mt-3 text-center" style={{ color: "#8FA8B8", fontSize: 11 }}>
+        <p className="mt-3 text-center" style={{ color: DARK, fontSize: 11, opacity: 0.7 }}>
           Based on your 14-day data · Optional upgrade
         </p>
         <button
           onClick={() => setWhyOpen(true)}
           className="mt-1 w-full text-center underline"
-          style={{ color: "#8FA8B8", fontWeight: 500, fontSize: 11 }}
+          style={{ color: DARK, fontWeight: 500, fontSize: 11, opacity: 0.7 }}
         >
           Why am I seeing this?
         </button>
