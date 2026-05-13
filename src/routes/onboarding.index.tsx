@@ -58,6 +58,8 @@ const GOALS = [
   "Support overall sexual health",
 ];
 
+const TOTAL_STEPS = 7;
+
 function Onboarding() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -71,13 +73,13 @@ function Onboarding() {
     if (!loading && !user) navigate({ to: "/signin" });
   }, [user, loading, navigate]);
 
-  function next() { setStep((x) => Math.min(7, x + 1)); }
+  function next() { setStep((x) => Math.min(TOTAL_STEPS, x + 1)); }
   function back() { setStep((x) => Math.max(1, x - 1)); }
 
-  function validStep2() {
+  // Step 4 (physical data). Waist optional but if filled must be in valid range.
+  function validPhysical() {
     const age = +s.age, ft = +s.feet, inc = +s.inches, wt = +s.weight;
     const baseOk = age >= 18 && age <= 99 && ft >= 3 && ft <= 7 && inc >= 0 && inc <= 11 && wt >= 50 && wt <= 500;
-    // Waist is optional, but if filled must be in valid range.
     if (!s.waist) return baseOk;
     const wa = +s.waist;
     return baseOk && wa >= 20 && wa <= 80;
@@ -87,7 +89,6 @@ function Onboarding() {
     if (!user || saving) return;
     setSaving(true);
 
-    // Safety net: never let the button stay disabled forever.
     const safety = setTimeout(() => {
       console.error("[onboarding.finish] timed out after 8s");
       toast.error("This is taking longer than expected. Please try again.");
@@ -101,7 +102,7 @@ function Onboarding() {
         heightFeet: +s.feet,
         heightInches: +s.inches,
         weightLbs: +s.weight,
-        waistInches: waistVal ?? 0,
+        waistInches: waistVal,
         activity: s.activity as ActivityLevel,
       });
       const now = new Date().toISOString();
@@ -124,20 +125,11 @@ function Onboarding() {
       const { error: mErr } = await supabase.from("user_health_metrics").insert({
         user_id: user.id,
         weight_lbs: +s.weight,
-        waist_inches: waistVal ?? 0,
+        waist_inches: waistVal,
         activity_level: s.activity as ActivityLevel,
         ...baseline,
       });
       if (mErr) throw mErr;
-
-      // Cria o vitality score inicial para o usuário não ver "—" no dashboard.
-      const today = new Date().toISOString().split("T")[0];
-      await supabase.from("vitality_scores").upsert({
-        user_id: user.id,
-        score_date: today,
-        score: 50,
-        status: "stable",
-      }, { onConflict: "user_id,score_date" });
 
       clearTimeout(safety);
       navigate({ to: "/onboarding/baseline", replace: true });
@@ -154,20 +146,20 @@ function Onboarding() {
 
   return (
     <div className="min-h-screen bg-background px-6 py-6 max-w-[768px] mx-auto flex flex-col">
-      {/* Progress dots */}
       <div className="flex items-center justify-between mb-4">
         {step > 1 ? (
           <button onClick={back} className="text-sm text-accent">&larr; Back</button>
         ) : <span />}
-        <span className="text-xs text-muted-foreground">{step} of 7</span>
+        <span className="text-xs text-muted-foreground">{step} of {TOTAL_STEPS}</span>
       </div>
       <div className="flex gap-1.5 mb-8">
-        {Array.from({ length: 7 }).map((_, i) => (
+        {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
           <div key={i} className="flex-1 h-1.5 rounded-full" style={{ background: i < step ? "var(--color-primary)" : "var(--color-border)" }} />
         ))}
       </div>
 
       <div className="flex-1 max-w-[420px] w-full mx-auto">
+        {/* Step 1 — Welcome */}
         {step === 1 && (
           <div className="text-center pt-6">
             <h1 className="text-3xl font-bold tracking-tight">VitalMan</h1>
@@ -177,7 +169,30 @@ function Onboarding() {
           </div>
         )}
 
+        {/* Step 2 — Motivation */}
         {step === 2 && (
+          <SingleSelect
+            title="What brings you to VitalMan?"
+            options={CONCERNS.map((c) => ({ value: c, label: c }))}
+            value={s.concern}
+            onChange={(v) => setS({ ...s, concern: v })}
+            onContinue={next}
+          />
+        )}
+
+        {/* Step 3 — Goal */}
+        {step === 3 && (
+          <SingleSelect
+            title="What's your main goal for the next 30 days?"
+            options={GOALS.map((g) => ({ value: g, label: g }))}
+            value={s.goal}
+            onChange={(v) => setS({ ...s, goal: v })}
+            onContinue={next}
+          />
+        )}
+
+        {/* Step 4 — Physical data */}
+        {step === 4 && (
           <div>
             <h2 className="text-xl font-bold">Tell us a bit about you</h2>
             <div className="mt-6 space-y-4">
@@ -201,32 +216,14 @@ function Onboarding() {
                   </p>
                 )}
                 <input type="number" min={20} max={80} value={s.waist} onChange={(e) => setS({ ...s, waist: e.target.value })} className="w-full h-11 px-3 rounded-md border border-input" />
+                <p className="mt-1.5 text-xs text-muted-foreground">Optional — you can update this later in Progress.</p>
               </div>
             </div>
-            <button disabled={!validStep2()} onClick={next} className="mt-8 w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold disabled:opacity-50">Continue</button>
+            <button disabled={!validPhysical()} onClick={next} className="mt-8 w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold disabled:opacity-50">Continue</button>
           </div>
         )}
 
-        {step === 3 && (
-          <SingleSelect
-            title="How active are you?"
-            options={ACTIVITY_OPTIONS.map((o) => ({ value: o.v, label: o.label }))}
-            value={s.activity}
-            onChange={(v) => setS({ ...s, activity: v as ActivityLevel })}
-            onContinue={next}
-          />
-        )}
-
-        {step === 4 && (
-          <SingleSelect
-            title="What brings you to VitalMan?"
-            options={CONCERNS.map((c) => ({ value: c, label: c }))}
-            value={s.concern}
-            onChange={(v) => setS({ ...s, concern: v })}
-            onContinue={next}
-          />
-        )}
-
+        {/* Step 5 — Habits */}
         {step === 5 && (
           <div>
             <h2 className="text-xl font-bold">How would you describe your current habits?</h2>
@@ -249,20 +246,28 @@ function Onboarding() {
                 );
               })}
             </div>
-            <button onClick={next} className="mt-8 w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold">Continue</button>
+            <button
+              disabled={s.habits.length === 0}
+              onClick={next}
+              className="mt-8 w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold disabled:opacity-50"
+            >
+              Continue
+            </button>
           </div>
         )}
 
+        {/* Step 6 — Activity */}
         {step === 6 && (
           <SingleSelect
-            title="What's your main goal for the next 30 days?"
-            options={GOALS.map((g) => ({ value: g, label: g }))}
-            value={s.goal}
-            onChange={(v) => setS({ ...s, goal: v })}
+            title="How active are you?"
+            options={ACTIVITY_OPTIONS.map((o) => ({ value: o.v, label: o.label }))}
+            value={s.activity}
+            onChange={(v) => setS({ ...s, activity: v as ActivityLevel })}
             onContinue={next}
           />
         )}
 
+        {/* Step 7 — Terms */}
         {step === 7 && (
           <div>
             <h2 className="text-xl font-bold">Before we begin</h2>
