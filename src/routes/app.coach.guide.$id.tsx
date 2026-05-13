@@ -29,11 +29,25 @@ function GuideViewer() {
   const [guide, setGuide] = useState<Guide | null>(null);
   const [marked, setMarked] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [signedPdfUrl, setSignedPdfUrl] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from("guides").select("id,title,subtitle,description,content_type,external_url,body_text,file_url").eq("id", id).maybeSingle();
-      if (data) setGuide(data as Guide);
+      if (data) {
+        setGuide(data as Guide);
+        if (data.content_type === "pdf" && data.file_url) {
+          const { data: signed, error: signErr } = await supabase.storage
+            .from("guides")
+            .createSignedUrl(data.file_url, 3600);
+          if (signErr || !signed?.signedUrl) {
+            setPdfError("Unable to load this guide. Please try again.");
+          } else {
+            setSignedPdfUrl(signed.signedUrl);
+          }
+        }
+      }
       if (user) {
         const today = new Date().toISOString().slice(0, 10);
         const { data: acc } = await supabase
