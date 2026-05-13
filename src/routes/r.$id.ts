@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-export const Route = createFileRoute("/api/public/guide/$id")({
+export const Route = createFileRoute("/r/$id")({
   server: {
     handlers: {
       GET: async ({ params }) => {
@@ -14,10 +14,9 @@ export const Route = createFileRoute("/api/public/guide/$id")({
           .maybeSingle();
 
         if (error || !guide) {
-          return new Response("Guide not found", { status: 404 });
+          return new Response("Not found", { status: 404 });
         }
 
-        // Determine storage path (file_url or extract from external_url)
         let storagePath = guide.file_url;
         if (!storagePath && guide.external_url) {
           const m = guide.external_url.match(/\/storage\/v1\/object\/public\/guides\/(.+)$/);
@@ -25,7 +24,7 @@ export const Route = createFileRoute("/api/public/guide/$id")({
         }
 
         if (!storagePath) {
-          return new Response("Guide file not available", { status: 404 });
+          return new Response("File not available", { status: 404 });
         }
 
         const { data: blob, error: dlErr } = await supabaseAdmin.storage
@@ -33,10 +32,10 @@ export const Route = createFileRoute("/api/public/guide/$id")({
           .download(storagePath);
 
         if (dlErr || !blob) {
-          return new Response("Unable to load guide file", { status: 502 });
+          return new Response("Unable to load file", { status: 502 });
         }
 
-        const safeName = (guide.title || "guide").replace(/[^a-zA-Z0-9-_ ]/g, "").trim() || "guide";
+        const safeName = (guide.title || "document").replace(/[^a-zA-Z0-9-_ ]/g, "").trim() || "document";
 
         return new Response(blob.stream(), {
           status: 200,
