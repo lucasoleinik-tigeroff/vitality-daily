@@ -491,8 +491,8 @@ export type Database = {
           snapshot_date: string
           tdee_kcal: number
           user_id: string
-          waist_inches: number
-          waist_risk_category: string
+          waist_inches: number | null
+          waist_risk_category: string | null
           weight_lbs: number
         }
         Insert: {
@@ -511,8 +511,8 @@ export type Database = {
           snapshot_date?: string
           tdee_kcal: number
           user_id: string
-          waist_inches: number
-          waist_risk_category: string
+          waist_inches?: number | null
+          waist_risk_category?: string | null
           weight_lbs: number
         }
         Update: {
@@ -531,8 +531,8 @@ export type Database = {
           snapshot_date?: string
           tdee_kcal?: number
           user_id?: string
-          waist_inches?: number
-          waist_risk_category?: string
+          waist_inches?: number | null
+          waist_risk_category?: string | null
           weight_lbs?: number
         }
         Relationships: []
