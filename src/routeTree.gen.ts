@@ -22,7 +22,6 @@ import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppLogRouteImport } from './routes/app.log'
 import { Route as AppCoachRouteImport } from './routes/app.coach'
 import { Route as AppBaselineRouteImport } from './routes/app.baseline'
-import { Route as ApiPublicRIdRouteImport } from './routes/api/public/r.$id'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -89,11 +88,6 @@ const AppBaselineRoute = AppBaselineRouteImport.update({
   path: '/baseline',
   getParentRoute: () => AppRoute,
 } as any)
-const ApiPublicRIdRoute = ApiPublicRIdRouteImport.update({
-  id: '/api/public/r/$id',
-  path: '/api/public/r/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,7 +103,6 @@ export interface FileRoutesByFullPath {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/app/': typeof AppIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
-  '/api/public/r/$id': typeof ApiPublicRIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -123,7 +116,6 @@ export interface FileRoutesByTo {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/app': typeof AppIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
-  '/api/public/r/$id': typeof ApiPublicRIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -140,7 +132,6 @@ export interface FileRoutesById {
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/app/': typeof AppIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
-  '/api/public/r/$id': typeof ApiPublicRIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,7 +149,6 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/app/'
     | '/onboarding/'
-    | '/api/public/r/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -172,7 +162,6 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/app'
     | '/onboarding'
-    | '/api/public/r/$id'
   id:
     | '__root__'
     | '/'
@@ -188,7 +177,6 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/app/'
     | '/onboarding/'
-    | '/api/public/r/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -197,7 +185,6 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRouteWithChildren
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
-  ApiPublicRIdRoute: typeof ApiPublicRIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -293,13 +280,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBaselineRouteImport
       parentRoute: typeof AppRoute
     }
-    '/api/public/r/$id': {
-      id: '/api/public/r/$id'
-      path: '/api/public/r/$id'
-      fullPath: '/api/public/r/$id'
-      preLoaderRoute: typeof ApiPublicRIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -343,18 +323,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRouteWithChildren,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
-  ApiPublicRIdRoute: ApiPublicRIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

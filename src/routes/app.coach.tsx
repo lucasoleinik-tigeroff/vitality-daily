@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
-import { Lock, ChevronRight, BookOpen, Search } from "lucide-react";
+import { Lock, ChevronRight, BookOpen, Search, X, ExternalLink } from "lucide-react";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Phase2Card } from "@/components/Phase2Card";
 import { currentJourneyDay, currentJourneyWeek } from "@/lib/journey";
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/app/coach")({
 
 const PRIORITY = ["sleep", "stress", "activity", "hydration", "supplement"] as const;
 const CATEGORIES = ["All", "Sleep", "Circulation", "Nutrition", "Stress", "Performance", "General"] as const;
+const GUIDE_STORAGE_BASE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/guides`;
 
 
 interface Guide {
@@ -34,23 +35,27 @@ interface Guide {
 }
 
 function buildGuideUrl(g: Guide): string | null {
-  if (g.file_url || g.external_url) return `/api/public/r/${g.id}`;
+  if (g.external_url) return encodeURI(g.external_url);
+  if (g.file_url) return encodeURI(`${GUIDE_STORAGE_BASE}/${g.file_url.replace(/^\/+/, "")}`);
   return null;
 }
 
-function openGuide(g: Guide, userId: string | undefined) {
+function markGuideAsRead(g: Guide, userId: string | undefined) {
+  if (!userId) return;
+  supabase
+    .from("guide_access")
+    .upsert({ user_id: userId, guide_id: g.id }, { onConflict: "user_id,guide_id" } as never)
+    .then(() => {});
+}
+
+function openGuideInNewTab(g: Guide, userId: string | undefined) {
   const url = buildGuideUrl(g);
   if (!url) {
     toast.error("Guide unavailable");
     return;
   }
   window.open(url, "_blank", "noopener,noreferrer");
-  if (userId) {
-    supabase
-      .from("guide_access")
-      .upsert({ user_id: userId, guide_id: g.id }, { onConflict: "user_id,guide_id" } as never)
-      .then(() => {});
-  }
+  markGuideAsRead(g, userId);
 }
 
 function CoachPage() {
@@ -62,6 +67,7 @@ function CoachPage() {
   const [logCount, setLogCount] = useState(0);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("All");
+  const [activeGuide, setActiveGuide] = useState<Guide | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -189,7 +195,7 @@ function CoachPage() {
         ) : (
           <div className="-mx-5 px-5 flex gap-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
             {guides.slice(0, 8).map((g) => (
-              <GuideCard key={g.id} guide={g} journeyDay={journeyDay} userId={user?.id} />
+              <GuideCard key={g.id} guide={g} journeyDay={journeyDay} userId={user?.id} onOpen={setActiveGuide} />
             ))}
           </div>
         )}
@@ -238,7 +244,7 @@ function CoachPage() {
               const locked = g.unlock_day > journeyDay;
               const handleTap = () => {
                 if (locked) { toast(`Unlocks at Day ${g.unlock_day}. Keep going.`); return; }
-                openGuide(g, user?.id);
+                setActiveGuide(g);
               };
               return (
                 <button
@@ -272,11 +278,18 @@ function CoachPage() {
           )}
         </div>
       </div>
+      {activeGuide && (
+        <GuidePdfModal
+          guide={activeGuide}
+          userId={user?.id}
+          onClose={() => setActiveGuide(null)}
+        />
+      )}
     </div>
   );
 }
 
-function GuideCard({ guide, journeyDay, userId }: { guide: Guide; journeyDay: number; userId: string | undefined }) {
+function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: number; userId: string | undefined; onOpen?: (guide: Guide) => void }) {
   const day = journeyDay || 0;
   const locked = guide.status === "published" && guide.unlock_day > day;
   const comingSoon = guide.status === "coming_soon";
@@ -285,7 +298,7 @@ function GuideCard({ guide, journeyDay, userId }: { guide: Guide; journeyDay: nu
   const handleTap = () => {
     if (comingSoon) { toast("Coming soon"); return; }
     if (locked) { toast(`Unlocks at Day ${guide.unlock_day}. Keep going.`); return; }
-    openGuide(guide, userId);
+    onOpen?.(guide);
   };
 
   return (
@@ -326,6 +339,60 @@ function GuideCard({ guide, journeyDay, userId }: { guide: Guide; journeyDay: nu
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function GuidePdfModal({ guide, userId, onClose }: { guide: Guide; userId: string | undefined; onClose: () => void }) {
+  const url = buildGuideUrl(guide);
+
+  useEffect(() => {
+    markGuideAsRead(guide, userId);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [guide, userId, onClose]);
+
+  if (!url) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex flex-col"
+      style={{ background: "var(--color-background)" }}
+    >
+      <div className="flex items-center gap-2 border-b px-3 py-2" style={{ borderColor: "var(--color-border)", background: "var(--color-surface)" }}>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close PDF"
+          className="h-10 w-10 rounded-full flex items-center justify-center"
+          style={{ color: "var(--color-text-foreground)" }}
+        >
+          <X size={22} />
+        </button>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-semibold text-foreground">{guide.title}</div>
+          {guide.subtitle && <div className="truncate text-xs" style={{ color: "var(--color-text-secondary)" }}>{guide.subtitle}</div>}
+        </div>
+        <button
+          type="button"
+          onClick={() => openGuideInNewTab(guide, userId)}
+          aria-label="Open PDF in new tab"
+          className="h-10 w-10 rounded-full flex items-center justify-center"
+          style={{ color: "var(--color-text-foreground)" }}
+        >
+          <ExternalLink size={19} />
+        </button>
+      </div>
+      <iframe
+        key={url}
+        src={url}
+        title={guide.title}
+        className="min-h-0 flex-1 w-full border-0"
+        loading="eager"
+      />
     </div>
   );
 }
