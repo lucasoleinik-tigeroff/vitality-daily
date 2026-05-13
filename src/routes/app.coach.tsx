@@ -261,7 +261,7 @@ function GuideCard({ guide, journeyDay }: { guide: Guide; journeyDay: number }) 
         )}
         <div className="mt-auto pt-2">
           {available && (
-            <span className="px-2 py-1 rounded-full text-[10px]" style={{ background: "var(--color-border)", color: "var(--color-primary-hover)", fontWeight: 600, textTransform: "uppercase" }}>
+            <span className="px-2 py-1 rounded-full text-[10px]" style={{ background: "rgba(61,170,110,0.15)", color: "var(--color-success)", border: "1px solid var(--color-success)", fontWeight: 600, textTransform: "uppercase" }}>
               Available
             </span>
           )}
