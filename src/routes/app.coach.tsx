@@ -210,11 +210,21 @@ function CoachPage() {
           {filteredBrowse.length === 0 ? (
             <div className="p-5 text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No guides match your filters.</div>
           ) : (
-            filteredBrowse.map((g, i) => (
+    filteredBrowse.map((g, i) => {
+              const locked = g.unlock_day > journeyDay;
+              const handleTap = () => {
+                if (locked) {
+                  toast(`Unlocks at Day ${g.unlock_day}. Keep going.`);
+                  return;
+                }
+                setOpenGuide(g);
+                console.log("[coach] openGuide set to:", g);
+              };
+              return (
               <button
                 key={g.id}
-                onClick={() => setOpenGuide(g)}
-                className="w-full flex items-center gap-3 p-3 text-left"
+                onClick={handleTap}
+                className="w-full flex items-center gap-3 p-3 text-left cursor-pointer"
                 style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-border)" }}
               >
                 <div className="w-14 h-[72px] rounded-lg overflow-hidden flex items-center justify-center" style={{ background: "var(--color-surface)" }}>
