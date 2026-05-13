@@ -152,9 +152,7 @@ function ProgressPage() {
       {/* Last Week Summary */}
       <div className="mt-6">
         <SectionHeader label="Last Week Summary" />
-        <div className="p-5 rounded-[14px] bg-surface border border-border text-[14px]" style={{ color: "var(--color-text-foreground)", lineHeight: 1.55 }}>
-          {summary}
-        </div>
+        <LastWeekSummary logs={logs} scores={scores} completions={completions} logCount={logCount} />
       </div>
 
       {/* Phase 2 Readiness */}
