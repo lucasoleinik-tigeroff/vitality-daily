@@ -121,7 +121,7 @@ function Settings() {
       <button
         onClick={handleSignOut}
         className="mt-8 w-full h-11 rounded-md font-semibold"
-        style={{ background: "#FFFFFF", color: "var(--color-primary)", border: "1px solid var(--color-primary)" }}
+        style={{ background: "transparent", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}
       >
         Sign out
       </button>
