@@ -356,8 +356,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function buildWeeklySummary(scores: ScoreRow[], logs: LogRow[], completions: CompletionRow[], logCount: number): string {
-  if (logCount < 7) return "Your weekly summary will appear after you've logged 7 days.";
+function buildWeeklySummary(scores: ScoreRow[], logs: LogRow[], completions: CompletionRow[]): string {
   const cutoff7 = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
   const cutoff14 = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
   const recent = scores.filter((s) => s.score_date >= cutoff7);
@@ -366,7 +365,6 @@ function buildWeeklySummary(scores: ScoreRow[], logs: LogRow[], completions: Com
   const avg = recent.length ? Math.round(recent.reduce((s, r) => s + r.score, 0) / recent.length) : 0;
   const sleep = recentLogs.filter((l) => l.sleep_hours != null);
   const avgSleep = sleep.length ? (sleep.reduce((s, l) => s + Number(l.sleep_hours), 0) / sleep.length).toFixed(1) : "—";
-  // Real protocol completions: count distinct days in last 7 where every item was completed.
   const completedDays = completions.filter(
     (c) => c.completion_date >= cutoff7 && c.total_items > 0 && c.completed_items.length === c.total_items
   ).length;
@@ -376,4 +374,37 @@ function buildWeeklySummary(scores: ScoreRow[], logs: LogRow[], completions: Com
   if (delta > 2) trend = ` Your overall score improved by ${delta} compared to the previous week.`;
   else if (delta < -2) trend = ` Your overall score dropped by ${Math.abs(delta)} — focus on it this week.`;
   return `Your average score last week was ${avg}. You completed your full protocol on ${completedDays} of 7 days. Your sleep averaged ${avgSleep} hours.${trend}`;
+}
+
+function LastWeekSummary({
+  logs,
+  scores,
+  completions,
+  logCount,
+}: {
+  logs: LogRow[];
+  scores: ScoreRow[];
+  completions: CompletionRow[];
+  logCount: number;
+}) {
+  const cutoff7 = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const x = logs.filter((l) => l.log_date >= cutoff7).length;
+  const pct = Math.min(100, (x / 7) * 100);
+  const hasFullWeek = x >= 7 && logCount >= 7;
+  return (
+    <div className="p-5 rounded-[14px] bg-surface border border-border" style={{ color: "var(--color-text-foreground)", lineHeight: 1.55 }}>
+      <div className="text-[14px] font-semibold">Day {x} of 7 logged this week</div>
+      <div
+        className="mt-3 w-full overflow-hidden"
+        style={{ background: "#252525", height: 6, borderRadius: 3 }}
+      >
+        <div style={{ width: `${pct}%`, background: "#C0392B", height: "100%", borderRadius: 3 }} />
+      </div>
+      <p className="mt-3 text-[14px]">
+        {hasFullWeek
+          ? buildWeeklySummary(scores, logs, completions)
+          : "Keep logging — your weekly summary unlocks at Day 7."}
+      </p>
+    </div>
+  );
 }
