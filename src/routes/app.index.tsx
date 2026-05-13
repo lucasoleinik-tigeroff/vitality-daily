@@ -266,7 +266,7 @@ function ProtocolCard({ userId }: { userId: string | null }) {
       <div className="section-label">Today's Protocol</div>
       {protocol ? (
         <>
-          <h3 className="mt-2 text-foreground" style={{ fontWeight: 600, fontSize: 16 }}>{protocol.name}</h3>
+          <h3 className="mt-2 text-accent" style={{ fontWeight: 600, fontSize: 15 }}>{protocol.name}</h3>
           <ul className="mt-2 space-y-1.5">
             {protocol.items.map((it, i) => (
               <li key={i} className="text-sm text-foreground flex gap-2">
