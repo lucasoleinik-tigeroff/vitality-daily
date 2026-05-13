@@ -115,7 +115,7 @@ function Settings() {
       <Section title="Legal">
         <button onClick={() => setLegal("terms")} className="w-full text-left p-3 rounded-md border border-border bg-background text-sm">Terms of Service</button>
         <button onClick={() => setLegal("privacy")} className="w-full text-left p-3 rounded-md border border-border bg-background text-sm">Privacy Policy</button>
-        <button onClick={() => setLegal("medical")} className="w-full text-left p-3 rounded-md border border-border bg-background text-sm">Medical Disclaimer</button>
+        
       </Section>
 
       <button
