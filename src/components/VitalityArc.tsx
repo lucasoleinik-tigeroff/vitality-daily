@@ -87,7 +87,7 @@ export function VitalityArc({ score, journeyDay }: Props) {
             <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "var(--color-text-primary)", lineHeight: 1 }}>
               —
             </div>
-            <div className="mt-2 text-sm" style={{ color: "#8B9CB5" }}>
+            <div className="mt-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
               Log to calculate
             </div>
           </>
@@ -106,7 +106,7 @@ export function VitalityArc({ score, journeyDay }: Props) {
             )}
           </>
         )}
-        <div className="mt-2 text-xs" style={{ color: "#8B9CB5" }}>
+        <div className="mt-2 text-xs" style={{ color: "var(--color-text-muted)" }}>
           Day {journeyDay} of your journey
         </div>
       </div>
