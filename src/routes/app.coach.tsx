@@ -210,11 +210,21 @@ function CoachPage() {
           {filteredBrowse.length === 0 ? (
             <div className="p-5 text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No guides match your filters.</div>
           ) : (
-            filteredBrowse.map((g, i) => (
+    filteredBrowse.map((g, i) => {
+              const locked = g.unlock_day > journeyDay;
+              const handleTap = () => {
+                if (locked) {
+                  toast(`Unlocks at Day ${g.unlock_day}. Keep going.`);
+                  return;
+                }
+                setOpenGuide(g);
+                console.log("[coach] openGuide set to:", g);
+              };
+              return (
               <button
                 key={g.id}
-                onClick={() => setOpenGuide(g)}
-                className="w-full flex items-center gap-3 p-3 text-left"
+                onClick={handleTap}
+                className="w-full flex items-center gap-3 p-3 text-left cursor-pointer"
                 style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-border)" }}
               >
                 <div className="w-14 h-[72px] rounded-lg overflow-hidden flex items-center justify-center" style={{ background: "var(--color-surface)" }}>
@@ -235,7 +245,8 @@ function CoachPage() {
                 </div>
                 <ChevronRight size={18} color="var(--color-text-secondary)" />
               </button>
-            ))
+              );
+            })
           )}
         </div>
       </div>
@@ -252,9 +263,25 @@ function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: nu
   const comingSoon = guide.status === "coming_soon";
   const available = !locked && !comingSoon;
 
-  const card = (
+  const handleTap = () => {
+    if (comingSoon) {
+      toast("Coming soon");
+      return;
+    }
+    if (locked) {
+      toast(`Unlocks at Day ${guide.unlock_day}. Keep going.`);
+      return;
+    }
+    onOpen(guide);
+    console.log("[coach] openGuide set to:", guide);
+  };
+
+  return (
     <div
-      className="rounded-xl bg-card border border-border overflow-hidden flex-shrink-0 flex flex-col"
+      onClick={handleTap}
+      role="button"
+      tabIndex={0}
+      className="rounded-xl bg-card border border-border overflow-hidden flex-shrink-0 flex flex-col cursor-pointer"
       style={{ width: 240, height: 280 }}
     >
       <div className="w-full flex items-center justify-center" style={{ height: 140, background: "var(--color-surface)" }}>
@@ -289,9 +316,6 @@ function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: nu
       </div>
     </div>
   );
-
-  if (available) return <button onClick={() => onOpen(guide)} className="text-left">{card}</button>;
-  return <div onClick={() => alert(locked ? `This guide unlocks at Day ${guide.unlock_day}. Keep going.` : "Coming soon")}>{card}</div>;
 }
 
 function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string | undefined; onClose: () => void }) {
