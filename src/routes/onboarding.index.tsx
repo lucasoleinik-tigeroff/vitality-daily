@@ -124,7 +124,7 @@ function Onboarding() {
       const { error: mErr } = await supabase.from("user_health_metrics").insert({
         user_id: user.id,
         weight_lbs: +s.weight,
-        ...(waistVal !== null ? { waist_inches: waistVal } : {}),
+        waist_inches: waistVal ?? 0,
         activity_level: s.activity as ActivityLevel,
         ...baseline,
       });
