@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from "recharts";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Phase2Card } from "@/components/Phase2Card";
@@ -101,6 +101,12 @@ function ProgressPage() {
               <XAxis dataKey="score_date" tick={{ fontSize: 11, fill: "var(--color-text-secondary)" }} tickFormatter={(d: string) => { const x = new Date(d); return `${x.getMonth() + 1}/${x.getDate()}`; }} minTickGap={20} />
               <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={{ fontSize: 11, fill: "var(--color-text-secondary)" }} width={28} />
               <Tooltip />
+              <ReferenceLine
+                y={75}
+                stroke="#252525"
+                strokeDasharray="4 4"
+                label={{ value: "Day 30 target", position: "insideTopRight", fill: "#606060", fontSize: 11 }}
+              />
               <Line type="monotone" dataKey="score" stroke="var(--color-primary)" strokeWidth={2} dot={{ r: 4, fill: "var(--color-primary)" }} />
             </LineChart>
           </ResponsiveContainer>
