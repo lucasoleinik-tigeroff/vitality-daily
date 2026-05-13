@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { getCrossSell, logImpression, logClick, type CrossSellResult } from "@/lib/crossSell";
-import { WhyAmISeeingThisModal } from "./WhyAmISeeingThisModal";
 
 const DISMISS_KEY = "vm_phase2_dismiss";
 
