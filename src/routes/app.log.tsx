@@ -187,21 +187,21 @@ function LogPage() {
         {/* Hydration */}
         <Card label="Water intake">
           <div className="flex items-center justify-between">
-            <button onClick={() => setHydrationOz(Math.max(0, hydrationOz - 8))} className="w-11 h-11 rounded-md border-2 border-primary text-primary flex items-center justify-center">
+            <button onClick={() => setHydrationOz(Math.max(0, hydrationOz - 8))} className="w-10 h-10 rounded-md flex items-center justify-center" style={{ background: "var(--color-surface-2)", border: "1px solid var(--color-border)", color: "var(--color-text-primary)" }}>
               <Minus size={18} />
             </button>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{hydrationOz} oz</div>
-              <div className="text-xs text-muted-foreground">{hydrationCups} {hydrationCups === 1 ? "cup" : "cups"} of {Math.round(hydrationTarget / 8)} target</div>
+              <div className="text-2xl font-bold" style={{ color: hydrationOz > 0 ? "var(--color-text-primary)" : "var(--color-text-muted)" }}>{hydrationOz} oz</div>
+              <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>{hydrationCups} {hydrationCups === 1 ? "cup" : "cups"} of {Math.round(hydrationTarget / 8)} target</div>
             </div>
-            <button onClick={() => setHydrationOz(hydrationOz + 8)} className="w-11 h-11 rounded-md border-2 border-primary text-primary flex items-center justify-center">
+            <button onClick={() => setHydrationOz(hydrationOz + 8)} className="w-10 h-10 rounded-md flex items-center justify-center" style={{ background: "var(--color-surface-2)", border: "1px solid var(--color-border)", color: "var(--color-text-primary)" }}>
               <Plus size={18} />
             </button>
           </div>
-          <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ background: "var(--color-border)" }}>
-            <div className="h-full" style={{ width: `${hydrationPct}%`, background: "var(--color-primary)" }} />
+          <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ background: "var(--color-surface-3)" }}>
+            <div className="h-full" style={{ width: `${hydrationPct}%`, background: "var(--color-accent)" }} />
           </div>
-          <p className="mt-1 text-xs text-muted-foreground text-center">{hydrationOz} oz of {hydrationTarget} oz target</p>
+          <p className="mt-1 text-xs text-center" style={{ color: "var(--color-text-muted)" }}>{hydrationOz} oz of {hydrationTarget} oz target</p>
         </Card>
 
         {/* Supplement */}
