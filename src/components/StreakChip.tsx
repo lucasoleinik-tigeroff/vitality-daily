@@ -10,12 +10,12 @@ export function StreakChip({ count }: { count: number }) {
         height: 32,
         padding: "6px 12px",
         gap: 6,
-        background: isZero ? "#0E3A56" : "#770101",
+        background: isZero ? "var(--color-border)" : "var(--color-primary)",
       }}
     >
-      <Flame size={16} color="#F0EDDE" />
-      <span style={{ fontWeight: 700, fontSize: 14, color: "#F0EDDE" }}>{count}</span>
-      <span style={{ fontWeight: 500, fontSize: 12, color: "#F0EDDE", opacity: 0.85 }}>{label}</span>
+      <Flame size={16} color="var(--color-text-primary)" />
+      <span style={{ fontWeight: 700, fontSize: 14, color: "var(--color-text-primary)" }}>{count}</span>
+      <span style={{ fontWeight: 500, fontSize: 12, color: "var(--color-text-primary)", opacity: 0.85 }}>{label}</span>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export type VitalityStatus = "Peak" | "Strong" | "Stable" | "Building" | "Low";
 
 const STATUS_COLOR: Record<VitalityStatus, string> = {
-  Peak: "#770101",
+  Peak: "var(--color-primary)",
   Strong: "#2E7D5A",
   Stable: "#1A6A9A",
   Building: "#C8973A",
@@ -73,7 +73,7 @@ export function VitalityArc({ score, journeyDay }: Props) {
         {score != null && (
           <path
             d={d}
-            stroke="#770101"
+            stroke="var(--color-primary)"
             strokeWidth={14}
             fill="none"
             strokeLinecap="round"
@@ -84,7 +84,7 @@ export function VitalityArc({ score, journeyDay }: Props) {
       <div className="absolute inset-0 flex flex-col items-center justify-center pt-4 pointer-events-none">
         {score == null ? (
           <>
-            <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "#F0EDDE", lineHeight: 1 }}>
+            <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "var(--color-text-primary)", lineHeight: 1 }}>
               —
             </div>
             <div className="mt-2 text-sm" style={{ color: "#8B9CB5" }}>
@@ -93,13 +93,13 @@ export function VitalityArc({ score, journeyDay }: Props) {
           </>
         ) : (
           <>
-            <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "#F0EDDE", lineHeight: 1 }}>
+            <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "var(--color-text-primary)", lineHeight: 1 }}>
               {Math.round(animated)}
             </div>
             {status && (
               <div
                 className="mt-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide"
-                style={{ background: STATUS_COLOR[status], color: "#F0EDDE" }}
+                style={{ background: STATUS_COLOR[status], color: "var(--color-text-primary)" }}
               >
                 {status}
               </div>

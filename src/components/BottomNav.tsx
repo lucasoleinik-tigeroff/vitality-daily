@@ -13,13 +13,13 @@ export function BottomNav() {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-40"
-      style={{ background: "#080606", borderTop: "1px solid #0E3A56" }}
+      style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-border)" }}
     >
       <div className="max-w-[768px] mx-auto grid grid-cols-4">
         {tabs.map((t) => {
           const active = t.exact ? path === t.to : path.startsWith(t.to);
           const Icon = t.icon;
-          const color = active ? "#770101" : "#4A6070";
+          const color = active ? "var(--color-primary)" : "var(--color-text-muted)";
           return (
             <Link
               key={t.to}
@@ -35,7 +35,7 @@ export function BottomNav() {
                     top: 0,
                     width: 18,
                     height: 2,
-                    background: "#770101",
+                    background: "var(--color-primary)",
                     borderRadius: 2,
                   }}
                 />

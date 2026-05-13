@@ -37,16 +37,16 @@ function Index() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0A0808" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "var(--color-background)" }}>
       <main className="flex-1 flex flex-col items-center justify-center px-6 max-w-[768px] w-full mx-auto">
         <div className="w-full max-w-[420px] text-center">
-          <h1 className="text-4xl font-bold tracking-tight" style={{ color: "#F0EDDE" }}>VitalMan</h1>
-          <p className="mt-2 text-sm" style={{ color: "#8FA8B8" }}>Men's Health Coach</p>
+          <h1 className="text-4xl font-bold tracking-tight" style={{ color: "var(--color-text-primary)" }}>VitalMan</h1>
+          <p className="mt-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>Men's Health Coach</p>
 
-          <h2 className="mt-12 text-2xl font-bold leading-tight" style={{ color: "#F0EDDE" }}>
+          <h2 className="mt-12 text-2xl font-bold leading-tight" style={{ color: "var(--color-text-primary)" }}>
             Your daily companion for men's vitality
           </h2>
-          <p className="mt-3 text-base" style={{ color: "#8FA8B8" }}>
+          <p className="mt-3 text-base" style={{ color: "var(--color-text-secondary)" }}>
             Track. Improve. Feel the difference.
           </p>
 
@@ -54,21 +54,21 @@ function Index() {
             <Link
               to="/signup"
               className="h-12 inline-flex items-center justify-center rounded-md font-bold text-base"
-              style={{ background: "#770101", color: "#F0EDDE" }}
+              style={{ background: "var(--color-primary)", color: "var(--color-text-primary)" }}
             >
               Get Started
             </Link>
             <Link
               to="/signin"
               className="h-12 inline-flex items-center justify-center rounded-md font-semibold text-base"
-              style={{ background: "transparent", border: "2px solid #770101", color: "#770101" }}
+              style={{ background: "transparent", border: "2px solid var(--color-primary)", color: "var(--color-primary)" }}
             >
               Sign In
             </Link>
           </div>
         </div>
       </main>
-      <footer className="py-6 text-center text-xs" style={{ color: "#8FA8B8" }}>
+      <footer className="py-6 text-center text-xs" style={{ color: "var(--color-text-secondary)" }}>
         For adults 18+. Your daily wellness companion.
       </footer>
     </div>

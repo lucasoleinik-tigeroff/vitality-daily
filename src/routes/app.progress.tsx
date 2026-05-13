@@ -69,7 +69,7 @@ function ProgressPage() {
   return (
     <div className="px-5 pt-5 pb-24">
       <h1 className="text-2xl font-bold text-primary" style={{ letterSpacing: "-0.02em" }}>Progress</h1>
-      <p className="text-sm" style={{ color: "#8FA8B8" }}>Your journey so far</p>
+      <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>Your journey so far</p>
       <div className="mt-2 mb-5" style={{ width: 24, height: 2, background: "var(--color-accent)", borderRadius: 2 }} />
 
       {/* Vitality Score Trend */}
@@ -85,8 +85,8 @@ function ProgressPage() {
                 className="h-9 rounded-md text-sm"
                 style={
                   active
-                    ? { background: "#770101", color: "white", fontWeight: 600 }
-                    : { background: "#023048", border: "1px solid #0E3A56", color: "#8FA8B8", fontWeight: 500 }
+                    ? { background: "var(--color-primary)", color: "white", fontWeight: 600 }
+                    : { background: "var(--color-surface)", border: "1px solid var(--color-border)", color: "var(--color-text-secondary)", fontWeight: 500 }
                 }
               >
                 {r} days
@@ -97,11 +97,11 @@ function ProgressPage() {
         <div style={{ height: 200 }}>
           <ResponsiveContainer>
             <LineChart data={filteredScores}>
-              <CartesianGrid stroke="#0E3A56" vertical={false} />
-              <XAxis dataKey="score_date" tick={{ fontSize: 11, fill: "#8FA8B8" }} tickFormatter={(d: string) => { const x = new Date(d); return `${x.getMonth() + 1}/${x.getDate()}`; }} minTickGap={20} />
-              <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={{ fontSize: 11, fill: "#8FA8B8" }} width={28} />
+              <CartesianGrid stroke="var(--color-border)" vertical={false} />
+              <XAxis dataKey="score_date" tick={{ fontSize: 11, fill: "var(--color-text-secondary)" }} tickFormatter={(d: string) => { const x = new Date(d); return `${x.getMonth() + 1}/${x.getDate()}`; }} minTickGap={20} />
+              <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={{ fontSize: 11, fill: "var(--color-text-secondary)" }} width={28} />
               <Tooltip />
-              <Line type="monotone" dataKey="score" stroke="#770101" strokeWidth={2} dot={{ r: 4, fill: "#770101" }} />
+              <Line type="monotone" dataKey="score" stroke="var(--color-primary)" strokeWidth={2} dot={{ r: 4, fill: "var(--color-primary)" }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -128,13 +128,13 @@ function ProgressPage() {
         }} />
         {metricsHist.length >= 2 && (
           <div className="mt-3 p-4 rounded-[14px] bg-surface border border-border">
-            <div className="text-[13px] font-semibold" style={{ color: "#8FA8B8" }}>Weight trend</div>
+            <div className="text-[13px] font-semibold" style={{ color: "var(--color-text-secondary)" }}>Weight trend</div>
             <div style={{ height: 120 }}>
               <ResponsiveContainer>
                 <LineChart data={metricsHist.map((m) => ({ d: m.snapshot_date.slice(0, 10), w: Number(m.weight_lbs) }))}>
-                  <Line type="monotone" dataKey="w" stroke="#770101" strokeWidth={2} dot={{ r: 3, fill: "#770101" }} />
-                  <XAxis dataKey="d" tick={{ fontSize: 10, fill: "#8FA8B8" }} hide />
-                  <YAxis tick={{ fontSize: 10, fill: "#8FA8B8" }} width={28} />
+                  <Line type="monotone" dataKey="w" stroke="var(--color-primary)" strokeWidth={2} dot={{ r: 3, fill: "var(--color-primary)" }} />
+                  <XAxis dataKey="d" tick={{ fontSize: 10, fill: "var(--color-text-secondary)" }} hide />
+                  <YAxis tick={{ fontSize: 10, fill: "var(--color-text-secondary)" }} width={28} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -146,7 +146,7 @@ function ProgressPage() {
       {/* Last Week Summary */}
       <div className="mt-6">
         <SectionHeader label="Last Week Summary" />
-        <div className="p-5 rounded-[14px] bg-surface border border-border text-[14px]" style={{ color: "#F0EDDE", lineHeight: 1.55 }}>
+        <div className="p-5 rounded-[14px] bg-surface border border-border text-[14px]" style={{ color: "var(--color-text-primary)", lineHeight: 1.55 }}>
           {summary}
         </div>
       </div>
@@ -164,7 +164,7 @@ function ProgressPage() {
 
 function StatTile({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-[12px] p-3.5" style={{ background: "#023048", border: "1px solid #0E3A56" }}>
+    <div className="rounded-[12px] p-3.5" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
       <div className="text-[18px] font-bold text-primary leading-none">{value}</div>
       <div className="mt-1.5 section-label" style={{ fontSize: 10 }}>{label}</div>
     </div>
@@ -199,13 +199,13 @@ function Calendar({ month, onPrev, onNext, logs, completions, journeyStart }: { 
   return (
     <div className="p-4 rounded-[14px] bg-surface border border-border">
       <div className="flex items-center justify-between">
-        <button onClick={onPrev} aria-label="Previous"><ChevronLeft size={20} color="#770101" /></button>
+        <button onClick={onPrev} aria-label="Previous"><ChevronLeft size={20} color="var(--color-primary)" /></button>
         <div className="text-base font-semibold text-primary">{monthName}</div>
-        <button onClick={onNext} disabled={isCurrentMonth} aria-label="Next" className="disabled:opacity-30"><ChevronRight size={20} color="#770101" /></button>
+        <button onClick={onNext} disabled={isCurrentMonth} aria-label="Next" className="disabled:opacity-30"><ChevronRight size={20} color="var(--color-primary)" /></button>
       </div>
       <div className="mt-3 grid grid-cols-7 gap-1.5">
         {["S","M","T","W","T","F","S"].map((d, i) => (
-          <div key={i} className="text-center" style={{ color: "#8FA8B8", fontWeight: 500, fontSize: 11, textTransform: "uppercase" }}>{d}</div>
+          <div key={i} className="text-center" style={{ color: "var(--color-text-secondary)", fontWeight: 500, fontSize: 11, textTransform: "uppercase" }}>{d}</div>
         ))}
         {cells.map((c, i) => {
           if (!c.date) return <div key={i} style={{ width: 36, height: 36 }} />;
@@ -214,16 +214,16 @@ function Calendar({ month, onPrev, onNext, logs, completions, journeyStart }: { 
           const isToday = c.date === today;
           const log = logsByDate.get(c.date);
           const comp = compByDate.get(c.date);
-          let bg = "#023048", color = "#8FA8B8", border = "1px solid #0E3A56";
+          let bg = "var(--color-surface)", color = "var(--color-text-secondary)", border = "1px solid var(--color-border)";
           if (comp && comp.completed_items.length === comp.total_items && comp.total_items > 0) {
-            bg = "#770101"; color = "white"; border = "none";
+            bg = "var(--color-primary)"; color = "white"; border = "none";
           } else if (comp && comp.completed_items.length > 0) {
-            bg = "#770101"; color = "white"; border = "none";
+            bg = "var(--color-primary)"; color = "white"; border = "none";
           } else if (log) {
-            bg = "#0E3A56"; color = "#F0EDDE"; border = "1px solid #770101";
+            bg = "var(--color-border)"; color = "var(--color-text-primary)"; border = "1px solid var(--color-primary)";
           }
           const opacity = beforeJourney || future ? 0.3 : 1;
-          const todayBorder = isToday ? "2px solid #770101" : border;
+          const todayBorder = isToday ? "2px solid var(--color-primary)" : border;
           return (
             <div key={i} className="flex items-center justify-center rounded-lg text-xs" style={{ width: 36, height: 36, background: bg, color, border: todayBorder, opacity, fontWeight: 500 }}>
               {c.n}
@@ -233,12 +233,12 @@ function Calendar({ month, onPrev, onNext, logs, completions, journeyStart }: { 
       </div>
       <div className="mt-3 space-y-1.5">
         {[
-          { c: "#770101", b: "none", l: "Protocol completed" },
-          { c: "#770101", b: "none", l: "Partial completion" },
-          { c: "#0E3A56", b: "1px solid #770101", l: "Logged" },
-          { c: "#023048", b: "1px solid #0E3A56", l: "No activity" },
+          { c: "var(--color-primary)", b: "none", l: "Protocol completed" },
+          { c: "var(--color-primary)", b: "none", l: "Partial completion" },
+          { c: "var(--color-border)", b: "1px solid var(--color-primary)", l: "Logged" },
+          { c: "var(--color-surface)", b: "1px solid var(--color-border)", l: "No activity" },
         ].map((it, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs" style={{ color: "#8FA8B8" }}>
+          <div key={i} className="flex items-center gap-2 text-xs" style={{ color: "var(--color-text-secondary)" }}>
             <span style={{ width: 14, height: 14, background: it.c, border: it.b, borderRadius: 3 }} /> {it.l}
           </div>
         ))}
@@ -314,10 +314,10 @@ function BodyMetricsEditor({
 
   return (
     <div className="p-4 rounded-[14px] bg-surface border border-border space-y-3">
-      <Field label="Weight (lbs)"><input className="w-24 h-9 rounded-md border px-2 text-sm" style={{ borderColor: "#0E3A56" }} value={weight} onChange={(e) => setWeight(e.target.value)} type="number" /></Field>
-      <Field label="Waist (in)"><input className="w-24 h-9 rounded-md border px-2 text-sm" style={{ borderColor: "#0E3A56" }} value={waist} onChange={(e) => setWaist(e.target.value)} type="number" /></Field>
+      <Field label="Weight (lbs)"><input className="w-24 h-9 rounded-md border px-2 text-sm" style={{ borderColor: "var(--color-border)" }} value={weight} onChange={(e) => setWeight(e.target.value)} type="number" /></Field>
+      <Field label="Waist (in)"><input className="w-24 h-9 rounded-md border px-2 text-sm" style={{ borderColor: "var(--color-border)" }} value={waist} onChange={(e) => setWaist(e.target.value)} type="number" /></Field>
       <Field label="Activity">
-        <select className="h-9 rounded-md border px-2 text-sm" style={{ borderColor: "#0E3A56" }} value={activity} onChange={(e) => setActivity(e.target.value as ActivityLevel)}>
+        <select className="h-9 rounded-md border px-2 text-sm" style={{ borderColor: "var(--color-border)" }} value={activity} onChange={(e) => setActivity(e.target.value as ActivityLevel)}>
           {(Object.keys(ACTIVITY_LABELS) as ActivityLevel[]).map((k) => <option key={k} value={k}>{ACTIVITY_LABELS[k]}</option>)}
         </select>
       </Field>
@@ -328,11 +328,11 @@ function BodyMetricsEditor({
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setConfirming(false)}>
           <div className="bg-card rounded-xl p-5 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-base font-semibold text-primary">Confirm update</h3>
-            <p className="mt-2 text-sm" style={{ color: "#F0EDDE" }}>
+            <p className="mt-2 text-sm" style={{ color: "var(--color-text-primary)" }}>
               Updating your body metrics will recalculate your personalized targets (hydration, calorie burn, heart rate zones). Continue?
             </p>
             <div className="mt-4 flex gap-2">
-              <button onClick={() => setConfirming(false)} className="flex-1 h-10 rounded-md border" style={{ borderColor: "#0E3A56", color: "#F0EDDE" }}>Cancel</button>
+              <button onClick={() => setConfirming(false)} className="flex-1 h-10 rounded-md border" style={{ borderColor: "var(--color-border)", color: "var(--color-text-primary)" }}>Cancel</button>
               <button onClick={save} disabled={saving} className="flex-1 h-10 rounded-md bg-primary text-primary-foreground font-semibold disabled:opacity-60">
                 {saving ? "Saving..." : "Confirm"}
               </button>
@@ -347,7 +347,7 @@ function BodyMetricsEditor({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-sm" style={{ color: "#F0EDDE" }}>{label}</span>
+      <span className="text-sm" style={{ color: "var(--color-text-primary)" }}>{label}</span>
       {children}
     </div>
   );

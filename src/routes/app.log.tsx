@@ -198,8 +198,8 @@ function LogPage() {
               <Plus size={18} />
             </button>
           </div>
-          <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ background: "#0E3A56" }}>
-            <div className="h-full" style={{ width: `${hydrationPct}%`, background: "#770101" }} />
+          <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ background: "var(--color-border)" }}>
+            <div className="h-full" style={{ width: `${hydrationPct}%`, background: "var(--color-primary)" }} />
           </div>
           <p className="mt-1 text-xs text-muted-foreground text-center">{hydrationOz} oz of {hydrationTarget} oz target</p>
         </Card>

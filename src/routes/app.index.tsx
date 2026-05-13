@@ -109,7 +109,7 @@ function Home() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>VitalMan</h1>
-          <p className="text-xs" style={{ color: "#8FA8B8" }}>Men's Health Coach</p>
+          <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Men's Health Coach</p>
         </div>
         <div className="flex items-center gap-3">
           <StreakChip count={profile?.streak_count ?? 0} />
@@ -168,7 +168,7 @@ function Home() {
             <p className="mt-1 text-sm text-foreground leading-relaxed">{tip.body}</p>
           </>
         ) : (
-          <p className="mt-2 text-sm" style={{ color: "#8FA8B8" }}>Your coach tips will appear here as you log your daily habits.</p>
+          <p className="mt-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>Your coach tips will appear here as you log your daily habits.</p>
         )}
       </div>
 
@@ -191,7 +191,7 @@ function MetricTile({ icon: Icon, label, value, sub }: { icon: React.ComponentTy
       <Icon size={22} color="var(--color-accent)" strokeWidth={1.75} />
       <div className="mt-1.5 section-label" style={{ fontSize: 10 }}>{label}</div>
       <div className="text-base font-bold text-primary leading-tight">{value}</div>
-      <div className="text-xs" style={{ color: "#8FA8B8" }}>{sub}</div>
+      <div className="text-xs" style={{ color: "var(--color-text-secondary)" }}>{sub}</div>
     </Link>
   );
 }
@@ -223,9 +223,9 @@ function TrendBars({ trend, journeyStart, today }: { trend: Score[]; journeyStar
         const hasData = !d.beforeJourney && d.score != null;
         const bg = hasData
           ? d.isToday
-            ? "#770101"
-            : "#0E3A56"
-          : "#0E3A56";
+            ? "var(--color-primary)"
+            : "var(--color-border)"
+          : "var(--color-border)";
         const heightPct = hasData ? Math.max(4, d.score!) : 100;
         return (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -270,14 +270,14 @@ function ProtocolCard({ userId }: { userId: string | null }) {
           <ul className="mt-2 space-y-1.5">
             {protocol.items.map((it, i) => (
               <li key={i} className="text-sm text-foreground flex gap-2">
-                <span style={{ color: "#8FA8B8" }}>{i + 1}.</span>
+                <span style={{ color: "var(--color-text-secondary)" }}>{i + 1}.</span>
                 <span>{it}</span>
               </li>
             ))}
           </ul>
         </>
       ) : (
-        <p className="mt-2 text-sm" style={{ color: "#8FA8B8" }}>Your daily protocol will appear here once one is assigned by your coach.</p>
+        <p className="mt-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>Your daily protocol will appear here once one is assigned by your coach.</p>
       )}
     </div>
   );

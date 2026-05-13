@@ -65,11 +65,11 @@ function Settings() {
     navigate({ to: "/" });
   }
 
-  if (!p || !user) return <div className="px-5 py-10 text-center" style={{ color: "#8FA8B8" }}>Loading…</div>;
+  if (!p || !user) return <div className="px-5 py-10 text-center" style={{ color: "var(--color-text-secondary)" }}>Loading…</div>;
 
   return (
     <div className="px-5 pt-5 pb-28">
-      <Link to="/app" className="inline-flex items-center gap-1 text-sm" style={{ color: "#770101" }}>
+      <Link to="/app" className="inline-flex items-center gap-1 text-sm" style={{ color: "var(--color-primary)" }}>
         <ChevronLeft size={16} /> Back
       </Link>
       <h1 className="mt-3 text-2xl font-bold" style={{ letterSpacing: "-0.02em" }}>Profile & Settings</h1>
@@ -106,9 +106,9 @@ function Settings() {
         <Link to="/app/baseline" className="flex items-center justify-between p-3 rounded-md border border-border bg-background text-sm">
           <span>
             <span className="block font-semibold text-primary">View your computed health metrics</span>
-            <span className="block text-xs mt-0.5" style={{ color: "#8FA8B8" }}>BMI, TDEE, hydration, heart rate zones, waist risk</span>
+            <span className="block text-xs mt-0.5" style={{ color: "var(--color-text-secondary)" }}>BMI, TDEE, hydration, heart rate zones, waist risk</span>
           </span>
-          <ChevronLeft size={16} className="rotate-180" color="#8FA8B8" />
+          <ChevronLeft size={16} className="rotate-180" color="var(--color-text-secondary)" />
         </Link>
       </Section>
 
@@ -121,7 +121,7 @@ function Settings() {
       <button
         onClick={handleSignOut}
         className="mt-8 w-full h-11 rounded-md font-semibold"
-        style={{ background: "#FFFFFF", color: "#770101", border: "1px solid #770101" }}
+        style={{ background: "#FFFFFF", color: "var(--color-primary)", border: "1px solid var(--color-primary)" }}
       >
         Sign out
       </button>
