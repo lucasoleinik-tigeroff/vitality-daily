@@ -14,87 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_logs: {
-        Row: {
-          action: string
-          admin_user_id: string
-          created_at: string
-          details: Json | null
-          entity_id: string | null
-          entity_type: string | null
-          id: string
-          ip_address: string | null
-        }
-        Insert: {
-          action: string
-          admin_user_id: string
-          created_at?: string
-          details?: Json | null
-          entity_id?: string | null
-          entity_type?: string | null
-          id?: string
-          ip_address?: string | null
-        }
-        Update: {
-          action?: string
-          admin_user_id?: string
-          created_at?: string
-          details?: Json | null
-          entity_id?: string | null
-          entity_type?: string | null
-          id?: string
-          ip_address?: string | null
-        }
-        Relationships: []
-      }
-      app_config: {
-        Row: {
-          key: string
-          updated_at: string
-          value: Json
-        }
-        Insert: {
-          key: string
-          updated_at?: string
-          value: Json
-        }
-        Update: {
-          key?: string
-          updated_at?: string
-          value?: Json
-        }
-        Relationships: []
-      }
-      coach_conversations: {
-        Row: {
-          coach_response: string
-          created_at: string
-          id: string
-          response_source: string
-          tokens_used: number | null
-          user_id: string
-          user_message: string
-        }
-        Insert: {
-          coach_response: string
-          created_at?: string
-          id?: string
-          response_source?: string
-          tokens_used?: number | null
-          user_id: string
-          user_message: string
-        }
-        Update: {
-          coach_response?: string
-          created_at?: string
-          id?: string
-          response_source?: string
-          tokens_used?: number | null
-          user_id?: string
-          user_message?: string
-        }
-        Relationships: []
-      }
       coach_messages: {
         Row: {
           body: string
@@ -395,21 +314,6 @@ export type Database = {
           title?: string
           unlock_day?: number
           updated_at?: string
-        }
-        Relationships: []
-      }
-      phase2_notifications_sent: {
-        Row: {
-          sent_at: string
-          user_id: string
-        }
-        Insert: {
-          sent_at?: string
-          user_id: string
-        }
-        Update: {
-          sent_at?: string
-          user_id?: string
         }
         Relationships: []
       }
