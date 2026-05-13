@@ -254,11 +254,12 @@ function Pill({ active, onClick, label }: { active: boolean; onClick: () => void
   return (
     <button
       onClick={onClick}
-      className="h-11 rounded-md border-2 text-sm font-medium"
+      className="h-11 rounded-md text-sm"
       style={{
-        borderColor: active ? "var(--color-primary)" : "var(--color-border)",
-        background: active ? "var(--color-primary)" : "var(--color-background)",
-        color: active ? "var(--color-primary-foreground)" : "var(--color-foreground)",
+        border: active ? "none" : "1px solid var(--color-border)",
+        background: active ? "var(--color-primary)" : "var(--color-surface-2)",
+        color: active ? "#FFFFFF" : "var(--color-text-secondary)",
+        fontWeight: active ? 600 : 500,
       }}
     >
       {label}
@@ -267,13 +268,14 @@ function Pill({ active, onClick, label }: { active: boolean; onClick: () => void
 }
 
 function Stepper({ value, setValue, step, min, max, suffix }: { value: number; setValue: (n: number) => void; step: number; min: number; max: number; suffix: string }) {
+  const isZero = value === 0;
   return (
     <div className="flex items-center justify-between">
-      <button onClick={() => setValue(Math.max(min, +(value - step).toFixed(1)))} className="w-11 h-11 rounded-md border-2 border-primary text-primary flex items-center justify-center">
+      <button onClick={() => setValue(Math.max(min, +(value - step).toFixed(1)))} className="w-10 h-10 rounded-md flex items-center justify-center" style={{ background: "var(--color-surface-2)", border: "1px solid var(--color-border)", color: "var(--color-text-primary)" }}>
         <Minus size={18} />
       </button>
-      <div className="text-2xl font-bold text-primary">{value}{suffix}</div>
-      <button onClick={() => setValue(Math.min(max, +(value + step).toFixed(1)))} className="w-11 h-11 rounded-md border-2 border-primary text-primary flex items-center justify-center">
+      <div className="text-2xl font-bold" style={{ color: isZero ? "var(--color-text-muted)" : "var(--color-text-primary)" }}>{value}{suffix}</div>
+      <button onClick={() => setValue(Math.min(max, +(value + step).toFixed(1)))} className="w-10 h-10 rounded-md flex items-center justify-center" style={{ background: "var(--color-surface-2)", border: "1px solid var(--color-border)", color: "var(--color-text-primary)" }}>
         <Plus size={18} />
       </button>
     </div>
