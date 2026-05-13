@@ -38,9 +38,32 @@ function GuideViewer() {
       if (data) {
         setGuide(data as Guide);
         if (data.content_type === "pdf" && data.file_url) {
-          const { data: signed, error: signErr } = await supabase.storage
+          // Encode the filename portion only, leave folder path untouched
+          const lastSlash = data.file_url.lastIndexOf("/");
+          const encodedPath =
+            lastSlash >= 0
+              ? data.file_url.slice(0, lastSlash + 1) +
+                encodeURIComponent(data.file_url.slice(lastSlash + 1))
+              : encodeURIComponent(data.file_url);
+
+          // Try the encoded path first, then fall back to the raw path
+          let { data: signed, error: signErr } = await supabase.storage
             .from("guides")
-            .createSignedUrl(data.file_url, 3600);
+            .createSignedUrl(encodedPath, 3600);
+
+          console.log("[guide-viewer] raw file_url:", data.file_url);
+          console.log("[guide-viewer] encoded path:", encodedPath);
+          console.log("[guide-viewer] signed (encoded) result:", signed, "error:", signErr);
+
+          if (signErr || !signed?.signedUrl) {
+            const retry = await supabase.storage
+              .from("guides")
+              .createSignedUrl(data.file_url, 3600);
+            console.log("[guide-viewer] signed (raw) result:", retry.data, "error:", retry.error);
+            signed = retry.data;
+            signErr = retry.error;
+          }
+
           if (signErr || !signed?.signedUrl) {
             setPdfError("Unable to load this guide. Please try again.");
           } else {
@@ -92,7 +115,15 @@ function GuideViewer() {
 
       <div className="flex-1 px-5 py-5">
         {guide.content_type === "pdf" && guide.file_url && signedPdfUrl && (
-          <iframe src={signedPdfUrl} title={guide.title} className="w-full" style={{ height: "70vh", border: "none" }} />
+          <iframe
+            src={signedPdfUrl}
+            title={guide.title}
+            width="100%"
+            style={{ height: "calc(100vh - 120px)", border: "none" }}
+          />
+        )}
+        {guide.content_type === "pdf" && guide.file_url && !signedPdfUrl && !pdfError && (
+          <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>Loading PDF...</p>
         )}
         {guide.content_type === "pdf" && guide.file_url && !signedPdfUrl && pdfError && (
           <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>{pdfError}</p>
