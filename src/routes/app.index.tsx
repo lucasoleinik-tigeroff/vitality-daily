@@ -40,7 +40,7 @@ function Home() {
   const [todayScore, setTodayScore] = useState<Score | null>(null);
   const [trend, setTrend] = useState<Score[]>([]);
   const [tip, setTip] = useState<{ title: string; body: string } | null>(null);
-  const [legal, setLegal] = useState<"medical" | null>(null);
+  
 
   useEffect(() => {
     if (!user) return;
