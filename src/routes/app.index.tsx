@@ -140,7 +140,7 @@ function Home() {
       <div className="mt-4 p-5 rounded-[14px] bg-surface border border-border">
         <div className="flex items-center justify-between">
           <div className="section-label">7-Day Trend</div>
-          <div className="text-2xl font-bold text-primary">{score ?? "—"}</div>
+          <div className="text-2xl font-bold text-foreground">{score ?? "—"}</div>
         </div>
         <TrendBars trend={trend} journeyStart={profile?.journey_start_date ?? null} today={todayIsoDate()} />
       </div>
@@ -164,7 +164,7 @@ function Home() {
         <div className="section-label">Coach Tip</div>
         {tip ? (
           <>
-            <h3 className="mt-2 text-base font-semibold text-primary" style={{ fontWeight: 600, fontSize: 16 }}>{tip.title}</h3>
+            <h3 className="mt-2 text-base font-semibold text-foreground" style={{ fontWeight: 600, fontSize: 16 }}>{tip.title}</h3>
             <p className="mt-1 text-sm text-foreground leading-relaxed">{tip.body}</p>
           </>
         ) : (
@@ -174,7 +174,7 @@ function Home() {
 
       <button
         onClick={() => navigate({ to: "/app/log" })}
-        className="mt-5 w-full h-11 rounded-md bg-primary text-primary-foreground font-semibold"
+        className="mt-5 w-full h-11 rounded-md bg-primary text-foreground-foreground font-semibold"
       >
         {todayLog ? "Update today's log" : "Log today"}
       </button>
@@ -190,7 +190,7 @@ function MetricTile({ icon: Icon, label, value, sub }: { icon: React.ComponentTy
     <Link to="/app/log" className="p-4 rounded-[14px] bg-surface border border-border block">
       <Icon size={22} color="var(--color-accent)" strokeWidth={1.75} />
       <div className="mt-1.5 section-label" style={{ fontSize: 10 }}>{label}</div>
-      <div className="text-base font-bold text-primary leading-tight">{value}</div>
+      <div className="text-base font-bold text-foreground leading-tight">{value}</div>
       <div className="text-xs" style={{ color: "var(--color-text-secondary)" }}>{sub}</div>
     </Link>
   );
@@ -266,7 +266,7 @@ function ProtocolCard({ userId }: { userId: string | null }) {
       <div className="section-label">Today's Protocol</div>
       {protocol ? (
         <>
-          <h3 className="mt-2 text-primary" style={{ fontWeight: 600, fontSize: 16 }}>{protocol.name}</h3>
+          <h3 className="mt-2 text-foreground" style={{ fontWeight: 600, fontSize: 16 }}>{protocol.name}</h3>
           <ul className="mt-2 space-y-1.5">
             {protocol.items.map((it, i) => (
               <li key={i} className="text-sm text-foreground flex gap-2">

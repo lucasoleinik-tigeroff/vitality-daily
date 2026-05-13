@@ -63,7 +63,7 @@ function BaselineView() {
             <div key={it.label} className="p-5 rounded-[14px] bg-surface border border-border">
               <div className="section-label">{it.label}</div>
               <div className="mt-1 flex items-baseline gap-2 flex-wrap">
-                <span className="text-2xl font-bold text-primary">{it.value}</span>
+                <span className="text-2xl font-bold text-foreground">{it.value}</span>
                 <span className="text-sm text-muted-foreground">{it.sub}</span>
               </div>
             </div>

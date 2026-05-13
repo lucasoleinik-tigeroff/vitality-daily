@@ -62,7 +62,7 @@ function Baseline() {
           <div key={it.label} className="p-4 rounded-xl bg-surface border border-border">
             <div className="text-xs uppercase tracking-wide text-muted-foreground">{it.label}</div>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-primary">{it.value}</span>
+              <span className="text-2xl font-bold text-foreground">{it.value}</span>
               <span className="text-sm text-muted-foreground">{it.sub}</span>
             </div>
           </div>
@@ -73,7 +73,7 @@ function Baseline() {
         onClick={async () => {
           await navigate({ to: "/app/", replace: true });
         }}
-        className="fixed bottom-6 left-6 right-6 max-w-[720px] mx-auto h-12 rounded-md bg-primary text-primary-foreground font-semibold"
+        className="fixed bottom-6 left-6 right-6 max-w-[720px] mx-auto h-12 rounded-md bg-primary text-foreground-foreground font-semibold"
       >
         Go to my dashboard
       </button>

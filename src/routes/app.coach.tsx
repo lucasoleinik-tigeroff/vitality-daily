@@ -110,7 +110,7 @@ function CoachPage() {
 
   return (
     <div className="px-5 pt-5 pb-24">
-      <h1 className="text-2xl font-bold text-primary" style={{ letterSpacing: "-0.02em" }}>Coach</h1>
+      <h1 className="text-2xl font-bold text-foreground" style={{ letterSpacing: "-0.02em" }}>Coach</h1>
       <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>Guidance and resources for your journey</p>
       <div className="mt-2 mb-5" style={{ width: 24, height: 2, background: "var(--color-accent)", borderRadius: 2 }} />
 
@@ -125,8 +125,8 @@ function CoachPage() {
       <div className="p-5 rounded-[14px] bg-surface border border-border">
         {tip ? (
           <>
-            <h3 style={{ color: "var(--color-text-primary)", fontWeight: 600, fontSize: 17 }}>{tip.title}</h3>
-            <p className="mt-2" style={{ color: "var(--color-text-primary)", fontSize: 15, lineHeight: 1.55 }}>{tip.body}</p>
+            <h3 style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 17 }}>{tip.title}</h3>
+            <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{tip.body}</p>
             <span className="mt-3 inline-block px-2 py-0.5 rounded-full" style={{ background: "var(--color-border)", color: "var(--color-primary-hover)", fontWeight: 500, fontSize: 11, textTransform: "uppercase" }}>
               {tipMetricLabel}
             </span>
@@ -143,8 +143,8 @@ function CoachPage() {
           <div style={{ color: "var(--color-text-secondary)", fontSize: 12 }}>Week {currentJourneyWeek(profile?.journey_start_date)} of your journey</div>
           {message && (
             <>
-              <h3 className="mt-1" style={{ color: "var(--color-text-primary)", fontWeight: 600, fontSize: 18 }}>{message.title}</h3>
-              <p className="mt-2" style={{ color: "var(--color-text-primary)", fontSize: 15, lineHeight: 1.55 }}>{message.body}</p>
+              <h3 className="mt-1" style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 18 }}>{message.title}</h3>
+              <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{message.body}</p>
             </>
           )}
         </div>
@@ -176,7 +176,7 @@ function CoachPage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search guides..."
             className="w-full h-10 rounded-md border pl-9 pr-3 text-sm"
-            style={{ background: "var(--color-surface)", borderColor: "var(--color-border)", color: "var(--color-text-primary)" }}
+            style={{ background: "var(--color-surface)", borderColor: "var(--color-border)", color: "var(--color-text-foreground)" }}
           />
         </div>
         <div className="mt-3 -mx-5 px-5 flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
@@ -219,7 +219,7 @@ function CoachPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-primary truncate">{g.title}</div>
+                  <div className="text-sm font-semibold text-foreground truncate">{g.title}</div>
                   {g.subtitle && <div className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>{g.subtitle}</div>}
                   {g.category && (
                     <span className="mt-1 inline-block px-1.5 py-0.5 rounded text-[10px]" style={{ background: "var(--color-surface)", color: "var(--color-text-secondary)" }}>
@@ -255,7 +255,7 @@ function GuideCard({ guide, journeyDay }: { guide: Guide; journeyDay: number }) 
         )}
       </div>
       <div className="p-3.5 flex-1 flex flex-col">
-        <div className="text-[15px] font-semibold text-primary line-clamp-2">{guide.title}</div>
+        <div className="text-[15px] font-semibold text-foreground line-clamp-2">{guide.title}</div>
         {guide.subtitle && (
           <div className="mt-1 text-[13px] line-clamp-2" style={{ color: "var(--color-text-secondary)" }}>{guide.subtitle}</div>
         )}

@@ -68,7 +68,7 @@ function ProgressPage() {
 
   return (
     <div className="px-5 pt-5 pb-24">
-      <h1 className="text-2xl font-bold text-primary" style={{ letterSpacing: "-0.02em" }}>Progress</h1>
+      <h1 className="text-2xl font-bold text-foreground" style={{ letterSpacing: "-0.02em" }}>Progress</h1>
       <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>Your journey so far</p>
       <div className="mt-2 mb-5" style={{ width: 24, height: 2, background: "var(--color-accent)", borderRadius: 2 }} />
 
@@ -146,7 +146,7 @@ function ProgressPage() {
       {/* Last Week Summary */}
       <div className="mt-6">
         <SectionHeader label="Last Week Summary" />
-        <div className="p-5 rounded-[14px] bg-surface border border-border text-[14px]" style={{ color: "var(--color-text-primary)", lineHeight: 1.55 }}>
+        <div className="p-5 rounded-[14px] bg-surface border border-border text-[14px]" style={{ color: "var(--color-text-foreground)", lineHeight: 1.55 }}>
           {summary}
         </div>
       </div>
@@ -165,7 +165,7 @@ function ProgressPage() {
 function StatTile({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="rounded-[12px] p-3.5" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
-      <div className="text-[18px] font-bold text-primary leading-none">{value}</div>
+      <div className="text-[18px] font-bold text-foreground leading-none">{value}</div>
       <div className="mt-1.5 section-label" style={{ fontSize: 10 }}>{label}</div>
     </div>
   );
@@ -200,7 +200,7 @@ function Calendar({ month, onPrev, onNext, logs, completions, journeyStart }: { 
     <div className="p-4 rounded-[14px] bg-surface border border-border">
       <div className="flex items-center justify-between">
         <button onClick={onPrev} aria-label="Previous"><ChevronLeft size={20} color="var(--color-primary)" /></button>
-        <div className="text-base font-semibold text-primary">{monthName}</div>
+        <div className="text-base font-semibold text-foreground">{monthName}</div>
         <button onClick={onNext} disabled={isCurrentMonth} aria-label="Next" className="disabled:opacity-30"><ChevronRight size={20} color="var(--color-primary)" /></button>
       </div>
       <div className="mt-3 grid grid-cols-7 gap-1.5">
@@ -220,7 +220,7 @@ function Calendar({ month, onPrev, onNext, logs, completions, journeyStart }: { 
           } else if (comp && comp.completed_items.length > 0) {
             bg = "var(--color-accent)"; color = "white"; border = "none";
           } else if (log) {
-            bg = "rgba(232,135,58,0.15)"; color = "var(--color-text-primary)"; border = "1px solid var(--color-accent)";
+            bg = "rgba(232,135,58,0.15)"; color = "var(--color-text-foreground)"; border = "1px solid var(--color-accent)";
           }
           const opacity = beforeJourney || future ? 0.3 : 1;
           const todayBorder = isToday ? "2px solid var(--color-accent)" : border;
@@ -321,19 +321,19 @@ function BodyMetricsEditor({
           {(Object.keys(ACTIVITY_LABELS) as ActivityLevel[]).map((k) => <option key={k} value={k}>{ACTIVITY_LABELS[k]}</option>)}
         </select>
       </Field>
-      <button onClick={() => setConfirming(true)} className="w-full h-11 rounded-md bg-primary text-primary-foreground font-semibold mt-2">
+      <button onClick={() => setConfirming(true)} className="w-full h-11 rounded-md bg-primary text-foreground-foreground font-semibold mt-2">
         Update body metrics
       </button>
       {confirming && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setConfirming(false)}>
           <div className="bg-card rounded-xl p-5 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-base font-semibold text-primary">Confirm update</h3>
-            <p className="mt-2 text-sm" style={{ color: "var(--color-text-primary)" }}>
+            <h3 className="text-base font-semibold text-foreground">Confirm update</h3>
+            <p className="mt-2 text-sm" style={{ color: "var(--color-text-foreground)" }}>
               Updating your body metrics will recalculate your personalized targets (hydration, calorie burn, heart rate zones). Continue?
             </p>
             <div className="mt-4 flex gap-2">
-              <button onClick={() => setConfirming(false)} className="flex-1 h-10 rounded-md border" style={{ borderColor: "var(--color-border)", color: "var(--color-text-primary)" }}>Cancel</button>
-              <button onClick={save} disabled={saving} className="flex-1 h-10 rounded-md bg-primary text-primary-foreground font-semibold disabled:opacity-60">
+              <button onClick={() => setConfirming(false)} className="flex-1 h-10 rounded-md border" style={{ borderColor: "var(--color-border)", color: "var(--color-text-foreground)" }}>Cancel</button>
+              <button onClick={save} disabled={saving} className="flex-1 h-10 rounded-md bg-primary text-foreground-foreground font-semibold disabled:opacity-60">
                 {saving ? "Saving..." : "Confirm"}
               </button>
             </div>
@@ -347,7 +347,7 @@ function BodyMetricsEditor({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-sm" style={{ color: "var(--color-text-primary)" }}>{label}</span>
+      <span className="text-sm" style={{ color: "var(--color-text-foreground)" }}>{label}</span>
       {children}
     </div>
   );

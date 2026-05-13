@@ -97,7 +97,7 @@ function Settings() {
             {Object.entries(ACTIVITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
         </Field>
-        <button disabled={saving} onClick={saveAccount} className="w-full h-11 rounded-md bg-primary text-primary-foreground font-semibold disabled:opacity-50">
+        <button disabled={saving} onClick={saveAccount} className="w-full h-11 rounded-md bg-primary text-foreground-foreground font-semibold disabled:opacity-50">
           {saving ? "Saving…" : "Save changes"}
         </button>
       </Section>
@@ -105,7 +105,7 @@ function Settings() {
       <Section title="Your Baseline">
         <Link to="/app/baseline" className="flex items-center justify-between p-3 rounded-md border border-border bg-background text-sm">
           <span>
-            <span className="block font-semibold text-primary">View your computed health metrics</span>
+            <span className="block font-semibold text-foreground">View your computed health metrics</span>
             <span className="block text-xs mt-0.5" style={{ color: "var(--color-text-secondary)" }}>BMI, TDEE, hydration, heart rate zones, waist risk</span>
           </span>
           <ChevronLeft size={16} className="rotate-180" color="var(--color-text-secondary)" />
