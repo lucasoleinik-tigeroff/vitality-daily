@@ -2,7 +2,7 @@
 @source "../src";
 
 /*
- * VitalMan design system — Burnt Wood (dark masculine).
+ * VitalMan design system — Premium Dark.
  */
 
 @theme inline {
@@ -14,6 +14,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -25,7 +27,10 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-hover: var(--accent-hover);
@@ -35,7 +40,9 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-error: var(--error);
   --color-border: var(--border);
+  --color-border-focus: var(--border-focus);
   --color-input: var(--input);
   --color-divider: var(--divider);
   --color-ring: var(--ring);
@@ -46,46 +53,55 @@
 :root {
   --radius: 14px;
 
-  /* Burnt Wood dark masculine palette */
-  --background: #0A0808;
-  --foreground: #F0EDDE;
-  --surface: #023048;
-  --card: #023048;
-  --card-foreground: #F0EDDE;
-  --popover: #023048;
-  --popover-foreground: #F0EDDE;
+  /* Backgrounds — layered depth */
+  --background:  #0A0F1A;
+  --surface:     #111827;
+  --surface-2:   #1A2235;
+  --surface-3:   #223049;
 
-  --primary: #770101;
-  --primary-foreground: #F0EDDE;
-  --primary-hover: #5C0101;
+  /* Text — four levels of hierarchy */
+  --text-primary:    #F0F4F8;
+  --text-secondary:  #A8B5C8;
+  --text-muted:      #637080;
+  --text-inverse:    #0A0F1A;
 
-  --secondary: #0E3A56;
-  --secondary-foreground: #F0EDDE;
+  --foreground:        var(--text-primary);
 
-  --muted: #0E3A56;
-  --muted-foreground: #8FA8B8;
-  --text-secondary: #8FA8B8;
+  --card:              var(--surface);
+  --card-foreground:   var(--text-primary);
+  --popover:           var(--surface);
+  --popover-foreground:var(--text-primary);
 
-  --accent: #770101;
-  --accent-foreground: #F0EDDE;
-  --accent-hover: #5C0101;
+  /* Brand */
+  --primary:           #2E75B6;
+  --primary-foreground:var(--text-inverse);
+  --primary-hover:     #3A8FD6;
 
-  --success: #2E7D5A;
-  --success-foreground: #F0EDDE;
+  --secondary:         var(--surface-2);
+  --secondary-foreground: var(--text-primary);
 
-  --warning: #C8973A;
-  --warning-foreground: #0A0808;
+  --muted:             var(--surface-2);
+  --muted-foreground:  var(--text-secondary);
 
-  --destructive: #8B1A1A;
-  --destructive-foreground: #F0EDDE;
+  --accent:            #E8873A;
+  --accent-foreground: var(--text-inverse);
+  --accent-hover:      #F59D55;
 
-  --border: #0E3A56;
-  --input: #0E3A56;
-  --divider: #0E3A56;
-  --ring: #770101;
+  /* Status */
+  --success:   #3DAA6E;
+  --success-foreground: #FFFFFF;
+  --warning:   #D97A1F;
+  --warning-foreground: #0A0F1A;
+  --destructive: #C0392B;
+  --destructive-foreground: #FFFFFF;
+  --error:     #C0392B;
 
-  --nav-bg: #080606;
-  --tab-inactive: #4A6070;
+  /* Borders */
+  --border:       #1E2D42;
+  --border-focus: #2E75B6;
+  --input:        #1E2D42;
+  --divider:      #1E2D42;
+  --ring:         #2E75B6;
 }
 
 @layer base {
@@ -93,30 +109,31 @@
 
   html, body {
     background-color: var(--color-background);
-    color: var(--color-foreground);
+    color: var(--color-text-primary);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     font-size: 16px;
   }
 
   h1, h2, h3, h4 {
-    color: var(--color-foreground);
+    color: var(--color-text-primary);
     font-weight: 700;
     letter-spacing: -0.02em;
   }
 
   input, select, textarea {
-    color: var(--color-foreground);
-    background-color: #0E3A56;
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-2);
   }
 }
 
+/* Section label utility */
 .section-label {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
 }
 .section-accent-bar {
   display: block;
@@ -125,4 +142,47 @@
   background: var(--color-accent);
   margin-top: 6px;
   border-radius: 2px;
+}
+
+/* Card base */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+/* Input base */
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-size: 15px;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-primary:disabled { opacity: 0.45; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  font-weight: 600;
 }
