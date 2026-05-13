@@ -127,8 +127,6 @@ function Home() {
         </div>
       </div>
 
-      {/* Day-14 Phase 2 banner */}
-      {user && <Phase2Banner userId={user.id} journeyStart={profile?.journey_start_date ?? null} />}
 
       {/* Vitality Score */}
       <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border">
