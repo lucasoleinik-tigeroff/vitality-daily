@@ -18,7 +18,7 @@ interface Metrics {
   hr_moderate_high: number;
   hr_vigorous_low: number;
   hr_vigorous_high: number;
-  waist_risk_category: string;
+  waist_risk_category: string | null;
 }
 
 
