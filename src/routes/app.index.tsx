@@ -60,8 +60,9 @@ function Home() {
       if (vs.data) {
         const sorted = (vs.data as Score[]).slice().reverse();
         setTrend(sorted);
-        const today0 = sorted.find((s) => s.score_date === today);
-        if (today0) setTodayScore(today0);
+        // Most recent vitality score (today's if logged today, otherwise the latest available).
+        const latest = sorted[sorted.length - 1];
+        if (latest) setTodayScore(latest);
       }
 
       // Determine weakest metric and fetch a matching tip.
