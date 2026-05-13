@@ -1,13 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
-import { Lock, ChevronRight, BookOpen, Search } from "lucide-react";
+import { Lock, ChevronRight, ChevronLeft, BookOpen, Search } from "lucide-react";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Phase2Card } from "@/components/Phase2Card";
 import { currentJourneyDay, currentJourneyWeek } from "@/lib/journey";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
 import { todayIsoDate } from "@/lib/health";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/coach")({
   component: CoachPage,
@@ -26,6 +29,9 @@ interface Guide {
   unlock_day: number;
   status: string;
   content_type: string;
+  external_url?: string | null;
+  body_text?: string | null;
+  file_url?: string | null;
 }
 
 function CoachPage() {
@@ -37,6 +43,7 @@ function CoachPage() {
   const [logCount, setLogCount] = useState(0);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("All");
+  const [openGuide, setOpenGuide] = useState<Guide | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -47,7 +54,7 @@ function CoachPage() {
         supabase.from("user_health_metrics").select("hydration_target_oz").eq("user_id", user.id).order("snapshot_date", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("daily_logs").select("sleep_hours,sleep_quality,stress_level,activity_minutes,hydration_oz,supplement_taken").eq("user_id", user.id).eq("log_date", today).maybeSingle(),
         supabase.from("coach_tip_shows").select("tip_id,shown_at").eq("user_id", user.id).gte("shown_at", new Date(Date.now() - 5 * 86400000).toISOString()),
-        supabase.from("guides").select("id,title,subtitle,description,category,cover_url,unlock_day,status,content_type").in("status", ["published", "coming_soon"]).order("unlock_day", { ascending: true }),
+        supabase.from("guides").select("id,title,subtitle,description,category,cover_url,unlock_day,status,content_type,external_url,body_text,file_url").in("status", ["published", "coming_soon"]).order("unlock_day", { ascending: true }),
         supabase.from("daily_logs").select("log_date", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
 
@@ -160,7 +167,7 @@ function CoachPage() {
         ) : (
           <div className="-mx-5 px-5 flex gap-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
             {guides.slice(0, 8).map((g) => (
-              <GuideCard key={g.id} guide={g} journeyDay={journeyDay} />
+              <GuideCard key={g.id} guide={g} journeyDay={journeyDay} onOpen={setOpenGuide} />
             ))}
           </div>
         )}
@@ -204,11 +211,10 @@ function CoachPage() {
             <div className="p-5 text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No guides match your filters.</div>
           ) : (
             filteredBrowse.map((g, i) => (
-              <Link
+              <button
                 key={g.id}
-                to="/app/coach/guide/$id"
-                params={{ id: g.id }}
-                className="flex items-center gap-3 p-3"
+                onClick={() => setOpenGuide(g)}
+                className="w-full flex items-center gap-3 p-3 text-left"
                 style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-border)" }}
               >
                 <div className="w-14 h-[72px] rounded-lg overflow-hidden flex items-center justify-center" style={{ background: "var(--color-surface)" }}>
@@ -228,16 +234,20 @@ function CoachPage() {
                   )}
                 </div>
                 <ChevronRight size={18} color="var(--color-text-secondary)" />
-              </Link>
+              </button>
             ))
           )}
         </div>
       </div>
+
+      {openGuide && (
+        <GuideModal guide={openGuide} userId={user?.id} onClose={() => setOpenGuide(null)} />
+      )}
     </div>
   );
 }
 
-function GuideCard({ guide, journeyDay }: { guide: Guide; journeyDay: number }) {
+function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: number; onOpen: (g: Guide) => void }) {
   const locked = guide.status === "published" && guide.unlock_day > journeyDay;
   const comingSoon = guide.status === "coming_soon";
   const available = !locked && !comingSoon;
@@ -280,8 +290,131 @@ function GuideCard({ guide, journeyDay }: { guide: Guide; journeyDay: number }) 
     </div>
   );
 
-  if (available) return <Link to="/app/coach/guide/$id" params={{ id: guide.id }}>{card}</Link>;
+  if (available) return <button onClick={() => onOpen(guide)} className="text-left">{card}</button>;
   return <div onClick={() => alert(locked ? `This guide unlocks at Day ${guide.unlock_day}. Keep going.` : "Coming soon")}>{card}</div>;
+}
+
+function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string | undefined; onClose: () => void }) {
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    // Push history state for back-button close on Android
+    window.history.pushState({ guideModal: true }, "");
+    const onPop = () => onClose();
+    window.addEventListener("popstate", onPop);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      // If still on our pushed state, pop it
+      if (window.history.state?.guideModal) {
+        window.history.back();
+      }
+    };
+  }, [onClose]);
+
+  useEffect(() => {
+    if (guide.content_type !== "pdf" || !guide.file_url) return;
+    (async () => {
+      const { data, error } = await supabase.storage.from("guides").createSignedUrl(guide.file_url!, 3600);
+      if (error || !data?.signedUrl) {
+        setPdfError(true);
+      } else {
+        setSignedUrl(data.signedUrl);
+      }
+    })();
+  }, [guide]);
+
+  const markRead = async () => {
+    if (!userId || saving) return;
+    setSaving(true);
+    const { error } = await supabase.from("guide_access").upsert(
+      { user_id: userId, guide_id: guide.id },
+      { onConflict: "user_id,guide_id" } as never
+    );
+    setSaving(false);
+    if (error) {
+      // Fallback to insert if upsert constraint name differs
+      await supabase.from("guide_access").insert({ user_id: userId, guide_id: guide.id });
+    }
+    toast.success("Marked as read");
+    onClose();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 flex flex-col"
+      style={{ zIndex: 50, background: "#0A0A0A" }}
+    >
+      <div
+        className="flex items-center px-3"
+        style={{ height: 56, background: "#141414", borderBottom: "1px solid #252525" }}
+      >
+        <button onClick={onClose} aria-label="Back" className="p-1">
+          <ChevronLeft size={24} color="#F5F5F5" />
+        </button>
+        <div
+          className="flex-1 text-center px-3 truncate"
+          style={{ fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 16, color: "#F5F5F5" }}
+        >
+          {guide.title}
+        </div>
+        <div style={{ width: 32 }} />
+      </div>
+
+      <div className="flex-1 overflow-y-auto">
+        {guide.content_type === "pdf" && (
+          <div className="w-full h-full flex items-center justify-center">
+            {pdfError ? (
+              <p style={{ color: "#C0392B", fontSize: 14 }}>Unable to load. Please try again.</p>
+            ) : signedUrl ? (
+              <iframe
+                src={signedUrl}
+                title={guide.title}
+                style={{ width: "100%", height: "100%", border: "none" }}
+              />
+            ) : (
+              <p style={{ color: "#606060", fontSize: 14 }}>Loading...</p>
+            )}
+          </div>
+        )}
+
+        {guide.content_type === "link" && (
+          <div className="p-5">
+            {guide.subtitle && <p className="mb-3" style={{ color: "#ABABAB", fontSize: 15 }}>{guide.subtitle}</p>}
+            {guide.description && (
+              <p className="mb-5" style={{ color: "#F5F5F5", fontSize: 15, lineHeight: 1.6 }}>{guide.description}</p>
+            )}
+            <button
+              onClick={() => guide.external_url && window.open(guide.external_url, "_blank", "noopener,noreferrer")}
+              disabled={!guide.external_url}
+              className="w-full h-11 rounded-lg font-semibold disabled:opacity-60"
+              style={{ background: "#C0392B", color: "white" }}
+            >
+              Open in browser
+            </button>
+          </div>
+        )}
+
+        {guide.content_type === "text" && (
+          <div className="p-5 max-w-[680px] mx-auto prose prose-invert prose-sm" style={{ color: "#F5F5F5" }}>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{guide.body_text ?? ""}</ReactMarkdown>
+          </div>
+        )}
+      </div>
+
+      <div style={{ height: 64, background: "#141414", borderTop: "1px solid #252525", padding: 12 }}>
+        <button
+          onClick={markRead}
+          disabled={saving}
+          className="w-full h-full font-semibold disabled:opacity-70"
+          style={{ background: "#C0392B", color: "white", borderRadius: 8 }}
+        >
+          {saving ? "Saving..." : "Mark as read"}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function weeklyMessage(week: number): { title: string; body: string } {
