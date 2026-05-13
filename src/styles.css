@@ -74,7 +74,7 @@
 
   /* Brand */
   --primary:           #2E75B6;
-  --primary-foreground:var(--text-inverse);
+  --primary-foreground:#FFFFFF;
   --primary-hover:     #3A8FD6;
 
   --secondary:         var(--surface-2);
