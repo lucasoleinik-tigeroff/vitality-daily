@@ -69,7 +69,7 @@ function Index() {
         </div>
       </main>
       <footer className="py-6 text-center text-xs" style={{ color: "#8FA8B8" }}>
-        For adults 18+. Wellness coaching only — not medical advice.
+        For adults 18+. Your daily wellness companion.
       </footer>
     </div>
   );

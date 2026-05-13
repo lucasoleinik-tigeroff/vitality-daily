@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { getCrossSell, logImpression, logClick, type CrossSellResult } from "@/lib/crossSell";
-import { WhyAmISeeingThisModal } from "./WhyAmISeeingThisModal";
 
 const DISMISS_KEY = "vm_phase2_dismiss";
 
@@ -12,7 +11,6 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
     if (typeof sessionStorage === "undefined") return false;
     return sessionStorage.getItem(DISMISS_KEY) === "1";
   });
-  const [whyOpen, setWhyOpen] = useState(false);
   const [impressed, setImpressed] = useState(false);
 
   useEffect(() => {
@@ -94,15 +92,7 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
         <p className="mt-3 text-center" style={{ color: DARK, fontSize: 11, opacity: 0.7 }}>
           Based on your 14-day data · Optional upgrade
         </p>
-        <button
-          onClick={() => setWhyOpen(true)}
-          className="mt-1 w-full text-center underline"
-          style={{ color: DARK, fontWeight: 500, fontSize: 11, opacity: 0.7 }}
-        >
-          Why am I seeing this?
-        </button>
       </div>
-      <WhyAmISeeingThisModal open={whyOpen} onClose={() => setWhyOpen(false)} />
     </>
   );
 }

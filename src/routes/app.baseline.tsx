@@ -20,7 +20,7 @@ interface Metrics {
   waist_risk_category: string;
 }
 
-const FOR_EDU = "For educational purposes only. Consult a healthcare provider for medical evaluation.";
+
 
 function BaselineView() {
   const { user } = useAuth();
@@ -54,11 +54,11 @@ function BaselineView() {
       ) : (
         <div className="mt-6 space-y-3">
           {[
-            { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: m.bmi_category, note: "BMI is a general indicator; combine with waist measurement for a fuller picture." },
-            { label: "Estimated daily calorie burn", value: `${m.tdee_kcal} kcal/day`, sub: "TDEE", note: "This is a general estimate of calories burned per day. Actual needs vary." },
-            { label: "Daily hydration target", value: `${m.hydration_target_oz} oz`, sub: "Personalized to your body weight", note: "Adjust based on climate and individual needs." },
-            { label: "Target heart rate zones", value: `${m.hr_moderate_low}–${m.hr_moderate_high} bpm`, sub: `Vigorous: ${m.hr_vigorous_low}–${m.hr_vigorous_high} bpm`, note: "Consult a doctor before starting any vigorous exercise program." },
-            { label: "Waist risk category", value: m.waist_risk_category, sub: "Correlated with vascular health", note: "Talk to your doctor for medical evaluation." },
+            { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: m.bmi_category },
+            { label: "Estimated daily calorie burn", value: `${m.tdee_kcal} kcal/day`, sub: "TDEE" },
+            { label: "Daily hydration target", value: `${m.hydration_target_oz} oz`, sub: "Personalized to your body weight" },
+            { label: "Target heart rate zones", value: `${m.hr_moderate_low}–${m.hr_moderate_high} bpm`, sub: `Vigorous: ${m.hr_vigorous_low}–${m.hr_vigorous_high} bpm` },
+            { label: "Waist risk category", value: m.waist_risk_category, sub: "Correlated with vascular health" },
           ].map((it) => (
             <div key={it.label} className="p-5 rounded-[14px] bg-surface border border-border">
               <div className="section-label">{it.label}</div>
@@ -66,7 +66,6 @@ function BaselineView() {
                 <span className="text-2xl font-bold text-primary">{it.value}</span>
                 <span className="text-sm text-muted-foreground">{it.sub}</span>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">{it.note} <span className="italic">{FOR_EDU}</span></p>
             </div>
           ))}
         </div>

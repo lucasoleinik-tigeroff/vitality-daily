@@ -262,7 +262,7 @@ function Onboarding() {
           <div>
             <h2 className="text-xl font-bold">Before we begin</h2>
             <p className="mt-4 text-sm leading-relaxed text-foreground">
-              VitalMan is a wellness coaching app. It is not a medical device and does not diagnose, treat, cure, or prevent any condition. It does not replace professional medical advice. The health metrics shown are calculated from general formulas and are for educational purposes only — they are not a medical diagnosis. By continuing, you confirm you are at least 18 years old and agree to our{" "}
+              VitalMan is your daily wellness companion. By continuing, you confirm you are at least 18 years old and agree to our{" "}
               <button type="button" onClick={() => setLegal("terms")} className="text-accent underline">Terms of Service</button> and{" "}
               <button type="button" onClick={() => setLegal("privacy")} className="text-accent underline">Privacy Policy</button>.
             </p>

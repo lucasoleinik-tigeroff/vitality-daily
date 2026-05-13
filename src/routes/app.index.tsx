@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { User as UserIcon, Moon, Activity, Droplet, Brain } from "lucide-react";
-import { LegalModal } from "@/components/LegalModals";
 import { StreakChip } from "@/components/StreakChip";
 import { todayIsoDate } from "@/lib/health";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
-import { Phase2Banner } from "@/components/Phase2Banner";
 import { VitalityArc } from "@/components/VitalityArc";
 
 export const Route = createFileRoute("/app/")({
@@ -42,7 +40,7 @@ function Home() {
   const [todayScore, setTodayScore] = useState<Score | null>(null);
   const [trend, setTrend] = useState<Score[]>([]);
   const [tip, setTip] = useState<{ title: string; body: string } | null>(null);
-  const [legal, setLegal] = useState<"medical" | null>(null);
+  
 
   useEffect(() => {
     if (!user) return;
@@ -129,8 +127,6 @@ function Home() {
         </div>
       </div>
 
-      {/* Day-14 Phase 2 banner */}
-      {user && <Phase2Banner userId={user.id} journeyStart={profile?.journey_start_date ?? null} />}
 
       {/* Vitality Score */}
       <div className="mt-5 p-5 rounded-[14px] bg-surface border border-border">
@@ -183,15 +179,6 @@ function Home() {
         {todayLog ? "Update today's log" : "Log today"}
       </button>
 
-      <button
-        onClick={() => setLegal("medical")}
-        className="mt-6 w-full text-center text-xs underline"
-        style={{ color: "#8FA8B8" }}
-      >
-        Medical Disclaimer
-      </button>
-
-      <LegalModal type={legal} onClose={() => setLegal(null)} />
     </div>
   );
 }
