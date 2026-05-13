@@ -28,7 +28,7 @@ function Settings() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [p, setP] = useState<ProfileFull | null>(null);
-  const [legal, setLegal] = useState<"medical" | "terms" | "privacy" | null>(null);
+  const [legal, setLegal] = useState<"terms" | "privacy" | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
