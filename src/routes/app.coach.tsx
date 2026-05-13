@@ -34,7 +34,7 @@ interface Guide {
 }
 
 function buildGuideUrl(g: Guide): string | null {
-  if (g.file_url || g.external_url) return `/r/${g.id}`;
+  if (g.file_url || g.external_url) return `/api/public/r/${g.id}`;
   return null;
 }
 
