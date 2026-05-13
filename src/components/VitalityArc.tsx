@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 export type VitalityStatus = "Peak" | "Strong" | "Stable" | "Building" | "Low";
 
 const STATUS_COLOR: Record<VitalityStatus, string> = {
-  Peak: "#770101",
-  Strong: "#2E7D5A",
-  Stable: "#1A6A9A",
-  Building: "#C8973A",
-  Low: "#8B1A1A",
+  Peak: "var(--color-success)",
+  Strong: "var(--color-success)",
+  Stable: "var(--color-primary)",
+  Building: "var(--color-warning)",
+  Low: "var(--color-warning)",
 };
 
 export function statusFromScore(score: number | null): VitalityStatus | null {
@@ -69,11 +69,11 @@ export function VitalityArc({ score, journeyDay }: Props) {
   return (
     <div className="relative w-full flex flex-col items-center" style={{ minHeight: 220 }}>
       <svg viewBox="0 0 200 200" className="w-full max-w-[280px]" aria-hidden>
-        <path d={d} stroke="#243044" strokeWidth={14} fill="none" strokeLinecap="round" />
+        <path d={d} stroke="var(--color-surface-3)" strokeWidth={14} fill="none" strokeLinecap="round" />
         {score != null && (
           <path
             d={d}
-            stroke="#770101"
+            stroke="var(--color-primary)"
             strokeWidth={14}
             fill="none"
             strokeLinecap="round"
@@ -84,29 +84,29 @@ export function VitalityArc({ score, journeyDay }: Props) {
       <div className="absolute inset-0 flex flex-col items-center justify-center pt-4 pointer-events-none">
         {score == null ? (
           <>
-            <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "#F0EDDE", lineHeight: 1 }}>
+            <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "var(--color-text-primary)", lineHeight: 1 }}>
               —
             </div>
-            <div className="mt-2 text-sm" style={{ color: "#8B9CB5" }}>
+            <div className="mt-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
               Log to calculate
             </div>
           </>
         ) : (
           <>
-            <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "#F0EDDE", lineHeight: 1 }}>
+            <div style={{ fontSize: "2.5rem", fontWeight: 700, color: "var(--color-text-primary)", lineHeight: 1 }}>
               {Math.round(animated)}
             </div>
             {status && (
               <div
                 className="mt-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide"
-                style={{ background: STATUS_COLOR[status], color: "#F0EDDE" }}
+                style={{ background: STATUS_COLOR[status], color: "var(--color-text-primary)" }}
               >
                 {status}
               </div>
             )}
           </>
         )}
-        <div className="mt-2 text-xs" style={{ color: "#8B9CB5" }}>
+        <div className="mt-2 text-xs" style={{ color: "var(--color-text-muted)" }}>
           Day {journeyDay} of your journey
         </div>
       </div>

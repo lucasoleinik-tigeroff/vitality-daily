@@ -42,15 +42,15 @@ function BaselineView() {
 
   return (
     <div className="px-5 pt-5 pb-28">
-      <Link to="/app/settings" className="inline-flex items-center gap-1 text-sm" style={{ color: "#770101" }}>
+      <Link to="/app/settings" className="inline-flex items-center gap-1 text-sm" style={{ color: "var(--color-primary)" }}>
         <ChevronLeft size={16} /> Back
       </Link>
       <h1 className="mt-3 text-2xl font-bold" style={{ letterSpacing: "-0.02em" }}>Your Baseline</h1>
       <span className="section-accent-bar" />
-      <p className="text-sm mt-2" style={{ color: "#8FA8B8" }}>A read-only view of your computed health metrics.</p>
+      <p className="text-sm mt-2" style={{ color: "var(--color-text-secondary)" }}>A read-only view of your computed health metrics.</p>
 
       {!m ? (
-        <p className="mt-8 text-sm" style={{ color: "#8FA8B8" }}>No baseline metrics yet. Complete onboarding or update your body metrics on the Progress screen.</p>
+        <p className="mt-8 text-sm" style={{ color: "var(--color-text-secondary)" }}>No baseline metrics yet. Complete onboarding or update your body metrics on the Progress screen.</p>
       ) : (
         <div className="mt-6 space-y-3">
           {[
@@ -63,7 +63,7 @@ function BaselineView() {
             <div key={it.label} className="p-5 rounded-[14px] bg-surface border border-border">
               <div className="section-label">{it.label}</div>
               <div className="mt-1 flex items-baseline gap-2 flex-wrap">
-                <span className="text-2xl font-bold text-primary">{it.value}</span>
+                <span className="text-2xl font-bold text-foreground">{it.value}</span>
                 <span className="text-sm text-muted-foreground">{it.sub}</span>
               </div>
             </div>

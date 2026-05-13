@@ -110,8 +110,8 @@ function CoachPage() {
 
   return (
     <div className="px-5 pt-5 pb-24">
-      <h1 className="text-2xl font-bold text-primary" style={{ letterSpacing: "-0.02em" }}>Coach</h1>
-      <p className="text-sm" style={{ color: "#8FA8B8" }}>Guidance and resources for your journey</p>
+      <h1 className="text-2xl font-bold text-foreground" style={{ letterSpacing: "-0.02em" }}>Coach</h1>
+      <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>Guidance and resources for your journey</p>
       <div className="mt-2 mb-5" style={{ width: 24, height: 2, background: "var(--color-accent)", borderRadius: 2 }} />
 
       {eligible && user && (
@@ -125,14 +125,14 @@ function CoachPage() {
       <div className="p-5 rounded-[14px] bg-surface border border-border">
         {tip ? (
           <>
-            <h3 style={{ color: "#F0EDDE", fontWeight: 600, fontSize: 17 }}>{tip.title}</h3>
-            <p className="mt-2" style={{ color: "#F0EDDE", fontSize: 15, lineHeight: 1.55 }}>{tip.body}</p>
-            <span className="mt-3 inline-block px-2 py-0.5 rounded-full" style={{ background: "#0E3A56", color: "#5C0101", fontWeight: 500, fontSize: 11, textTransform: "uppercase" }}>
+            <h3 style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 17 }}>{tip.title}</h3>
+            <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{tip.body}</p>
+            <span className="mt-3 inline-block px-2 py-0.5 rounded-full" style={{ background: "var(--color-surface-2)", border: "1px solid var(--color-border)", color: "var(--color-text-muted)", fontWeight: 500, fontSize: 10, textTransform: "uppercase" }}>
               {tipMetricLabel}
             </span>
           </>
         ) : (
-          <p style={{ color: "#8FA8B8", fontSize: 14 }}>No tips available yet.</p>
+          <p style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No tips available yet.</p>
         )}
       </div>
 
@@ -140,11 +140,11 @@ function CoachPage() {
       <div className="mt-5">
         <SectionHeader label="Message of the Week" />
         <div className="p-5 rounded-[14px] bg-surface border border-border">
-          <div style={{ color: "#8FA8B8", fontSize: 12 }}>Week {currentJourneyWeek(profile?.journey_start_date)} of your journey</div>
+          <div style={{ color: "var(--color-text-secondary)", fontSize: 12 }}>Week {currentJourneyWeek(profile?.journey_start_date)} of your journey</div>
           {message && (
             <>
-              <h3 className="mt-1" style={{ color: "#F0EDDE", fontWeight: 600, fontSize: 18 }}>{message.title}</h3>
-              <p className="mt-2" style={{ color: "#F0EDDE", fontSize: 15, lineHeight: 1.55 }}>{message.body}</p>
+              <h3 className="mt-1" style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 18 }}>{message.title}</h3>
+              <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{message.body}</p>
             </>
           )}
         </div>
@@ -154,7 +154,7 @@ function CoachPage() {
       <div className="mt-5">
         <SectionHeader label="Your Guides" />
         {guides.length === 0 ? (
-          <div className="p-5 rounded-[14px] bg-surface border border-border text-center" style={{ color: "#8FA8B8", fontSize: 14 }}>
+          <div className="p-5 rounded-[14px] bg-surface border border-border text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>
             Guides will appear here as your journey unfolds.
           </div>
         ) : (
@@ -170,13 +170,13 @@ function CoachPage() {
       <div className="mt-6">
         <SectionHeader label="Browse All" />
         <div className="relative">
-          <Search size={16} color="#8FA8B8" style={{ position: "absolute", left: 12, top: 12 }} />
+          <Search size={16} color="var(--color-text-secondary)" style={{ position: "absolute", left: 12, top: 12 }} />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search guides..."
             className="w-full h-10 rounded-md border pl-9 pr-3 text-sm"
-            style={{ background: "#023048", borderColor: "#0E3A56", color: "#F0EDDE" }}
+            style={{ background: "var(--color-surface)", borderColor: "var(--color-border)", color: "var(--color-text-foreground)" }}
           />
         </div>
         <div className="mt-3 -mx-5 px-5 flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
@@ -190,7 +190,7 @@ function CoachPage() {
                 style={
                   active
                     ? { background: "var(--color-primary)", color: "white", fontWeight: 600 }
-                    : { background: "#023048", border: "1px solid #0E3A56", color: "#8FA8B8", fontWeight: 500 }
+                    : { background: "var(--color-surface)", border: "1px solid var(--color-border)", color: "var(--color-text-secondary)", fontWeight: 500 }
                 }
               >
                 {c}
@@ -201,7 +201,7 @@ function CoachPage() {
 
         <div className="mt-3 rounded-[14px] bg-card border border-border overflow-hidden">
           {filteredBrowse.length === 0 ? (
-            <div className="p-5 text-center" style={{ color: "#8FA8B8", fontSize: 14 }}>No guides match your filters.</div>
+            <div className="p-5 text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No guides match your filters.</div>
           ) : (
             filteredBrowse.map((g, i) => (
               <Link
@@ -209,9 +209,9 @@ function CoachPage() {
                 to="/app/coach/guide/$id"
                 params={{ id: g.id }}
                 className="flex items-center gap-3 p-3"
-                style={{ borderTop: i === 0 ? "none" : "1px solid #0E3A56" }}
+                style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-border)" }}
               >
-                <div className="w-14 h-[72px] rounded-lg overflow-hidden flex items-center justify-center" style={{ background: "#023048" }}>
+                <div className="w-14 h-[72px] rounded-lg overflow-hidden flex items-center justify-center" style={{ background: "var(--color-surface)" }}>
                   {g.cover_url ? (
                     <img src={g.cover_url} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -219,15 +219,15 @@ function CoachPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-primary truncate">{g.title}</div>
-                  {g.subtitle && <div className="text-xs truncate" style={{ color: "#8FA8B8" }}>{g.subtitle}</div>}
+                  <div className="text-sm font-semibold text-foreground truncate">{g.title}</div>
+                  {g.subtitle && <div className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>{g.subtitle}</div>}
                   {g.category && (
-                    <span className="mt-1 inline-block px-1.5 py-0.5 rounded text-[10px]" style={{ background: "#023048", color: "#8FA8B8" }}>
+                    <span className="mt-1 inline-block px-1.5 py-0.5 rounded text-[10px]" style={{ background: "var(--color-surface)", color: "var(--color-text-secondary)" }}>
                       {g.category}
                     </span>
                   )}
                 </div>
-                <ChevronRight size={18} color="#8FA8B8" />
+                <ChevronRight size={18} color="var(--color-text-secondary)" />
               </Link>
             ))
           )}
@@ -247,7 +247,7 @@ function GuideCard({ guide, journeyDay }: { guide: Guide; journeyDay: number }) 
       className="rounded-xl bg-card border border-border overflow-hidden flex-shrink-0 flex flex-col"
       style={{ width: 240, height: 280 }}
     >
-      <div className="w-full flex items-center justify-center" style={{ height: 140, background: "#023048" }}>
+      <div className="w-full flex items-center justify-center" style={{ height: 140, background: "var(--color-surface)" }}>
         {guide.cover_url ? (
           <img src={guide.cover_url} alt="" className="w-full h-full object-cover" />
         ) : (
@@ -255,23 +255,23 @@ function GuideCard({ guide, journeyDay }: { guide: Guide; journeyDay: number }) 
         )}
       </div>
       <div className="p-3.5 flex-1 flex flex-col">
-        <div className="text-[15px] font-semibold text-primary line-clamp-2">{guide.title}</div>
+        <div className="text-[15px] font-semibold text-foreground line-clamp-2">{guide.title}</div>
         {guide.subtitle && (
-          <div className="mt-1 text-[13px] line-clamp-2" style={{ color: "#8FA8B8" }}>{guide.subtitle}</div>
+          <div className="mt-1 text-[13px] line-clamp-2" style={{ color: "var(--color-text-secondary)" }}>{guide.subtitle}</div>
         )}
         <div className="mt-auto pt-2">
           {available && (
-            <span className="px-2 py-1 rounded-full text-[10px]" style={{ background: "#0E3A56", color: "#5C0101", fontWeight: 600, textTransform: "uppercase" }}>
+            <span className="px-2 py-1 rounded-full text-[10px]" style={{ background: "rgba(61,170,110,0.15)", color: "var(--color-success)", border: "1px solid var(--color-success)", fontWeight: 600, textTransform: "uppercase" }}>
               Available
             </span>
           )}
           {locked && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px]" style={{ background: "#023048", color: "#8FA8B8" }}>
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px]" style={{ background: "var(--color-surface)", color: "var(--color-text-secondary)" }}>
               <Lock size={10} /> Unlocks at Day {guide.unlock_day}
             </span>
           )}
           {comingSoon && (
-            <span className="px-2 py-1 rounded-full text-[10px]" style={{ background: "#023048", color: "#8FA8B8", fontWeight: 600, textTransform: "uppercase" }}>
+            <span className="px-2 py-1 rounded-full text-[10px]" style={{ background: "var(--color-surface)", color: "var(--color-text-secondary)", fontWeight: 600, textTransform: "uppercase" }}>
               Coming Soon
             </span>
           )}

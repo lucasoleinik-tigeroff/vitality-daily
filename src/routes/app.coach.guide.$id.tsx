@@ -62,7 +62,7 @@ function GuideViewer() {
     setTimeout(() => navigate({ to: "/app/coach" }), 800);
   };
 
-  if (!guide) return <div className="px-5 pt-5 pb-24 text-sm" style={{ color: "#8FA8B8" }}>Loading...</div>;
+  if (!guide) return <div className="px-5 pt-5 pb-24 text-sm" style={{ color: "var(--color-text-secondary)" }}>Loading...</div>;
 
   const RightIcon = guide.content_type === "pdf" ? Download : guide.content_type === "link" ? ExternalLink : null;
 
@@ -72,7 +72,7 @@ function GuideViewer() {
         <button onClick={() => navigate({ to: "/app/coach" })} aria-label="Back">
           <ArrowLeft size={24} color="var(--color-primary)" />
         </button>
-        <div className="flex-1 px-3 text-center text-base font-semibold text-primary truncate">{guide.title}</div>
+        <div className="flex-1 px-3 text-center text-base font-semibold text-foreground truncate">{guide.title}</div>
         {RightIcon ? <RightIcon size={20} color="var(--color-primary)" /> : <span style={{ width: 20 }} />}
       </div>
 
@@ -81,20 +81,20 @@ function GuideViewer() {
           <iframe src={guide.file_url} title={guide.title} className="w-full" style={{ height: "70vh", border: "none" }} />
         )}
         {guide.content_type === "pdf" && !guide.file_url && (
-          <p className="text-sm" style={{ color: "#8FA8B8" }}>This PDF is not yet available.</p>
+          <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>This PDF is not yet available.</p>
         )}
 
         {guide.content_type === "link" && (
           <div>
-            <h1 className="text-[22px] font-bold text-primary leading-tight">{guide.title}</h1>
-            {guide.subtitle && <p className="mt-1 text-[15px]" style={{ color: "#8FA8B8" }}>{guide.subtitle}</p>}
+            <h1 className="text-[22px] font-bold text-foreground leading-tight">{guide.title}</h1>
+            {guide.subtitle && <p className="mt-1 text-[15px]" style={{ color: "var(--color-text-secondary)" }}>{guide.subtitle}</p>}
             {guide.description && (
-              <p className="mt-4 text-[15px]" style={{ lineHeight: 1.6, color: "#F0EDDE" }}>{guide.description}</p>
+              <p className="mt-4 text-[15px]" style={{ lineHeight: 1.6, color: "var(--color-text-foreground)" }}>{guide.description}</p>
             )}
             <button
               onClick={() => guide.external_url && window.open(guide.external_url, "_blank", "noopener,noreferrer")}
               disabled={!guide.external_url}
-              className="mt-6 w-full h-11 rounded-md bg-primary text-primary-foreground font-semibold disabled:opacity-60"
+              className="mt-6 w-full h-11 rounded-md bg-primary text-foreground-foreground font-semibold disabled:opacity-60"
             >
               Open in browser
             </button>
@@ -103,21 +103,21 @@ function GuideViewer() {
 
         {guide.content_type === "text" && (
           <div className="max-w-[680px] mx-auto">
-            <h1 className="text-2xl font-bold" style={{ color: "#F0EDDE" }}>{guide.title}</h1>
-            {guide.subtitle && <p className="mt-1 text-[15px]" style={{ color: "#8FA8B8" }}>{guide.subtitle}</p>}
-            <div className="prose prose-sm mt-4 max-w-none" style={{ color: "#F0EDDE" }}>
+            <h1 className="text-2xl font-bold" style={{ color: "var(--color-text-foreground)" }}>{guide.title}</h1>
+            {guide.subtitle && <p className="mt-1 text-[15px]" style={{ color: "var(--color-text-secondary)" }}>{guide.subtitle}</p>}
+            <div className="prose prose-sm mt-4 max-w-none" style={{ color: "var(--color-text-foreground)" }}>
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{guide.body_text ?? ""}</ReactMarkdown>
             </div>
           </div>
         )}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-card p-4" style={{ borderTop: "1px solid #0E3A56" }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-card p-4" style={{ borderTop: "1px solid var(--color-border)" }}>
         <div className="max-w-[768px] mx-auto">
           <button
             onClick={markRead}
             disabled={marked || saving}
-            className="w-full h-11 rounded-md bg-primary text-primary-foreground font-semibold disabled:opacity-70 flex items-center justify-center gap-2"
+            className="w-full h-11 rounded-md bg-primary text-foreground-foreground font-semibold disabled:opacity-70 flex items-center justify-center gap-2"
           >
             {marked && <Check size={16} />} {marked ? "Marked as read" : saving ? "Saving..." : "Mark as read"}
           </button>
