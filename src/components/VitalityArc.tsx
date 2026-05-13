@@ -69,7 +69,7 @@ export function VitalityArc({ score, journeyDay }: Props) {
   return (
     <div className="relative w-full flex flex-col items-center" style={{ minHeight: 220 }}>
       <svg viewBox="0 0 200 200" className="w-full max-w-[280px]" aria-hidden>
-        <path d={d} stroke="#243044" strokeWidth={14} fill="none" strokeLinecap="round" />
+        <path d={d} stroke="var(--color-surface-3)" strokeWidth={14} fill="none" strokeLinecap="round" />
         {score != null && (
           <path
             d={d}
