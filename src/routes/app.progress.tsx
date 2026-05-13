@@ -62,7 +62,6 @@ function ProgressPage() {
     return { avg, best, streak: profile?.streak_count ?? 0 };
   }, [filteredScores, profile]);
 
-  const summary = useMemo(() => buildWeeklySummary(scores, logs, completions, logCount), [scores, logs, completions, logCount]);
   const eligible = logCount >= 14;
   const latestMetrics = metricsHist.at(-1);
 
