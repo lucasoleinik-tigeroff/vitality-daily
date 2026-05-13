@@ -245,7 +245,8 @@ function CoachPage() {
                 </div>
                 <ChevronRight size={18} color="var(--color-text-secondary)" />
               </button>
-            ))
+              );
+            })
           )}
         </div>
       </div>
