@@ -1,0 +1,1 @@
+UPDATE public.guides SET title = 'Male Vitality & Circulation Guide', subtitle = 'Circulation and performance support' WHERE title = 'The Blood Flow';
