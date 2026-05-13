@@ -179,15 +179,6 @@ function Home() {
         {todayLog ? "Update today's log" : "Log today"}
       </button>
 
-      <button
-        onClick={() => setLegal("medical")}
-        className="mt-6 w-full text-center text-xs underline"
-        style={{ color: "#8FA8B8" }}
-      >
-        Medical Disclaimer
-      </button>
-
-      <LegalModal type={legal} onClose={() => setLegal(null)} />
     </div>
   );
 }
