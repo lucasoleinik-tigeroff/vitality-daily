@@ -115,7 +115,15 @@ function GuideViewer() {
 
       <div className="flex-1 px-5 py-5">
         {guide.content_type === "pdf" && guide.file_url && signedPdfUrl && (
-          <iframe src={signedPdfUrl} title={guide.title} className="w-full" style={{ height: "70vh", border: "none" }} />
+          <iframe
+            src={signedPdfUrl}
+            title={guide.title}
+            width="100%"
+            style={{ height: "calc(100vh - 120px)", border: "none" }}
+          />
+        )}
+        {guide.content_type === "pdf" && guide.file_url && !signedPdfUrl && !pdfError && (
+          <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>Loading PDF...</p>
         )}
         {guide.content_type === "pdf" && guide.file_url && !signedPdfUrl && pdfError && (
           <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>{pdfError}</p>
