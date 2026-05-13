@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
-import { Lock, ChevronRight, BookOpen, Search, X, ExternalLink } from "lucide-react";
+import { Lock, ChevronRight, BookOpen, Search } from "lucide-react";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Phase2Card } from "@/components/Phase2Card";
 import { currentJourneyDay, currentJourneyWeek } from "@/lib/journey";
@@ -42,18 +42,22 @@ function buildGuideUrl(g: Guide): string | null {
 
 function markGuideAsRead(g: Guide, userId: string | undefined) {
   if (!userId) return;
+  // Best-effort tracking; ignore errors (e.g. duplicate inserts).
   supabase
     .from("guide_access")
-    .upsert({ user_id: userId, guide_id: g.id }, { onConflict: "user_id,guide_id" } as never)
+    .insert({ user_id: userId, guide_id: g.id } as never)
     .then(() => {});
 }
 
-function openGuideInNewTab(g: Guide, userId: string | undefined) {
+function openGuide(g: Guide, userId: string | undefined) {
   const url = buildGuideUrl(g);
   if (!url) {
     toast.error("Guide unavailable");
     return;
   }
+  // Open the public Supabase URL directly in a new tab — no proxy, no iframe.
+  // This avoids ad-blocker filters on /api/public/* and Storage's
+  // attachment Content-Disposition that breaks inline rendering.
   window.open(url, "_blank", "noopener,noreferrer");
   markGuideAsRead(g, userId);
 }
