@@ -96,7 +96,9 @@ function CoachPage() {
     })();
   }, [user]);
 
-  const journeyDay = currentJourneyDay(profile?.journey_start_date);
+  const journeyDay = currentJourneyDay(profile?.journey_start_date) || 0;
+  console.log("[coach] journeyDay:", journeyDay, "profile:", profile?.journey_start_date);
+
   const eligible = logCount >= 14;
 
   const visibleGuides = useMemo(
@@ -116,150 +118,153 @@ function CoachPage() {
   const tipMetricLabel = tip ? tip.target_metric.charAt(0).toUpperCase() + tip.target_metric.slice(1) + " tip" : "";
 
   return (
-    <div className="px-5 pt-5 pb-24">
-      <h1 className="text-2xl font-bold text-foreground" style={{ letterSpacing: "-0.02em" }}>Coach</h1>
-      <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>Guidance and resources for your journey</p>
-      <div className="mt-2 mb-5" style={{ width: 24, height: 2, background: "var(--color-accent)", borderRadius: 2 }} />
+    <>
+      <div className="px-5 pt-5 pb-24">
+        <h1 className="text-2xl font-bold text-foreground" style={{ letterSpacing: "-0.02em" }}>Coach</h1>
+        <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>Guidance and resources for your journey</p>
+        <div className="mt-2 mb-5" style={{ width: 24, height: 2, background: "var(--color-accent)", borderRadius: 2 }} />
 
-      {eligible && user && (
-        <div className="mb-5">
-          <Phase2Card userId={user.id} />
-        </div>
-      )}
-
-      {/* Tip of the Day */}
-      <SectionHeader label="Tip of the Day" />
-      <div className="p-5 rounded-[14px] bg-surface border border-border">
-        {tip ? (
-          <>
-            <h3 style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 17 }}>{tip.title}</h3>
-            <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{tip.body}</p>
-            <span className="mt-3 inline-block px-2 py-0.5 rounded-full" style={{ background: "var(--color-surface-2)", border: "1px solid var(--color-border)", color: "var(--color-text-muted)", fontWeight: 500, fontSize: 10, textTransform: "uppercase" }}>
-              {tipMetricLabel}
-            </span>
-          </>
-        ) : (
-          <p style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No tips available yet.</p>
+        {eligible && user && (
+          <div className="mb-5">
+            <Phase2Card userId={user.id} />
+          </div>
         )}
-      </div>
 
-      {/* Weekly Message */}
-      <div className="mt-5">
-        <SectionHeader label="Message of the Week" />
+        {/* Tip of the Day */}
+        <SectionHeader label="Tip of the Day" />
         <div className="p-5 rounded-[14px] bg-surface border border-border">
-          <div style={{ color: "var(--color-text-secondary)", fontSize: 12 }}>Week {currentJourneyWeek(profile?.journey_start_date)} of your journey</div>
-          {message && (
+          {tip ? (
             <>
-              <h3 className="mt-1" style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 18 }}>{message.title}</h3>
-              <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{message.body}</p>
+              <h3 style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 17 }}>{tip.title}</h3>
+              <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{tip.body}</p>
+              <span className="mt-3 inline-block px-2 py-0.5 rounded-full" style={{ background: "var(--color-surface-2)", border: "1px solid var(--color-border)", color: "var(--color-text-muted)", fontWeight: 500, fontSize: 10, textTransform: "uppercase" }}>
+                {tipMetricLabel}
+              </span>
             </>
-          )}
-        </div>
-      </div>
-
-      {/* Your Guides — horizontal */}
-      <div className="mt-5">
-        <SectionHeader label="Your Guides" />
-        {guides.length === 0 ? (
-          <div className="p-5 rounded-[14px] bg-surface border border-border text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>
-            Guides will appear here as your journey unfolds.
-          </div>
-        ) : (
-          <div className="-mx-5 px-5 flex gap-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-            {guides.slice(0, 8).map((g) => (
-              <GuideCard key={g.id} guide={g} journeyDay={journeyDay} onOpen={setOpenGuide} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Browse All */}
-      <div className="mt-6">
-        <SectionHeader label="Browse All" />
-        <div className="relative">
-          <Search size={16} color="var(--color-text-secondary)" style={{ position: "absolute", left: 12, top: 12 }} />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search guides..."
-            className="w-full h-10 rounded-md border pl-9 pr-3 text-sm"
-            style={{ background: "var(--color-surface)", borderColor: "var(--color-border)", color: "var(--color-text-foreground)" }}
-          />
-        </div>
-        <div className="mt-3 -mx-5 px-5 flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-          {CATEGORIES.map((c) => {
-            const active = category === c;
-            return (
-              <button
-                key={c}
-                onClick={() => setCategory(c)}
-                className="px-3 h-8 rounded-full text-xs whitespace-nowrap"
-                style={
-                  active
-                    ? { background: "var(--color-primary)", color: "white", fontWeight: 600 }
-                    : { background: "var(--color-surface)", border: "1px solid var(--color-border)", color: "var(--color-text-secondary)", fontWeight: 500 }
-                }
-              >
-                {c}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-3 rounded-[14px] bg-card border border-border overflow-hidden">
-          {filteredBrowse.length === 0 ? (
-            <div className="p-5 text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No guides match your filters.</div>
           ) : (
-    filteredBrowse.map((g, i) => {
-              const locked = g.unlock_day > journeyDay;
-              const handleTap = () => {
-                if (locked) {
-                  toast(`Unlocks at Day ${g.unlock_day}. Keep going.`);
-                  return;
-                }
-                setOpenGuide(g);
-                console.log("[coach] openGuide set to:", g);
-              };
-              return (
-              <button
-                key={g.id}
-                onClick={handleTap}
-                className="w-full flex items-center gap-3 p-3 text-left cursor-pointer"
-                style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-border)" }}
-              >
-                <div className="w-14 h-[72px] rounded-lg overflow-hidden flex items-center justify-center" style={{ background: "var(--color-surface)" }}>
-                  {g.cover_url ? (
-                    <img src={g.cover_url} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <BookOpen size={24} color="var(--color-accent)" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-foreground truncate">{g.title}</div>
-                  {g.subtitle && <div className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>{g.subtitle}</div>}
-                  {g.category && (
-                    <span className="mt-1 inline-block px-1.5 py-0.5 rounded text-[10px]" style={{ background: "var(--color-surface)", color: "var(--color-text-secondary)" }}>
-                      {g.category}
-                    </span>
-                  )}
-                </div>
-                <ChevronRight size={18} color="var(--color-text-secondary)" />
-              </button>
-              );
-            })
+            <p style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No tips available yet.</p>
           )}
+        </div>
+
+        {/* Weekly Message */}
+        <div className="mt-5">
+          <SectionHeader label="Message of the Week" />
+          <div className="p-5 rounded-[14px] bg-surface border border-border">
+            <div style={{ color: "var(--color-text-secondary)", fontSize: 12 }}>Week {currentJourneyWeek(profile?.journey_start_date)} of your journey</div>
+            {message && (
+              <>
+                <h3 className="mt-1" style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 18 }}>{message.title}</h3>
+                <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{message.body}</p>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Your Guides — horizontal */}
+        <div className="mt-5">
+          <SectionHeader label="Your Guides" />
+          {guides.length === 0 ? (
+            <div className="p-5 rounded-[14px] bg-surface border border-border text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>
+              Guides will appear here as your journey unfolds.
+            </div>
+          ) : (
+            <div className="-mx-5 px-5 flex gap-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+              {guides.slice(0, 8).map((g) => (
+                <GuideCard key={g.id} guide={g} journeyDay={journeyDay} onOpen={setOpenGuide} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Browse All */}
+        <div className="mt-6">
+          <SectionHeader label="Browse All" />
+          <div className="relative">
+            <Search size={16} color="var(--color-text-secondary)" style={{ position: "absolute", left: 12, top: 12 }} />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search guides..."
+              className="w-full h-10 rounded-md border pl-9 pr-3 text-sm"
+              style={{ background: "var(--color-surface)", borderColor: "var(--color-border)", color: "var(--color-text-foreground)" }}
+            />
+          </div>
+          <div className="mt-3 -mx-5 px-5 flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+            {CATEGORIES.map((c) => {
+              const active = category === c;
+              return (
+                <button
+                  key={c}
+                  onClick={() => setCategory(c)}
+                  className="px-3 h-8 rounded-full text-xs whitespace-nowrap"
+                  style={
+                    active
+                      ? { background: "var(--color-primary)", color: "white", fontWeight: 600 }
+                      : { background: "var(--color-surface)", border: "1px solid var(--color-border)", color: "var(--color-text-secondary)", fontWeight: 500 }
+                  }
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-3 rounded-[14px] bg-card border border-border overflow-hidden">
+            {filteredBrowse.length === 0 ? (
+              <div className="p-5 text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No guides match your filters.</div>
+            ) : (
+              filteredBrowse.map((g, i) => {
+                const locked = g.unlock_day > journeyDay;
+                const handleTap = () => {
+                  if (locked) {
+                    toast(`Unlocks at Day ${g.unlock_day}. Keep going.`);
+                    return;
+                  }
+                  console.log("[coach] browse row tapped, setting openGuide:", g);
+                  setOpenGuide(g);
+                };
+                return (
+                  <button
+                    key={g.id}
+                    onClick={handleTap}
+                    className="w-full flex items-center gap-3 p-3 text-left cursor-pointer"
+                    style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-border)" }}
+                  >
+                    <div className="w-14 h-[72px] rounded-lg overflow-hidden flex items-center justify-center" style={{ background: "var(--color-surface)" }}>
+                      {g.cover_url ? (
+                        <img src={g.cover_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <BookOpen size={24} color="var(--color-accent)" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-foreground truncate">{g.title}</div>
+                      {g.subtitle && <div className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>{g.subtitle}</div>}
+                      {g.category && (
+                        <span className="mt-1 inline-block px-1.5 py-0.5 rounded text-[10px]" style={{ background: "var(--color-surface)", color: "var(--color-text-secondary)" }}>
+                          {g.category}
+                        </span>
+                      )}
+                    </div>
+                    <ChevronRight size={18} color="var(--color-text-secondary)" />
+                  </button>
+                );
+              })
+            )}
+          </div>
         </div>
       </div>
 
       {openGuide && (
         <GuideModal guide={openGuide} userId={user?.id} onClose={() => setOpenGuide(null)} />
       )}
-    </div>
+    </>
   );
 }
 
 function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: number; onOpen: (g: Guide) => void }) {
-  const locked = guide.status === "published" && guide.unlock_day > journeyDay;
+  const day = journeyDay || 0;
+  const locked = guide.status === "published" && guide.unlock_day > day;
   const comingSoon = guide.status === "coming_soon";
   const available = !locked && !comingSoon;
 
@@ -272,8 +277,8 @@ function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: nu
       toast(`Unlocks at Day ${guide.unlock_day}. Keep going.`);
       return;
     }
+    console.log("[coach] card tapped, setting openGuide:", guide);
     onOpen(guide);
-    console.log("[coach] openGuide set to:", guide);
   };
 
   return (
@@ -324,13 +329,11 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    // Push history state for back-button close on Android
     window.history.pushState({ guideModal: true }, "");
     const onPop = () => onClose();
     window.addEventListener("popstate", onPop);
     return () => {
       window.removeEventListener("popstate", onPop);
-      // If still on our pushed state, pop it
       if (window.history.state?.guideModal) {
         window.history.back();
       }
@@ -340,7 +343,9 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
   useEffect(() => {
     if (guide.content_type !== "pdf" || !guide.file_url) return;
     (async () => {
+      console.log("[guide modal] generating signed URL for:", guide.file_url);
       const { data, error } = await supabase.storage.from("guides").createSignedUrl(guide.file_url!, 3600);
+      console.log("[guide modal] signed URL result:", { data, error });
       if (error || !data?.signedUrl) {
         setPdfError(true);
       } else {
@@ -358,7 +363,6 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
     );
     setSaving(false);
     if (error) {
-      // Fallback to insert if upsert constraint name differs
       await supabase.from("guide_access").insert({ user_id: userId, guide_id: guide.id });
     }
     toast.success("Marked as read");
@@ -388,17 +392,21 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
 
       <div className="flex-1 overflow-y-auto">
         {guide.content_type === "pdf" && (
-          <div className="w-full h-full flex items-center justify-center">
+          <div style={{ width: "100%", height: "100%" }}>
             {pdfError ? (
-              <p style={{ color: "#C0392B", fontSize: 14 }}>Unable to load. Please try again.</p>
+              <div className="flex items-center justify-center h-full">
+                <p style={{ color: "#C0392B", fontSize: 14 }}>Unable to load. Please try again.</p>
+              </div>
             ) : signedUrl ? (
               <iframe
                 src={signedUrl}
                 title={guide.title}
-                style={{ width: "100%", height: "100%", border: "none" }}
+                style={{ width: "100%", height: "100%", border: "none", display: "block" }}
               />
             ) : (
-              <p style={{ color: "#606060", fontSize: 14 }}>Loading...</p>
+              <div className="flex items-center justify-center h-full">
+                <p style={{ color: "#606060", fontSize: 14 }}>Loading PDF...</p>
+              </div>
             )}
           </div>
         )}
