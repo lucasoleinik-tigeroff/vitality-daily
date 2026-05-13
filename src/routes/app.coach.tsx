@@ -423,7 +423,7 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
           )}
 
           <button
-            onClick={markRead}
+            onClick={(e) => { e.stopPropagation(); markRead(); }}
             disabled={saving}
             className="w-full h-12 rounded-lg font-semibold disabled:opacity-50"
             style={{ background: "transparent", color: "#ABABAB", border: "1px solid #252525", fontSize: 15 }}
