@@ -97,8 +97,6 @@ function CoachPage() {
   }, [user]);
 
   const journeyDay = currentJourneyDay(profile?.journey_start_date) || 0;
-  console.log("[coach] journeyDay:", journeyDay, "profile:", profile?.journey_start_date);
-
   const eligible = logCount >= 14;
 
   const visibleGuides = useMemo(
@@ -115,7 +113,9 @@ function CoachPage() {
     });
   }, [visibleGuides, search, category]);
 
-  const tipMetricLabel = tip ? tip.target_metric.charAt(0).toUpperCase() + tip.target_metric.slice(1) + " tip" : "";
+  const tipMetricLabel = tip
+    ? tip.target_metric.charAt(0).toUpperCase() + tip.target_metric.slice(1) + " tip"
+    : "";
 
   return (
     <>
@@ -150,7 +150,9 @@ function CoachPage() {
         <div className="mt-5">
           <SectionHeader label="Message of the Week" />
           <div className="p-5 rounded-[14px] bg-surface border border-border">
-            <div style={{ color: "var(--color-text-secondary)", fontSize: 12 }}>Week {currentJourneyWeek(profile?.journey_start_date)} of your journey</div>
+            <div style={{ color: "var(--color-text-secondary)", fontSize: 12 }}>
+              Week {currentJourneyWeek(profile?.journey_start_date)} of your journey
+            </div>
             {message && (
               <>
                 <h3 className="mt-1" style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 18 }}>{message.title}</h3>
@@ -160,7 +162,7 @@ function CoachPage() {
           </div>
         </div>
 
-        {/* Your Guides — horizontal */}
+        {/* Your Guides — horizontal scroll */}
         <div className="mt-5">
           <SectionHeader label="Your Guides" />
           {guides.length === 0 ? (
@@ -211,16 +213,14 @@ function CoachPage() {
 
           <div className="mt-3 rounded-[14px] bg-card border border-border overflow-hidden">
             {filteredBrowse.length === 0 ? (
-              <div className="p-5 text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>No guides match your filters.</div>
+              <div className="p-5 text-center" style={{ color: "var(--color-text-secondary)", fontSize: 14 }}>
+                No guides match your filters.
+              </div>
             ) : (
               filteredBrowse.map((g, i) => {
                 const locked = g.unlock_day > journeyDay;
                 const handleTap = () => {
-                  if (locked) {
-                    toast(`Unlocks at Day ${g.unlock_day}. Keep going.`);
-                    return;
-                  }
-                  console.log("[coach] browse row tapped, setting openGuide:", g);
+                  if (locked) { toast(`Unlocks at Day ${g.unlock_day}. Keep going.`); return; }
                   setOpenGuide(g);
                 };
                 return (
@@ -239,7 +239,9 @@ function CoachPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-foreground truncate">{g.title}</div>
-                      {g.subtitle && <div className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>{g.subtitle}</div>}
+                      {g.subtitle && (
+                        <div className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>{g.subtitle}</div>
+                      )}
                       {g.category && (
                         <span className="mt-1 inline-block px-1.5 py-0.5 rounded text-[10px]" style={{ background: "var(--color-surface)", color: "var(--color-text-secondary)" }}>
                           {g.category}
@@ -269,15 +271,8 @@ function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: nu
   const available = !locked && !comingSoon;
 
   const handleTap = () => {
-    if (comingSoon) {
-      toast("Coming soon");
-      return;
-    }
-    if (locked) {
-      toast(`Unlocks at Day ${guide.unlock_day}. Keep going.`);
-      return;
-    }
-    console.log("[coach] card tapped, setting openGuide:", guide);
+    if (comingSoon) { toast("Coming soon"); return; }
+    if (locked) { toast(`Unlocks at Day ${guide.unlock_day}. Keep going.`); return; }
     onOpen(guide);
   };
 
@@ -325,7 +320,7 @@ function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: nu
 
 function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string | undefined; onClose: () => void }) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
-  const [pdfError, setPdfError] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -334,116 +329,100 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
     window.addEventListener("popstate", onPop);
     return () => {
       window.removeEventListener("popstate", onPop);
-      if (window.history.state?.guideModal) {
-        window.history.back();
-      }
+      if (window.history.state?.guideModal) window.history.back();
     };
   }, [onClose]);
 
   useEffect(() => {
-    if (guide.content_type !== "pdf" || !guide.file_url) return;
+    if (guide.content_type !== "pdf" || !guide.file_url) { setLoading(false); return; }
     (async () => {
-      console.log("[guide modal] generating signed URL for:", guide.file_url);
-      const { data, error } = await supabase.storage.from("guides").createSignedUrl(guide.file_url!, 3600);
-      console.log("[guide modal] signed URL result:", { data, error });
-      if (error || !data?.signedUrl) {
-        setPdfError(true);
-      } else {
-        setSignedUrl(data.signedUrl);
-      }
+      const { data } = await supabase.storage.from("guides").createSignedUrl(guide.file_url!, 3600);
+      setSignedUrl(data?.signedUrl ?? null);
+      setLoading(false);
     })();
   }, [guide]);
 
   const markRead = async () => {
     if (!userId || saving) return;
     setSaving(true);
-    const { error } = await supabase.from("guide_access").upsert(
+    await supabase.from("guide_access").upsert(
       { user_id: userId, guide_id: guide.id },
       { onConflict: "user_id,guide_id" } as never
     );
     setSaving(false);
-    if (error) {
-      await supabase.from("guide_access").insert({ user_id: userId, guide_id: guide.id });
-    }
     toast.success("Marked as read");
     onClose();
   };
 
   return (
-    <div
-      className="fixed inset-0 flex flex-col"
-      style={{ zIndex: 50, background: "#0A0A0A" }}
-    >
-      <div
-        className="flex items-center px-3"
-        style={{ height: 56, background: "#141414", borderBottom: "1px solid #252525" }}
-      >
-        <button onClick={onClose} aria-label="Back" className="p-1">
+    <div className="fixed inset-0 flex flex-col" style={{ zIndex: 50, background: "#0A0A0A" }}>
+      {/* Top bar */}
+      <div className="flex items-center px-3" style={{ height: 56, background: "#141414", borderBottom: "1px solid #252525", flexShrink: 0 }}>
+        <button onClick={onClose} className="p-1">
           <ChevronLeft size={24} color="#F5F5F5" />
         </button>
-        <div
-          className="flex-1 text-center px-3 truncate"
-          style={{ fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 16, color: "#F5F5F5" }}
-        >
+        <div className="flex-1 text-center px-3 truncate" style={{ fontWeight: 600, fontSize: 16, color: "#F5F5F5" }}>
           {guide.title}
         </div>
         <div style={{ width: 32 }} />
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        {guide.content_type === "pdf" && (
-          <div style={{ width: "100%", height: "100%" }}>
-            {pdfError ? (
-              <div className="flex items-center justify-center h-full">
-                <p style={{ color: "#C0392B", fontSize: 14 }}>Unable to load. Please try again.</p>
-              </div>
-            ) : signedUrl ? (
-              <iframe
-                src={signedUrl}
-                title={guide.title}
-                style={{ width: "100%", height: "100%", border: "none", display: "block" }}
-              />
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <p style={{ color: "#606060", fontSize: 14 }}>Loading PDF...</p>
-              </div>
-            )}
-          </div>
-        )}
+      {/* Body */}
+      <div className="flex-1 flex flex-col items-center justify-center p-8 gap-8">
+        {/* Book icon as cover placeholder */}
+        <div className="flex items-center justify-center rounded-2xl" style={{ width: 120, height: 160, background: "#1E1E1E", border: "1px solid #252525" }}>
+          {guide.cover_url
+            ? <img src={guide.cover_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 16 }} />
+            : <BookOpen size={48} color="#C0392B" />
+          }
+        </div>
 
-        {guide.content_type === "link" && (
-          <div className="p-5">
-            {guide.subtitle && <p className="mb-3" style={{ color: "#ABABAB", fontSize: 15 }}>{guide.subtitle}</p>}
-            {guide.description && (
-              <p className="mb-5" style={{ color: "#F5F5F5", fontSize: 15, lineHeight: 1.6 }}>{guide.description}</p>
-            )}
+        {/* Info */}
+        <div className="text-center" style={{ maxWidth: 340 }}>
+          <h2 style={{ color: "#F5F5F5", fontWeight: 700, fontSize: 20 }}>{guide.title}</h2>
+          {guide.subtitle && <p className="mt-1" style={{ color: "#ABABAB", fontSize: 14 }}>{guide.subtitle}</p>}
+          {guide.description && <p className="mt-3" style={{ color: "#ABABAB", fontSize: 14, lineHeight: 1.6 }}>{guide.description}</p>}
+        </div>
+
+        {/* Actions */}
+        <div className="w-full flex flex-col gap-3" style={{ maxWidth: 360 }}>
+          {guide.content_type === "pdf" && (
+            <button
+              onClick={() => signedUrl && window.open(signedUrl, "_blank", "noopener,noreferrer")}
+              disabled={loading || !signedUrl}
+              className="w-full h-12 rounded-lg font-semibold disabled:opacity-50"
+              style={{ background: "#C0392B", color: "white", fontSize: 15 }}
+            >
+              {loading ? "Loading..." : "Read Guide"}
+            </button>
+          )}
+
+          {guide.content_type === "link" && (
             <button
               onClick={() => guide.external_url && window.open(guide.external_url, "_blank", "noopener,noreferrer")}
               disabled={!guide.external_url}
-              className="w-full h-11 rounded-lg font-semibold disabled:opacity-60"
-              style={{ background: "#C0392B", color: "white" }}
+              className="w-full h-12 rounded-lg font-semibold disabled:opacity-50"
+              style={{ background: "#C0392B", color: "white", fontSize: 15 }}
             >
               Open in browser
             </button>
-          </div>
-        )}
+          )}
 
-        {guide.content_type === "text" && (
-          <div className="p-5 max-w-[680px] mx-auto prose prose-invert prose-sm" style={{ color: "#F5F5F5" }}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{guide.body_text ?? ""}</ReactMarkdown>
-          </div>
-        )}
-      </div>
+          {guide.content_type === "text" && guide.body_text && (
+            <div className="w-full overflow-y-auto prose prose-invert prose-sm text-left" style={{ color: "#F5F5F5", maxHeight: 300 }}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{guide.body_text}</ReactMarkdown>
+            </div>
+          )}
 
-      <div style={{ height: 64, background: "#141414", borderTop: "1px solid #252525", padding: 12 }}>
-        <button
-          onClick={markRead}
-          disabled={saving}
-          className="w-full h-full font-semibold disabled:opacity-70"
-          style={{ background: "#C0392B", color: "white", borderRadius: 8 }}
-        >
-          {saving ? "Saving..." : "Mark as read"}
-        </button>
+          <button
+            onClick={markRead}
+            disabled={saving}
+            className="w-full h-12 rounded-lg font-semibold disabled:opacity-50"
+            style={{ background: "transparent", color: "#ABABAB", border: "1px solid #252525", fontSize: 15 }}
+          >
+            {saving ? "Saving..." : "Mark as read"}
+          </button>
+        </div>
       </div>
     </div>
   );
