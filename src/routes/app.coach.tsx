@@ -354,11 +354,14 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
     onClose();
   };
 
+  const isLinkCard = guide.content_type === "link" && !!guide.external_url;
+  const openLink = () => guide.external_url && window.open(guide.external_url, "_blank", "noopener,noreferrer");
+
   return (
     <div className="fixed inset-0 flex flex-col" style={{ zIndex: 50, background: "#0A0A0A" }}>
       {/* Top bar */}
       <div className="flex items-center px-3" style={{ height: 56, background: "#141414", borderBottom: "1px solid #252525", flexShrink: 0 }}>
-        <button onClick={onClose} className="p-1">
+        <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="p-1">
           <ChevronLeft size={24} color="#F5F5F5" />
         </button>
         <div className="flex-1 text-center px-3 truncate" style={{ fontWeight: 600, fontSize: 16, color: "#F5F5F5" }}>
@@ -368,7 +371,12 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
       </div>
 
       {/* Body */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8 gap-8">
+      <div
+        onClick={isLinkCard ? openLink : undefined}
+        role={isLinkCard ? "button" : undefined}
+        tabIndex={isLinkCard ? 0 : undefined}
+        className={`flex-1 flex flex-col items-center justify-center p-8 gap-8 ${isLinkCard ? "cursor-pointer" : ""}`}
+      >
         {/* Book icon as cover placeholder */}
         <div className="flex items-center justify-center rounded-2xl" style={{ width: 120, height: 160, background: "#1E1E1E", border: "1px solid #252525" }}>
           {guide.cover_url
@@ -415,7 +423,7 @@ function GuideModal({ guide, userId, onClose }: { guide: Guide; userId: string |
           )}
 
           <button
-            onClick={markRead}
+            onClick={(e) => { e.stopPropagation(); markRead(); }}
             disabled={saving}
             className="w-full h-12 rounded-lg font-semibold disabled:opacity-50"
             style={{ background: "transparent", color: "#ABABAB", border: "1px solid #252525", fontSize: 15 }}
