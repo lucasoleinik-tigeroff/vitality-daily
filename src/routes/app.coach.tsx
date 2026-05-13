@@ -195,7 +195,7 @@ function CoachPage() {
         ) : (
           <div className="-mx-5 px-5 flex gap-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
             {guides.slice(0, 8).map((g) => (
-              <GuideCard key={g.id} guide={g} journeyDay={journeyDay} userId={user?.id} />
+              <GuideCard key={g.id} guide={g} journeyDay={journeyDay} userId={user?.id} onOpen={setActiveGuide} />
             ))}
           </div>
         )}
@@ -339,6 +339,60 @@ function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: nu
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function GuidePdfModal({ guide, userId, onClose }: { guide: Guide; userId: string | undefined; onClose: () => void }) {
+  const url = buildGuideUrl(guide);
+
+  useEffect(() => {
+    markGuideAsRead(guide, userId);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [guide, userId, onClose]);
+
+  if (!url) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex flex-col"
+      style={{ background: "var(--color-background)" }}
+    >
+      <div className="flex items-center gap-2 border-b px-3 py-2" style={{ borderColor: "var(--color-border)", background: "var(--color-surface)" }}>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close PDF"
+          className="h-10 w-10 rounded-full flex items-center justify-center"
+          style={{ color: "var(--color-text-foreground)" }}
+        >
+          <X size={22} />
+        </button>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-semibold text-foreground">{guide.title}</div>
+          {guide.subtitle && <div className="truncate text-xs" style={{ color: "var(--color-text-secondary)" }}>{guide.subtitle}</div>}
+        </div>
+        <button
+          type="button"
+          onClick={() => openGuideInNewTab(guide, userId)}
+          aria-label="Open PDF in new tab"
+          className="h-10 w-10 rounded-full flex items-center justify-center"
+          style={{ color: "var(--color-text-foreground)" }}
+        >
+          <ExternalLink size={19} />
+        </button>
+      </div>
+      <iframe
+        key={url}
+        src={url}
+        title={guide.title}
+        className="min-h-0 flex-1 w-full border-0"
+        loading="eager"
+      />
     </div>
   );
 }
