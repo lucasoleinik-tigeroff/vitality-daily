@@ -140,7 +140,7 @@ function ProgressPage() {
             </div>
           </div>
         )}
-        <p className="mt-2 text-xs" style={{ color: "#8FA8B8" }}>Personalized targets are educational only and not a medical diagnosis.</p>
+        
       </div>
 
       {/* Last Week Summary */}
