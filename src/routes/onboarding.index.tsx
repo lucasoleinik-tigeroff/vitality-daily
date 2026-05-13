@@ -75,8 +75,12 @@ function Onboarding() {
   function back() { setStep((x) => Math.max(1, x - 1)); }
 
   function validStep2() {
-    const age = +s.age, ft = +s.feet, inc = +s.inches, wt = +s.weight, wa = +s.waist;
-    return age >= 18 && age <= 99 && ft >= 3 && ft <= 7 && inc >= 0 && inc <= 11 && wt >= 50 && wt <= 500 && wa >= 20 && wa <= 80;
+    const age = +s.age, ft = +s.feet, inc = +s.inches, wt = +s.weight;
+    const baseOk = age >= 18 && age <= 99 && ft >= 3 && ft <= 7 && inc >= 0 && inc <= 11 && wt >= 50 && wt <= 500;
+    // Waist is optional, but if filled must be in valid range.
+    if (!s.waist) return baseOk;
+    const wa = +s.waist;
+    return baseOk && wa >= 20 && wa <= 80;
   }
 
   async function finish() {
@@ -91,12 +95,13 @@ function Onboarding() {
     }, 8000);
 
     try {
+      const waistVal = s.waist ? +s.waist : null;
       const baseline = computeBaseline({
         age: +s.age,
         heightFeet: +s.feet,
         heightInches: +s.inches,
         weightLbs: +s.weight,
-        waistInches: +s.waist,
+        waistInches: waistVal ?? 0,
         activity: s.activity as ActivityLevel,
       });
       const now = new Date().toISOString();
@@ -105,7 +110,7 @@ function Onboarding() {
         height_feet: +s.feet,
         height_inches: +s.inches,
         weight_lbs: +s.weight,
-        waist_inches: +s.waist,
+        waist_inches: waistVal,
         activity_level: s.activity as ActivityLevel,
         main_concern: s.concern,
         main_goal: s.goal,
@@ -119,7 +124,7 @@ function Onboarding() {
       const { error: mErr } = await supabase.from("user_health_metrics").insert({
         user_id: user.id,
         weight_lbs: +s.weight,
-        waist_inches: +s.waist,
+        waist_inches: waistVal ?? 0,
         activity_level: s.activity as ActivityLevel,
         ...baseline,
       });
