@@ -127,7 +127,7 @@ function CoachPage() {
           <>
             <h3 style={{ color: "var(--color-text-foreground)", fontWeight: 600, fontSize: 17 }}>{tip.title}</h3>
             <p className="mt-2" style={{ color: "var(--color-text-foreground)", fontSize: 15, lineHeight: 1.55 }}>{tip.body}</p>
-            <span className="mt-3 inline-block px-2 py-0.5 rounded-full" style={{ background: "var(--color-border)", color: "var(--color-primary-hover)", fontWeight: 500, fontSize: 11, textTransform: "uppercase" }}>
+            <span className="mt-3 inline-block px-2 py-0.5 rounded-full" style={{ background: "var(--color-surface-2)", border: "1px solid var(--color-border)", color: "var(--color-text-muted)", fontWeight: 500, fontSize: 10, textTransform: "uppercase" }}>
               {tipMetricLabel}
             </span>
           </>
