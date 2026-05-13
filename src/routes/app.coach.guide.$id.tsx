@@ -29,11 +29,25 @@ function GuideViewer() {
   const [guide, setGuide] = useState<Guide | null>(null);
   const [marked, setMarked] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [signedPdfUrl, setSignedPdfUrl] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from("guides").select("id,title,subtitle,description,content_type,external_url,body_text,file_url").eq("id", id).maybeSingle();
-      if (data) setGuide(data as Guide);
+      if (data) {
+        setGuide(data as Guide);
+        if (data.content_type === "pdf" && data.file_url) {
+          const { data: signed, error: signErr } = await supabase.storage
+            .from("guides")
+            .createSignedUrl(data.file_url, 3600);
+          if (signErr || !signed?.signedUrl) {
+            setPdfError("Unable to load this guide. Please try again.");
+          } else {
+            setSignedPdfUrl(signed.signedUrl);
+          }
+        }
+      }
       if (user) {
         const today = new Date().toISOString().slice(0, 10);
         const { data: acc } = await supabase
@@ -77,8 +91,11 @@ function GuideViewer() {
       </div>
 
       <div className="flex-1 px-5 py-5">
-        {guide.content_type === "pdf" && guide.file_url && (
-          <iframe src={guide.file_url} title={guide.title} className="w-full" style={{ height: "70vh", border: "none" }} />
+        {guide.content_type === "pdf" && guide.file_url && signedPdfUrl && (
+          <iframe src={signedPdfUrl} title={guide.title} className="w-full" style={{ height: "70vh", border: "none" }} />
+        )}
+        {guide.content_type === "pdf" && guide.file_url && !signedPdfUrl && pdfError && (
+          <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>{pdfError}</p>
         )}
         {guide.content_type === "pdf" && !guide.file_url && (
           <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>This PDF is not yet available.</p>
