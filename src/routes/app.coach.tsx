@@ -16,7 +16,7 @@ export const Route = createFileRoute("/app/coach")({
 
 const PRIORITY = ["sleep", "stress", "activity", "hydration", "supplement"] as const;
 const CATEGORIES = ["All", "Sleep", "Circulation", "Nutrition", "Stress", "Performance", "General"] as const;
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+
 
 interface Guide {
   id: string;
@@ -34,8 +34,7 @@ interface Guide {
 }
 
 function buildGuideUrl(g: Guide): string | null {
-  if (g.external_url) return encodeURI(g.external_url);
-  if (g.file_url) return encodeURI(`${SUPABASE_URL}/storage/v1/object/public/guides/${g.file_url}`);
+  if (g.file_url || g.external_url) return `/api/public/guide/${g.id}`;
   return null;
 }
 
