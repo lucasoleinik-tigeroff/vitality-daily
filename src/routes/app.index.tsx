@@ -96,7 +96,7 @@ function Home() {
     ? Math.max(1, Math.floor((Date.now() - new Date(profile.journey_start_date).getTime()) / 86400000) + 1)
     : 1;
 
-  const score = todayScore?.score ?? null;
+  const score = hasAnyLog ? (todayScore?.score ?? null) : null;
 
   // Standardized daily hydration target.
   const hydrationTarget = 64;
