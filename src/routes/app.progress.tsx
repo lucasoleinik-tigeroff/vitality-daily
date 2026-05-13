@@ -214,16 +214,16 @@ function Calendar({ month, onPrev, onNext, logs, completions, journeyStart }: { 
           const isToday = c.date === today;
           const log = logsByDate.get(c.date);
           const comp = compByDate.get(c.date);
-          let bg = "var(--color-surface)", color = "var(--color-text-secondary)", border = "1px solid var(--color-border)";
+          let bg = "var(--color-surface-2)", color = "var(--color-text-muted)", border = "1px solid var(--color-border)";
           if (comp && comp.completed_items.length === comp.total_items && comp.total_items > 0) {
             bg = "var(--color-primary)"; color = "white"; border = "none";
           } else if (comp && comp.completed_items.length > 0) {
-            bg = "var(--color-primary)"; color = "white"; border = "none";
+            bg = "var(--color-accent)"; color = "white"; border = "none";
           } else if (log) {
-            bg = "var(--color-border)"; color = "var(--color-text-primary)"; border = "1px solid var(--color-primary)";
+            bg = "rgba(232,135,58,0.15)"; color = "var(--color-text-primary)"; border = "1px solid var(--color-accent)";
           }
           const opacity = beforeJourney || future ? 0.3 : 1;
-          const todayBorder = isToday ? "2px solid var(--color-primary)" : border;
+          const todayBorder = isToday ? "2px solid var(--color-accent)" : border;
           return (
             <div key={i} className="flex items-center justify-center rounded-lg text-xs" style={{ width: 36, height: 36, background: bg, color, border: todayBorder, opacity, fontWeight: 500 }}>
               {c.n}
@@ -234,11 +234,11 @@ function Calendar({ month, onPrev, onNext, logs, completions, journeyStart }: { 
       <div className="mt-3 space-y-1.5">
         {[
           { c: "var(--color-primary)", b: "none", l: "Protocol completed" },
-          { c: "var(--color-primary)", b: "none", l: "Partial completion" },
-          { c: "var(--color-border)", b: "1px solid var(--color-primary)", l: "Logged" },
-          { c: "var(--color-surface)", b: "1px solid var(--color-border)", l: "No activity" },
+          { c: "var(--color-accent)", b: "none", l: "Partial completion" },
+          { c: "rgba(232,135,58,0.15)", b: "1px solid var(--color-accent)", l: "Logged" },
+          { c: "var(--color-surface-2)", b: "1px solid var(--color-border)", l: "No activity" },
         ].map((it, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs" style={{ color: "var(--color-text-secondary)" }}>
+          <div key={i} className="flex items-center gap-2 text-xs" style={{ color: "var(--color-text-muted)" }}>
             <span style={{ width: 14, height: 14, background: it.c, border: it.b, borderRadius: 3 }} /> {it.l}
           </div>
         ))}
