@@ -19,7 +19,7 @@ interface Metrics {
   waist_risk_category: string;
 }
 
-const FOR_EDU = "For educational purposes only. Consult a healthcare provider for medical evaluation.";
+
 
 function Baseline() {
   const { user, loading } = useAuth();
