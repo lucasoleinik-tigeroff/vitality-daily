@@ -65,6 +65,7 @@ function CoachPage() {
   const [logCount, setLogCount] = useState(0);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("All");
+  const [activeGuide, setActiveGuide] = useState<Guide | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -241,7 +242,7 @@ function CoachPage() {
               const locked = g.unlock_day > journeyDay;
               const handleTap = () => {
                 if (locked) { toast(`Unlocks at Day ${g.unlock_day}. Keep going.`); return; }
-                openGuide(g, user?.id);
+                setActiveGuide(g);
               };
               return (
                 <button
@@ -275,11 +276,18 @@ function CoachPage() {
           )}
         </div>
       </div>
+      {activeGuide && (
+        <GuidePdfModal
+          guide={activeGuide}
+          userId={user?.id}
+          onClose={() => setActiveGuide(null)}
+        />
+      )}
     </div>
   );
 }
 
-function GuideCard({ guide, journeyDay, userId }: { guide: Guide; journeyDay: number; userId: string | undefined }) {
+function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: number; userId: string | undefined; onOpen?: (guide: Guide) => void }) {
   const day = journeyDay || 0;
   const locked = guide.status === "published" && guide.unlock_day > day;
   const comingSoon = guide.status === "coming_soon";
@@ -288,7 +296,7 @@ function GuideCard({ guide, journeyDay, userId }: { guide: Guide; journeyDay: nu
   const handleTap = () => {
     if (comingSoon) { toast("Coming soon"); return; }
     if (locked) { toast(`Unlocks at Day ${guide.unlock_day}. Keep going.`); return; }
-    openGuide(guide, userId);
+    onOpen?.(guide);
   };
 
   return (
