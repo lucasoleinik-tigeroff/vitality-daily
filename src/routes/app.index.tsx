@@ -40,26 +40,29 @@ function Home() {
   const [todayScore, setTodayScore] = useState<Score | null>(null);
   const [trend, setTrend] = useState<Score[]>([]);
   const [tip, setTip] = useState<{ title: string; body: string } | null>(null);
-  
+  const [hasAnyLog, setHasAnyLog] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
       const today = todayIsoDate();
-      const [p, hm, dl, vs] = await Promise.all([
+      const [p, hm, dl, vs, lc] = await Promise.all([
         supabase.from("profiles").select("name,streak_count,journey_start_date,avatar_url").eq("id", user.id).maybeSingle(),
         supabase.from("user_health_metrics").select("hydration_target_oz").eq("user_id", user.id).order("snapshot_date", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("daily_logs").select("sleep_hours,sleep_quality,stress_level,activity_minutes,hydration_oz,supplement_taken").eq("user_id", user.id).eq("log_date", today).maybeSingle(),
         supabase.from("vitality_scores").select("score_date,score,status").eq("user_id", user.id).order("score_date", { ascending: false }).limit(7),
+        supabase.from("daily_logs").select("log_date", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
       if (p.data) setProfile(p.data as Profile);
       if (hm.data) setMetrics(hm.data as Metrics);
       if (dl.data) setTodayLog(dl.data as Log);
+      setHasAnyLog((lc.count ?? 0) > 0);
       if (vs.data) {
         const sorted = (vs.data as Score[]).slice().reverse();
         setTrend(sorted);
-        const today0 = sorted.find((s) => s.score_date === today);
-        if (today0) setTodayScore(today0);
+        // Most recent vitality score (today's if logged today, otherwise the latest available).
+        const latest = sorted[sorted.length - 1];
+        if (latest) setTodayScore(latest);
       }
 
       // Determine weakest metric and fetch a matching tip.
@@ -94,7 +97,7 @@ function Home() {
     ? Math.max(1, Math.floor((Date.now() - new Date(profile.journey_start_date).getTime()) / 86400000) + 1)
     : 1;
 
-  const score = todayScore?.score ?? null;
+  const score = hasAnyLog ? (todayScore?.score ?? null) : null;
 
   // Standardized daily hydration target.
   const hydrationTarget = 64;
@@ -142,7 +145,7 @@ function Home() {
           <div className="section-label">7-Day Trend</div>
           <div className="text-2xl font-bold text-foreground">{score ?? "—"}</div>
         </div>
-        <TrendBars trend={trend} journeyStart={profile?.journey_start_date ?? null} today={todayIsoDate()} />
+        <TrendBars trend={trend} journeyStart={profile?.journey_start_date ?? null} today={todayIsoDate()} hasAnyLog={hasAnyLog} />
       </div>
 
       {/* Today's Metrics */}
@@ -196,9 +199,8 @@ function MetricTile({ icon: Icon, label, value, sub }: { icon: React.ComponentTy
   );
 }
 
-function TrendBars({ trend, journeyStart, today }: { trend: Score[]; journeyStart: string | null; today: string }) {
+function TrendBars({ trend, journeyStart, today, hasAnyLog }: { trend: Score[]; journeyStart: string | null; today: string; hasAnyLog: boolean }) {
   const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
-  // Build the last 7 dates ending today.
   const days: { date: string; label: string; score: number | null; isToday: boolean; beforeJourney: boolean }[] = [];
   const todayDate = new Date(today + "T00:00:00");
   const startDate = journeyStart ? new Date(journeyStart + "T00:00:00") : null;
@@ -218,25 +220,46 @@ function TrendBars({ trend, journeyStart, today }: { trend: Score[]; journeyStar
   }
 
   return (
-    <div className="mt-3 flex items-end justify-between gap-2 h-20">
-      {days.map((d, i) => {
-        const hasData = !d.beforeJourney && d.score != null;
-        const bg = hasData
-          ? d.isToday
-            ? "var(--color-primary)"
-            : "var(--color-border)"
-          : "var(--color-border)";
-        const heightPct = hasData ? Math.max(4, d.score!) : 100;
-        return (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1">
-            <div
-              className="w-full rounded-t flex items-start justify-center"
-              style={{ height: `${heightPct}%`, background: bg, minHeight: "4px" }}
-            />
-            <span className="text-[10px] text-muted-foreground">{d.label}</span>
-          </div>
-        );
-      })}
+    <div className="mt-3">
+      <div className="relative h-20">
+        {/* Dashed reference line at score 75 (top:25%). */}
+        <div
+          className="absolute left-0 right-0 pointer-events-none"
+          style={{ top: "25%", height: 0, borderTop: "1px dashed #252525" }}
+        />
+        <div className="relative flex items-end justify-between gap-2 h-full">
+          {days.map((d, i) => {
+            const hasData = !d.beforeJourney && d.score != null;
+            if (!hasAnyLog || !hasData) {
+              return (
+                <div key={i} className="flex-1 flex flex-col items-center gap-1 h-full">
+                  <div className="w-full h-full" />
+                </div>
+              );
+            }
+            const bg = d.isToday ? "var(--color-primary)" : "var(--color-border)";
+            const heightPct = Math.max(4, d.score!);
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                <div
+                  className="w-full rounded-t"
+                  style={{ height: `${heightPct}%`, background: bg, minHeight: "4px" }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="mt-1 flex items-end justify-between gap-2">
+        {days.map((d, i) => (
+          <span key={i} className="flex-1 text-center text-[10px] text-muted-foreground">{d.label}</span>
+        ))}
+      </div>
+      {!hasAnyLog && (
+        <p className="mt-2 text-center" style={{ color: "#606060", fontSize: 13 }}>
+          Start logging to build your trend.
+        </p>
+      )}
     </div>
   );
 }

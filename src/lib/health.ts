@@ -74,11 +74,17 @@ export function waistRiskCategory(waistInches: number): string {
   return "High risk";
 }
 
+// Display-only swap for BMI category. The DB and computeBaseline keep the
+// medical label; UIs render this friendlier copy.
+export function bmiCategoryLabel(category: string): string {
+  return category === "Overweight" ? "Opportunity Zone" : category;
+}
+
 export function computeBaseline(input: {
   weightLbs: number;
   heightFeet: number;
   heightInches: number;
-  waistInches: number;
+  waistInches: number | null;
   age: number;
   activity: ActivityLevel;
 }) {
@@ -97,7 +103,8 @@ export function computeBaseline(input: {
     tdee_kcal: tdee,
     hydration_target_oz: calcHydrationOz(input.weightLbs),
     ...calcHrZones(input.age),
-    waist_risk_category: waistRiskCategory(input.waistInches),
+    waist_risk_category:
+      input.waistInches != null ? waistRiskCategory(input.waistInches) : null,
   };
 }
 

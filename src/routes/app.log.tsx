@@ -165,6 +165,9 @@ function LogPage() {
               <Pill key={q} active={sleepQuality === q} onClick={() => setSleepQuality(q)} label={q === "poor" ? "Poor" : q === "ok" ? "OK" : "Great"} />
             ))}
           </div>
+          <p style={{ color: "#606060", fontSize: 12, marginTop: 8 }}>
+            Rate how rested you feel, regardless of hours slept.
+          </p>
         </Card>
 
         {/* Stress */}

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
+import { bmiCategoryLabel } from "@/lib/health";
 
 export const Route = createFileRoute("/app/baseline")({
   component: BaselineView,
@@ -17,7 +18,7 @@ interface Metrics {
   hr_moderate_high: number;
   hr_vigorous_low: number;
   hr_vigorous_high: number;
-  waist_risk_category: string;
+  waist_risk_category: string | null;
 }
 
 
@@ -54,11 +55,13 @@ function BaselineView() {
       ) : (
         <div className="mt-6 space-y-3">
           {[
-            { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: m.bmi_category },
+            ...(m.waist_risk_category
+              ? [{ label: "Waist risk category", value: m.waist_risk_category, sub: "Correlated with vascular health" }]
+              : []),
+            { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: bmiCategoryLabel(m.bmi_category) },
             { label: "Estimated daily calorie burn", value: `${m.tdee_kcal} kcal/day`, sub: "TDEE" },
             { label: "Daily hydration target", value: `${m.hydration_target_oz} oz`, sub: "Personalized to your body weight" },
             { label: "Target heart rate zones", value: `${m.hr_moderate_low}–${m.hr_moderate_high} bpm`, sub: `Vigorous: ${m.hr_vigorous_low}–${m.hr_vigorous_high} bpm` },
-            { label: "Waist risk category", value: m.waist_risk_category, sub: "Correlated with vascular health" },
           ].map((it) => (
             <div key={it.label} className="p-5 rounded-[14px] bg-surface border border-border">
               <div className="section-label">{it.label}</div>
