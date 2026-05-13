@@ -91,8 +91,11 @@ function GuideViewer() {
       </div>
 
       <div className="flex-1 px-5 py-5">
-        {guide.content_type === "pdf" && guide.file_url && (
-          <iframe src={guide.file_url} title={guide.title} className="w-full" style={{ height: "70vh", border: "none" }} />
+        {guide.content_type === "pdf" && guide.file_url && signedPdfUrl && (
+          <iframe src={signedPdfUrl} title={guide.title} className="w-full" style={{ height: "70vh", border: "none" }} />
+        )}
+        {guide.content_type === "pdf" && guide.file_url && !signedPdfUrl && pdfError && (
+          <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>{pdfError}</p>
         )}
         {guide.content_type === "pdf" && !guide.file_url && (
           <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>This PDF is not yet available.</p>
