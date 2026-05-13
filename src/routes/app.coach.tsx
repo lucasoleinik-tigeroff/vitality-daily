@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
-import { Lock, ChevronRight, BookOpen, Search } from "lucide-react";
+import { Lock, ChevronRight, BookOpen, Search, X, ExternalLink } from "lucide-react";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Phase2Card } from "@/components/Phase2Card";
 import { currentJourneyDay, currentJourneyWeek } from "@/lib/journey";
@@ -34,23 +34,26 @@ interface Guide {
 }
 
 function buildGuideUrl(g: Guide): string | null {
-  if (g.file_url || g.external_url) return `/api/public/r/${g.id}`;
+  if (g.external_url) return encodeURI(g.external_url);
   return null;
 }
 
-function openGuide(g: Guide, userId: string | undefined) {
+function markGuideAsRead(g: Guide, userId: string | undefined) {
+  if (!userId) return;
+  supabase
+    .from("guide_access")
+    .upsert({ user_id: userId, guide_id: g.id }, { onConflict: "user_id,guide_id" } as never)
+    .then(() => {});
+}
+
+function openGuideInNewTab(g: Guide, userId: string | undefined) {
   const url = buildGuideUrl(g);
   if (!url) {
     toast.error("Guide unavailable");
     return;
   }
   window.open(url, "_blank", "noopener,noreferrer");
-  if (userId) {
-    supabase
-      .from("guide_access")
-      .upsert({ user_id: userId, guide_id: g.id }, { onConflict: "user_id,guide_id" } as never)
-      .then(() => {});
-  }
+  markGuideAsRead(g, userId);
 }
 
 function CoachPage() {
