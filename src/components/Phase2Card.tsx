@@ -11,7 +11,6 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
     if (typeof sessionStorage === "undefined") return false;
     return sessionStorage.getItem(DISMISS_KEY) === "1";
   });
-  const [whyOpen, setWhyOpen] = useState(false);
   const [impressed, setImpressed] = useState(false);
 
   useEffect(() => {
