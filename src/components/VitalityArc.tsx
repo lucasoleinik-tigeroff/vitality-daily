@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 export type VitalityStatus = "Peak" | "Strong" | "Stable" | "Building" | "Low";
 
 const STATUS_COLOR: Record<VitalityStatus, string> = {
-  Peak: "var(--color-primary)",
-  Strong: "#2E7D5A",
-  Stable: "#1A6A9A",
-  Building: "#C8973A",
-  Low: "#8B1A1A",
+  Peak: "var(--color-success)",
+  Strong: "var(--color-success)",
+  Stable: "var(--color-primary)",
+  Building: "var(--color-warning)",
+  Low: "var(--color-warning)",
 };
 
 export function statusFromScore(score: number | null): VitalityStatus | null {
