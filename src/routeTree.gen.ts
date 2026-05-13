@@ -22,7 +22,6 @@ import { Route as AppProgressRouteImport } from './routes/app.progress'
 import { Route as AppLogRouteImport } from './routes/app.log'
 import { Route as AppCoachRouteImport } from './routes/app.coach'
 import { Route as AppBaselineRouteImport } from './routes/app.baseline'
-import { Route as AppCoachGuideIdRouteImport } from './routes/app.coach.guide.$id'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -89,11 +88,6 @@ const AppBaselineRoute = AppBaselineRouteImport.update({
   path: '/baseline',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCoachGuideIdRoute = AppCoachGuideIdRouteImport.update({
-  id: '/guide/$id',
-  path: '/guide/$id',
-  getParentRoute: () => AppCoachRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -102,28 +96,26 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/app/baseline': typeof AppBaselineRoute
-  '/app/coach': typeof AppCoachRouteWithChildren
+  '/app/coach': typeof AppCoachRoute
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
   '/app/settings': typeof AppSettingsRoute
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/app/': typeof AppIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
-  '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/app/baseline': typeof AppBaselineRoute
-  '/app/coach': typeof AppCoachRouteWithChildren
+  '/app/coach': typeof AppCoachRoute
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
   '/app/settings': typeof AppSettingsRoute
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/app': typeof AppIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
-  '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -133,14 +125,13 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/app/baseline': typeof AppBaselineRoute
-  '/app/coach': typeof AppCoachRouteWithChildren
+  '/app/coach': typeof AppCoachRoute
   '/app/log': typeof AppLogRoute
   '/app/progress': typeof AppProgressRoute
   '/app/settings': typeof AppSettingsRoute
   '/onboarding/baseline': typeof OnboardingBaselineRoute
   '/app/': typeof AppIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
-  '/app/coach/guide/$id': typeof AppCoachGuideIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,7 +149,6 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/app/'
     | '/onboarding/'
-    | '/app/coach/guide/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -172,7 +162,6 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/app'
     | '/onboarding'
-    | '/app/coach/guide/$id'
   id:
     | '__root__'
     | '/'
@@ -188,7 +177,6 @@ export interface FileRouteTypes {
     | '/onboarding/baseline'
     | '/app/'
     | '/onboarding/'
-    | '/app/coach/guide/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -292,31 +280,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBaselineRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/coach/guide/$id': {
-      id: '/app/coach/guide/$id'
-      path: '/guide/$id'
-      fullPath: '/app/coach/guide/$id'
-      preLoaderRoute: typeof AppCoachGuideIdRouteImport
-      parentRoute: typeof AppCoachRoute
-    }
   }
 }
 
-interface AppCoachRouteChildren {
-  AppCoachGuideIdRoute: typeof AppCoachGuideIdRoute
-}
-
-const AppCoachRouteChildren: AppCoachRouteChildren = {
-  AppCoachGuideIdRoute: AppCoachGuideIdRoute,
-}
-
-const AppCoachRouteWithChildren = AppCoachRoute._addFileChildren(
-  AppCoachRouteChildren,
-)
-
 interface AppRouteChildren {
   AppBaselineRoute: typeof AppBaselineRoute
-  AppCoachRoute: typeof AppCoachRouteWithChildren
+  AppCoachRoute: typeof AppCoachRoute
   AppLogRoute: typeof AppLogRoute
   AppProgressRoute: typeof AppProgressRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -325,7 +294,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppBaselineRoute: AppBaselineRoute,
-  AppCoachRoute: AppCoachRouteWithChildren,
+  AppCoachRoute: AppCoachRoute,
   AppLogRoute: AppLogRoute,
   AppProgressRoute: AppProgressRoute,
   AppSettingsRoute: AppSettingsRoute,
