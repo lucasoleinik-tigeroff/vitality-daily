@@ -40,21 +40,23 @@ function Home() {
   const [todayScore, setTodayScore] = useState<Score | null>(null);
   const [trend, setTrend] = useState<Score[]>([]);
   const [tip, setTip] = useState<{ title: string; body: string } | null>(null);
-  
+  const [hasAnyLog, setHasAnyLog] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
       const today = todayIsoDate();
-      const [p, hm, dl, vs] = await Promise.all([
+      const [p, hm, dl, vs, lc] = await Promise.all([
         supabase.from("profiles").select("name,streak_count,journey_start_date,avatar_url").eq("id", user.id).maybeSingle(),
         supabase.from("user_health_metrics").select("hydration_target_oz").eq("user_id", user.id).order("snapshot_date", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("daily_logs").select("sleep_hours,sleep_quality,stress_level,activity_minutes,hydration_oz,supplement_taken").eq("user_id", user.id).eq("log_date", today).maybeSingle(),
         supabase.from("vitality_scores").select("score_date,score,status").eq("user_id", user.id).order("score_date", { ascending: false }).limit(7),
+        supabase.from("daily_logs").select("log_date", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
       if (p.data) setProfile(p.data as Profile);
       if (hm.data) setMetrics(hm.data as Metrics);
       if (dl.data) setTodayLog(dl.data as Log);
+      setHasAnyLog((lc.count ?? 0) > 0);
       if (vs.data) {
         const sorted = (vs.data as Score[]).slice().reverse();
         setTrend(sorted);
