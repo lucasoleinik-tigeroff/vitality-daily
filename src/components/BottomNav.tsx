@@ -19,7 +19,7 @@ export function BottomNav() {
         {tabs.map((t) => {
           const active = t.exact ? path === t.to : path.startsWith(t.to);
           const Icon = t.icon;
-          const color = active ? "var(--color-primary)" : "var(--color-text-muted)";
+          const color = active ? "var(--color-accent)" : "var(--color-text-muted)";
           return (
             <Link
               key={t.to}
@@ -35,7 +35,7 @@ export function BottomNav() {
                     top: 0,
                     width: 18,
                     height: 2,
-                    background: "var(--color-primary)",
+                    background: "var(--color-accent)",
                     borderRadius: 2,
                   }}
                 />
