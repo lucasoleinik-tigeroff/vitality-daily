@@ -16,7 +16,7 @@ export const Route = createFileRoute("/app/coach")({
 
 const PRIORITY = ["sleep", "stress", "activity", "hydration", "supplement"] as const;
 const CATEGORIES = ["All", "Sleep", "Circulation", "Nutrition", "Stress", "Performance", "General"] as const;
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+
 
 interface Guide {
   id: string;
