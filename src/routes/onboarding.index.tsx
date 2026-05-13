@@ -95,12 +95,13 @@ function Onboarding() {
     }, 8000);
 
     try {
+      const waistVal = s.waist ? +s.waist : null;
       const baseline = computeBaseline({
         age: +s.age,
         heightFeet: +s.feet,
         heightInches: +s.inches,
         weightLbs: +s.weight,
-        waistInches: +s.waist,
+        waistInches: waistVal ?? 0,
         activity: s.activity as ActivityLevel,
       });
       const now = new Date().toISOString();
