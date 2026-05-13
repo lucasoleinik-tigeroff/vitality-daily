@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { User as UserIcon, Moon, Activity, Droplet, Brain } from "lucide-react";
-import { LegalModal } from "@/components/LegalModals";
 import { StreakChip } from "@/components/StreakChip";
 import { todayIsoDate } from "@/lib/health";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
-import { Phase2Banner } from "@/components/Phase2Banner";
 import { VitalityArc } from "@/components/VitalityArc";
 
 export const Route = createFileRoute("/app/")({
