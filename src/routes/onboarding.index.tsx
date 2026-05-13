@@ -75,8 +75,12 @@ function Onboarding() {
   function back() { setStep((x) => Math.max(1, x - 1)); }
 
   function validStep2() {
-    const age = +s.age, ft = +s.feet, inc = +s.inches, wt = +s.weight, wa = +s.waist;
-    return age >= 18 && age <= 99 && ft >= 3 && ft <= 7 && inc >= 0 && inc <= 11 && wt >= 50 && wt <= 500 && wa >= 20 && wa <= 80;
+    const age = +s.age, ft = +s.feet, inc = +s.inches, wt = +s.weight;
+    const baseOk = age >= 18 && age <= 99 && ft >= 3 && ft <= 7 && inc >= 0 && inc <= 11 && wt >= 50 && wt <= 500;
+    // Waist is optional, but if filled must be in valid range.
+    if (!s.waist) return baseOk;
+    const wa = +s.waist;
+    return baseOk && wa >= 20 && wa <= 80;
   }
 
   async function finish() {
