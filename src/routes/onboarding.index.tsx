@@ -110,7 +110,7 @@ function Onboarding() {
         height_feet: +s.feet,
         height_inches: +s.inches,
         weight_lbs: +s.weight,
-        waist_inches: +s.waist,
+        waist_inches: waistVal,
         activity_level: s.activity as ActivityLevel,
         main_concern: s.concern,
         main_goal: s.goal,
