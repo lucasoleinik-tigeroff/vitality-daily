@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
+import { bmiCategoryLabel } from "@/lib/health";
 
 export const Route = createFileRoute("/onboarding/baseline")({
   component: Baseline,
@@ -16,10 +17,8 @@ interface Metrics {
   hr_moderate_high: number;
   hr_vigorous_low: number;
   hr_vigorous_high: number;
-  waist_risk_category: string;
+  waist_risk_category: string | null;
 }
-
-
 
 function Baseline() {
   const { user, loading } = useAuth();
@@ -41,22 +40,26 @@ function Baseline() {
     })();
   }, [user, loading, navigate]);
 
-  
-
   const items = m ? [
-    { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: m.bmi_category },
+    ...(m.waist_risk_category
+      ? [{ label: "Waist risk category", value: m.waist_risk_category, sub: "Correlated with vascular health" }]
+      : []),
+    { label: "Body Mass Index (BMI)", value: `${m.bmi}`, sub: bmiCategoryLabel(m.bmi_category) },
     { label: "Estimated daily calorie burn", value: `${m.tdee_kcal} kcal/day`, sub: "TDEE" },
     { label: "Daily hydration target", value: `${m.hydration_target_oz} oz`, sub: "Personalized to your body weight" },
     { label: "Target heart rate zones", value: `${m.hr_moderate_low}–${m.hr_moderate_high} bpm`, sub: `Vigorous: ${m.hr_vigorous_low}–${m.hr_vigorous_high} bpm` },
-    { label: "Waist risk category", value: m.waist_risk_category, sub: "Correlated with vascular health" },
   ] : [];
 
   return (
     <div className="min-h-screen bg-background px-6 py-8 max-w-[768px] mx-auto pb-24">
       <h1 className="text-2xl font-bold">Your Baseline</h1>
-      <p className="text-sm text-muted-foreground mt-1">Here's where you're starting from.</p>
+      <p
+        style={{ color: "#ABABAB", fontSize: 15, lineHeight: 1.6, marginTop: 12, marginBottom: 24 }}
+      >
+        You've taken the first step. Here's where your journey begins.
+      </p>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-2 space-y-3">
         {!m && <p className="text-sm text-muted-foreground">Preparing your baseline…</p>}
         {items.map((it) => (
           <div key={it.label} className="p-4 rounded-xl bg-surface border border-border">
