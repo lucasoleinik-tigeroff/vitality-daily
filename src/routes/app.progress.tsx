@@ -104,7 +104,7 @@ function ProgressPage() {
                 y={75}
                 stroke="#252525"
                 strokeDasharray="4 4"
-                label={{ value: "Day 30 target", position: "insideTopRight", fill: "#606060", fontSize: 11 }}
+                label={{ value: "Day 30 target", position: "insideTopRight", fill: "var(--color-text-muted)", fontSize: 11 }}
               />
               <Line type="monotone" dataKey="score" stroke="var(--color-primary)" strokeWidth={2} dot={{ r: 4, fill: "var(--color-primary)" }} />
             </LineChart>
