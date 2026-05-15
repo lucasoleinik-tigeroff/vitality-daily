@@ -1,8 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Info } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { bmiCategoryLabel } from "@/lib/health";
+
+const HR_TOOLTIP = "These zones are calculated from general formulas based on your age. Individual results may vary. If you have any cardiovascular concerns, consult a healthcare professional before starting an exercise program.";
 
 export const Route = createFileRoute("/onboarding/baseline")({
   component: Baseline,
@@ -24,6 +27,7 @@ function Baseline() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [m, setM] = useState<Metrics | null>(null);
+  const [hrTipOpen, setHrTipOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) { navigate({ to: "/signin" }); return; }
@@ -54,22 +58,42 @@ function Baseline() {
     <div className="min-h-screen bg-background px-6 py-8 max-w-[768px] mx-auto pb-24">
       <h1 className="text-2xl font-bold">Your Baseline</h1>
       <p
-        style={{ color: "#ABABAB", fontSize: 15, lineHeight: 1.6, marginTop: 12, marginBottom: 24 }}
+        style={{ color: "var(--color-text-secondary)", fontSize: 15, lineHeight: 1.6, marginTop: 12, marginBottom: 24 }}
       >
         You've taken the first step. Here's where your journey begins.
       </p>
 
       <div className="mt-2 space-y-3">
         {!m && <p className="text-sm text-muted-foreground">Preparing your baseline…</p>}
-        {items.map((it) => (
-          <div key={it.label} className="p-4 rounded-xl bg-surface border border-border">
-            <div className="text-xs uppercase tracking-wide text-muted-foreground">{it.label}</div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-foreground">{it.value}</span>
-              <span className="text-sm text-muted-foreground">{it.sub}</span>
+        {items.map((it) => {
+          const isHr = it.label === "Target heart rate zones";
+          return (
+            <div key={it.label} className="p-4 rounded-xl bg-surface border border-border">
+              <div className="text-xs uppercase tracking-wide text-muted-foreground inline-flex items-center gap-1.5">
+                {it.label}
+                {isHr && (
+                  <button
+                    type="button"
+                    onClick={() => setHrTipOpen((o) => !o)}
+                    aria-label="More info"
+                    style={{ display: "inline-flex", padding: 0, background: "transparent", border: "none", cursor: "pointer" }}
+                  >
+                    <Info size={14} color="var(--color-text-muted)" />
+                  </button>
+                )}
+              </div>
+              <div className="mt-1 flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-foreground">{it.value}</span>
+                <span className="text-sm text-muted-foreground">{it.sub}</span>
+              </div>
+              {isHr && hrTipOpen && (
+                <p style={{ color: "var(--color-text-secondary)", fontSize: 12, lineHeight: 1.5, marginTop: 6 }}>
+                  {HR_TOOLTIP}
+                </p>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <button
