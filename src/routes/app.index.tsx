@@ -113,11 +113,9 @@ function Home() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>VitalMan</h1>
-            <svg width="22" height="22" viewBox="0 0 64 64" fill="#C0392B" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 6 }}>
-              <path d="M52 20c-1.1 0-2 .4-2.8 1-1-1.8-3-3-5.2-3-1.1 0-2.1.3-3 .9-.8-.6-1.8-.9-2.8-.9-2.8 0-5 2.2-5 5v.3l-3.8 2.3C28.5 26.6 27 28.5 27 30.7c0 1 .3 2 .8 2.8L25 36c-.6.9-1 2-1 3.1C24 42.8 26.5 45 29.5 45H43c5 0 9-4 9-9v-1.5c1.2-.9 2-2.3 2-3.9V25c0-2.8-2.2-5-5-5z"/>
-              <path d="M24 38c0-.7.1-1.4.4-2l-4.2-2.1C18.9 35 18 36.9 18 39c0 3.9 3.1 7 7 7h2.5C25.5 44.2 24 41.3 24 38z"/>
-              <path d="M16 33c1.1-2.1 2.8-3.8 4.9-4.8l2.1 1.1V27c0-.4 0-.8.1-1.2L19 24c-3.5 1.5-6 5-6 9 0 2.5.9 4.8 2.3 6.6C14.5 38.2 14 36.7 14 35c0-.7.1-1.4.2-2H16z"/>
-            </svg>
+            <span style={{ display: 'inline-block', marginLeft: 6, fontSize: 18, filter: 'sepia(1) saturate(5) hue-rotate(310deg) brightness(0.8)', verticalAlign: 'middle' }} aria-hidden="true">
+              💪
+            </span>
           </div>
           <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Men's Health Coach</p>
         </div>
