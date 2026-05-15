@@ -111,7 +111,12 @@ function Home() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>VitalMan</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>VitalMan</h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M19.5 8.5c-.4-1.2-1.4-2-2.5-2.2-.3-.8-1-1.3-1.8-1.3-.5 0-1 .2-1.4.5-.4-.3-.9-.5-1.4-.5-1 0-1.9.7-2.1 1.7L9 8.5C8 9 7.3 10 7.3 11.2c0 .6.2 1.2.5 1.7L6.5 14c-.3.5-.5 1-.5 1.6 0 1.7 1.4 3 3 3h6.5c2.5 0 4.5-2 4.5-4.5 0-.8-.2-1.6-.6-2.2.4-.5.6-1.1.6-1.7 0-.6-.2-1.1-.5-1.7z" fill="#C0392B"/>
+            </svg>
+          </div>
           <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Men's Health Coach</p>
         </div>
         <div className="flex items-center gap-3">

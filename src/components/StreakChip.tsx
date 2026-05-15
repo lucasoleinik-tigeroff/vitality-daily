@@ -15,8 +15,8 @@ export function StreakChip({ count }: { count: number }) {
       }}
     >
       <Flame size={16} color="var(--color-accent)" />
-      <span style={{ fontWeight: 700, fontSize: 14, color: "var(--color-text-primary)" }}>{count}</span>
-      <span style={{ fontWeight: 500, fontSize: 12, color: "var(--color-text-muted)" }}>{label}</span>
+      <span style={{ fontWeight: 700, fontSize: 14, color: "#FFFFFF" }}>{count}</span>
+      <span style={{ fontWeight: 500, fontSize: 12, color: "#E8E8E8" }}>{label}</span>
     </div>
   );
 }
