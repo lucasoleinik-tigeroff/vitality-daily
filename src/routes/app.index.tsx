@@ -256,7 +256,7 @@ function TrendBars({ trend, journeyStart, today, hasAnyLog }: { trend: Score[]; 
         ))}
       </div>
       {!hasAnyLog && (
-        <p className="mt-2 text-center" style={{ color: "#606060", fontSize: 13 }}>
+        <p className="mt-2 text-center" style={{ color: "var(--color-text-muted)", fontSize: 13 }}>
           Start logging to build your trend.
         </p>
       )}
