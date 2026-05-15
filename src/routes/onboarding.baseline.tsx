@@ -64,15 +64,35 @@ function Baseline() {
 
       <div className="mt-2 space-y-3">
         {!m && <p className="text-sm text-muted-foreground">Preparing your baseline…</p>}
-        {items.map((it) => (
-          <div key={it.label} className="p-4 rounded-xl bg-surface border border-border">
-            <div className="text-xs uppercase tracking-wide text-muted-foreground">{it.label}</div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-foreground">{it.value}</span>
-              <span className="text-sm text-muted-foreground">{it.sub}</span>
+        {items.map((it) => {
+          const isHr = it.label === "Target heart rate zones";
+          return (
+            <div key={it.label} className="p-4 rounded-xl bg-surface border border-border">
+              <div className="text-xs uppercase tracking-wide text-muted-foreground inline-flex items-center gap-1.5">
+                {it.label}
+                {isHr && (
+                  <button
+                    type="button"
+                    onClick={() => setHrTipOpen((o) => !o)}
+                    aria-label="More info"
+                    style={{ display: "inline-flex", padding: 0, background: "transparent", border: "none", cursor: "pointer" }}
+                  >
+                    <Info size={14} color="var(--color-text-muted)" />
+                  </button>
+                )}
+              </div>
+              <div className="mt-1 flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-foreground">{it.value}</span>
+                <span className="text-sm text-muted-foreground">{it.sub}</span>
+              </div>
+              {isHr && hrTipOpen && (
+                <p style={{ color: "var(--color-text-secondary)", fontSize: 12, lineHeight: 1.5, marginTop: 6 }}>
+                  {HR_TOOLTIP}
+                </p>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <button
