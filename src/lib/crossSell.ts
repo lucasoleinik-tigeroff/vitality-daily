@@ -69,7 +69,7 @@ export async function getCrossSell(userId: string): Promise<CrossSellResult | nu
 
   const { data: product, error } = await supabase
     .from("cross_sell_products")
-    .select("id,product_name,headline,subline,body_text,cta_url,active")
+    .select("id,product_name,headline,body_text,cta_url,active")
     .eq("concern", concern)
     .eq("active", true)
     .maybeSingle();
