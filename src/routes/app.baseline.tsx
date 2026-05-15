@@ -28,6 +28,7 @@ interface Metrics {
 function BaselineView() {
   const { user } = useAuth();
   const [m, setM] = useState<Metrics | null>(null);
+  const [hrTipOpen, setHrTipOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
