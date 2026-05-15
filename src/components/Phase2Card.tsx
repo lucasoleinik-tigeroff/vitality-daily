@@ -42,57 +42,59 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
     if (data.product.cta_url) window.open(data.product.cta_url, "_blank", "noopener,noreferrer");
   };
 
-  const GOLD = "#C8973A";
-  const DARK = "#0F1923";
+  const RED = "#C0392B";
 
   return (
-    <>
-      <div className="relative rounded-[14px] p-5" style={{ background: GOLD, color: DARK }}>
-        <button onClick={dismiss} aria-label="Dismiss" className="absolute top-3 right-3">
-          <X size={16} color={DARK} />
-        </button>
-        <span
-          className="inline-block px-2.5 py-1 rounded-full"
-          style={{
-            background: DARK,
-            color: GOLD,
-            fontWeight: 700,
-            fontSize: 10,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-          }}
-        >
-          Phase 2 Ready
-        </span>
-        <h3 className="mt-3 font-bold leading-snug" style={{ color: DARK, fontSize: "1.1rem" }}>
-          {data.product.headline}
-        </h3>
-        <p className="mt-1" style={{ color: DARK, fontSize: "0.9rem", fontWeight: 500, opacity: 0.85 }}>
+    <div
+      className="relative rounded-[14px] p-5"
+      style={{ background: "#1A1A1A", border: `1.5px solid ${RED}` }}
+    >
+      <button onClick={dismiss} aria-label="Dismiss" className="absolute top-3 right-3">
+        <X size={16} color="#B0B0B0" />
+      </button>
+      <span
+        className="inline-block px-2.5 py-1 rounded-full"
+        style={{
+          background: RED,
+          color: "#FFFFFF",
+          fontWeight: 700,
+          fontSize: 10,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+        }}
+      >
+        Phase 2 Ready
+      </span>
+      <h3 className="mt-3 leading-snug" style={{ color: "#F5F5F5", fontSize: "1.1rem", fontWeight: 700 }}>
+        {data.product.headline}
+      </h3>
+      {data.product.subline && (
+        <p className="mt-1" style={{ color: "#E8E8E8", fontSize: "0.9rem", fontWeight: 500 }}>
           {data.product.subline}
         </p>
-        {!compact && (
-          <p className="mt-2 leading-relaxed" style={{ color: DARK, fontSize: "0.85rem" }}>
-            {data.product.body_text}
-          </p>
-        )}
-        <div
-          className="mt-3"
-          style={{ color: DARK, fontWeight: 700, fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}
-        >
-          {data.product.product_name}
-        </div>
-        <button
-          onClick={handleClick}
-          disabled={!data.product.cta_url}
-          className="mt-4 w-full h-11 rounded-md font-semibold text-[15px] disabled:opacity-60"
-          style={{ background: DARK, color: GOLD }}
-        >
-          See My Phase 2 →
-        </button>
-        <p className="mt-3 text-center" style={{ color: DARK, fontSize: 11, opacity: 0.7 }}>
-          Based on your 14-day data · Optional upgrade
+      )}
+      {!compact && (
+        <p className="mt-2 leading-relaxed" style={{ color: "#E8E8E8", fontSize: "0.85rem" }}>
+          {data.product.body_text}
         </p>
+      )}
+      <div
+        className="mt-3"
+        style={{ color: RED, fontWeight: 600, fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}
+      >
+        {data.product.product_name}
       </div>
-    </>
+      <button
+        onClick={handleClick}
+        disabled={!data.product.cta_url}
+        className="mt-4 w-full h-11 rounded-md font-semibold text-[15px] disabled:opacity-60"
+        style={{ background: RED, color: "#FFFFFF" }}
+      >
+        See My Phase 2 →
+      </button>
+      <p className="mt-3 text-center" style={{ color: "#B0B0B0", fontSize: 11 }}>
+        Based on your 14-day data · Optional upgrade
+      </p>
+    </div>
   );
 }
