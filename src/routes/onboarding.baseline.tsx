@@ -54,7 +54,7 @@ function Baseline() {
     <div className="min-h-screen bg-background px-6 py-8 max-w-[768px] mx-auto pb-24">
       <h1 className="text-2xl font-bold">Your Baseline</h1>
       <p
-        style={{ color: "#ABABAB", fontSize: 15, lineHeight: 1.6, marginTop: 12, marginBottom: 24 }}
+        style={{ color: "var(--color-text-secondary)", fontSize: 15, lineHeight: 1.6, marginTop: 12, marginBottom: 24 }}
       >
         You've taken the first step. Here's where your journey begins.
       </p>
