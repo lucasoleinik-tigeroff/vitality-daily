@@ -27,6 +27,7 @@ function Baseline() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [m, setM] = useState<Metrics | null>(null);
+  const [hrTipOpen, setHrTipOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) { navigate({ to: "/signin" }); return; }
