@@ -1,8 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Info } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { bmiCategoryLabel } from "@/lib/health";
+
+const HR_TOOLTIP = "These zones are calculated from general formulas based on your age. Individual results may vary. If you have any cardiovascular concerns, consult a healthcare professional before starting an exercise program.";
 
 export const Route = createFileRoute("/onboarding/baseline")({
   component: Baseline,
