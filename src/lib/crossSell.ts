@@ -87,7 +87,7 @@ export async function getCrossSell(userId: string): Promise<CrossSellResult | nu
       id: product.id,
       product_name: product.product_name,
       headline: product.headline,
-      subline: product.subline ?? "",
+      subline: "",
       body_text: product.body_text,
       cta_url: product.cta_url,
     },
