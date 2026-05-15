@@ -86,9 +86,12 @@ function CoachPage() {
         supabase.from("daily_logs").select("log_date", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
 
+      console.log("[coach] logCount:", lc.count, "error:", lc.error);
+      const _logCount = lc.count ?? 0;
+      console.log("[coach] eligible:", _logCount >= 14, "logCount:", _logCount);
       if (p.data) setProfile(p.data as { journey_start_date: string });
       if (gs.data) setGuides(gs.data as Guide[]);
-      setLogCount(lc.count ?? 0);
+      setLogCount(_logCount);
 
       const week = currentJourneyWeek(p.data?.journey_start_date);
       setMessage(weeklyMessage(week));
