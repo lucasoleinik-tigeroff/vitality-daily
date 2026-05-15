@@ -45,6 +45,8 @@ export async function getCrossSell(userId: string): Promise<CrossSellResult | nu
     .order("log_date", { ascending: false })
     .limit(14);
 
+  console.log("[crossSell] userId:", userId, "logs found in last 14:", logs?.length ?? 0);
+
   if (!logs || logs.length < 14) {
     CACHE.set(userId, { at: Date.now(), value: null });
     return null;
