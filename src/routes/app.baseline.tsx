@@ -65,15 +65,35 @@ function BaselineView() {
             { label: "Estimated daily calorie burn", value: `${m.tdee_kcal} kcal/day`, sub: "TDEE" },
             { label: "Daily hydration target", value: `${m.hydration_target_oz} oz`, sub: "Personalized to your body weight" },
             { label: "Target heart rate zones", value: `${m.hr_moderate_low}–${m.hr_moderate_high} bpm`, sub: `Vigorous: ${m.hr_vigorous_low}–${m.hr_vigorous_high} bpm` },
-          ].map((it) => (
-            <div key={it.label} className="p-5 rounded-[14px] bg-surface border border-border">
-              <div className="section-label">{it.label}</div>
-              <div className="mt-1 flex items-baseline gap-2 flex-wrap">
-                <span className="text-2xl font-bold text-foreground">{it.value}</span>
-                <span className="text-sm text-muted-foreground">{it.sub}</span>
+          ].map((it) => {
+            const isHr = it.label === "Target heart rate zones";
+            return (
+              <div key={it.label} className="p-5 rounded-[14px] bg-surface border border-border">
+                <div className="section-label inline-flex items-center gap-1.5">
+                  {it.label}
+                  {isHr && (
+                    <button
+                      type="button"
+                      onClick={() => setHrTipOpen((o) => !o)}
+                      aria-label="More info"
+                      style={{ display: "inline-flex", padding: 0, background: "transparent", border: "none", cursor: "pointer" }}
+                    >
+                      <Info size={14} color="var(--color-text-muted)" />
+                    </button>
+                  )}
+                </div>
+                <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+                  <span className="text-2xl font-bold text-foreground">{it.value}</span>
+                  <span className="text-sm text-muted-foreground">{it.sub}</span>
+                </div>
+                {isHr && hrTipOpen && (
+                  <p style={{ color: "var(--color-text-secondary)", fontSize: 12, lineHeight: 1.5, marginTop: 6 }}>
+                    {HR_TOOLTIP}
+                  </p>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
