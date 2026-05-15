@@ -308,7 +308,7 @@ function GuideCard({ guide, journeyDay, onOpen }: { guide: Guide; journeyDay: nu
     >
       <div className="w-full flex items-center justify-center" style={{ height: 140, background: guide.cover_url ? "var(--color-surface)" : "linear-gradient(180deg, #1A1A1A 0%, #2A0A0A 100%)" }}>
         {guide.cover_url ? (
-          <img src={guide.cover_url} alt="" className="w-full h-full object-cover" />
+          <img src={guide.cover_url} alt="" className="w-full h-full" style={{ objectFit: "cover", objectPosition: "top" }} />
         ) : (
           <div className="flex flex-col items-center justify-center w-full h-full">
             <BookOpen size={36} color="#C0392B" />
