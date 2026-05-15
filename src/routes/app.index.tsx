@@ -111,7 +111,22 @@ function Home() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>VitalMan</h1>
+          <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>
+            VitalMan
+            <img
+              src="https://ihevdqcagajjanxfrmmf.supabase.co/storage/v1/object/public/avatars//favpng_56730916e5a64f324572cc5056cbed4f.png"
+              alt=""
+              aria-hidden="true"
+              style={{
+                width: 28,
+                height: 28,
+                display: 'inline-block',
+                verticalAlign: 'middle',
+                marginLeft: 8,
+                filter: 'invert(1) sepia(1) saturate(5) hue-rotate(310deg) brightness(0.7)',
+              }}
+            />
+          </h1>
           <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Men's Health Coach</p>
         </div>
         <div className="flex items-center gap-3">
