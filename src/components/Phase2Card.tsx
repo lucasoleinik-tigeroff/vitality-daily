@@ -90,7 +90,7 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
         className="mt-4 w-full h-11 rounded-md font-semibold text-[15px] disabled:opacity-60"
         style={{ background: RED, color: "#FFFFFF" }}
       >
-        See My Phase 2 →
+        Claim My Exclusive Access →
       </button>
       <p className="mt-3 text-center" style={{ color: "#B0B0B0", fontSize: 11 }}>
         Based on your 14-day data · Optional upgrade
