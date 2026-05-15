@@ -118,12 +118,12 @@ function Home() {
               alt=""
               aria-hidden="true"
               style={{
-                width: 28,
-                height: 28,
+                width: 48,
+                height: 48,
                 display: 'inline-block',
                 verticalAlign: 'middle',
-                marginLeft: 8,
-                filter: 'invert(1) sepia(1) saturate(5) hue-rotate(310deg) brightness(0.7)',
+                marginLeft: 10,
+                filter: 'brightness(0) saturate(100%) invert(18%) sepia(99%) saturate(2476%) hue-rotate(348deg) brightness(95%) contrast(107%)',
               }}
             />
           </h1>
