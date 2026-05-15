@@ -19,54 +19,6 @@ export interface CrossSellResult {
   };
 }
 
-const PRODUCTS: Record<Concern, CrossSellResult["product"]> = {
-  sleep_recovery: {
-    id: "breatheasex",
-    product_name: "BreatheaseX",
-    headline: "Your recovery window is broken.",
-    subline: "Sleep starts with breath.",
-    body_text:
-      "Over 14 days, your sleep data shows you're not recovering fully. Your Phase 2 targets the root cause — respiratory and overnight recovery support.",
-    cta_url: "BREATHEASEX_URL",
-  },
-  stress_cognitive: {
-    id: "marobrain",
-    product_name: "Marobrain",
-    headline: "Chronic stress is your hidden blocker.",
-    subline: "Your focus and memory are paying the price.",
-    body_text:
-      "Your logs show sustained high stress over 14 days. Elevated cortisol affects memory, focus, and vitality. Phase 2 targets cognitive resilience.",
-    cta_url: "MAROBRAIN_URL",
-  },
-  metabolism_weight: {
-    id: "lipotrine",
-    product_name: "Lipotrine",
-    headline: "Movement is your missing piece.",
-    subline: "Your metabolism needs more than habit.",
-    body_text:
-      "Your activity data shows your metabolism needs support beyond routine. Phase 2 addresses what lifestyle changes alone can't fully reach.",
-    cta_url: "LIPOTRINE_URL",
-  },
-  hydration_metabolism: {
-    id: "lipobliss",
-    product_name: "Lipobliss",
-    headline: "Low hydration is slowing your metabolism.",
-    subline: "Your cells are running below capacity.",
-    body_text:
-      "14 days of data shows your hydration is consistently low — a key driver of sluggish metabolism and weight retention. Phase 2 targets metabolic support from the inside out.",
-    cta_url: "LIPOBLISS_URL",
-  },
-  amplify: {
-    id: "vigorlong_prostafense",
-    product_name: "VigorLong + Prostafense",
-    headline: "You've built the foundation.",
-    subline: "Time to amplify your protocol.",
-    body_text:
-      "Your habits are solid. Phase 2 delivers a more advanced support formula for men who've already built consistency. Add more firepower to your daily protocol.",
-    cta_url: "VIGORLONG_PROSTAFENSE_URL",
-  },
-};
-
 const CACHE = new Map<string, { at: number; value: CrossSellResult | null }>();
 const TTL = 60 * 60 * 1000;
 
@@ -111,7 +63,35 @@ export async function getCrossSell(userId: string): Promise<CrossSellResult | nu
   else if (avgActivity < 10) concern = "metabolism_weight";
   else if (avgHydration < 32) concern = "hydration_metabolism";
 
-  const value: CrossSellResult = { concern, product: PRODUCTS[concern] };
+  console.log("[crossSell] computed concern:", concern, {
+    avgSleep, poorSleepDays, stressDom, highStressDays, avgActivity, avgHydration,
+  });
+
+  const { data: product, error } = await supabase
+    .from("cross_sell_products")
+    .select("id,product_name,headline,subline,body_text,cta_url,active")
+    .eq("concern", concern)
+    .eq("active", true)
+    .maybeSingle();
+
+  console.log("[crossSell] fetched product:", product, error);
+
+  if (!product || !product.cta_url || product.cta_url.trim() === "") {
+    CACHE.set(userId, { at: Date.now(), value: null });
+    return null;
+  }
+
+  const value: CrossSellResult = {
+    concern,
+    product: {
+      id: product.id,
+      product_name: product.product_name,
+      headline: product.headline,
+      subline: product.subline ?? "",
+      body_text: product.body_text,
+      cta_url: product.cta_url,
+    },
+  };
   CACHE.set(userId, { at: Date.now(), value });
   return value;
 }
