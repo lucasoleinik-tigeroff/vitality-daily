@@ -63,7 +63,7 @@ export function Phase2Card({ userId, compact = false }: { userId: string; compac
           textTransform: "uppercase",
         }}
       >
-        Phase 2 Ready
+        Your Next Step
       </span>
       <h3 className="mt-3 leading-snug" style={{ color: "#F5F5F5", fontSize: "1.1rem", fontWeight: 700 }}>
         {data.product.headline}
