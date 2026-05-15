@@ -110,24 +110,21 @@ function Home() {
     <div className="px-5 pt-5 pb-24">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>
-            VitalMan
-            <img
-              src="https://ihevdqcagajjanxfrmmf.supabase.co/storage/v1/object/public/avatars//favpng_56730916e5a64f324572cc5056cbed4f.png"
-              alt=""
-              aria-hidden="true"
-              style={{
-                width: 48,
-                height: 48,
-                display: 'inline-block',
-                verticalAlign: 'middle',
-                marginLeft: 10,
-                filter: 'brightness(0) saturate(100%) invert(18%) sepia(99%) saturate(2476%) hue-rotate(348deg) brightness(95%) contrast(107%)',
-              }}
-            />
-          </h1>
-          <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Men's Health Coach</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <img
+            src="https://ihevdqcagajjanxfrmmf.supabase.co/storage/v1/object/public/avatars//favpng_56730916e5a64f324572cc5056cbed4f.png"
+            alt=""
+            aria-hidden="true"
+            style={{
+              width: 52,
+              height: 52,
+              filter: 'brightness(0) saturate(100%) invert(18%) sepia(99%) saturate(2476%) hue-rotate(348deg) brightness(95%) contrast(107%)',
+            }}
+          />
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 22, color: '#F5F5F5', letterSpacing: '-0.02em', lineHeight: 1.2 }}>VitalMan</div>
+            <div style={{ fontWeight: 400, fontSize: 14, color: 'var(--color-text-secondary)', lineHeight: 1.2 }}>Men's Health Coach</div>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <StreakChip count={profile?.streak_count ?? 0} />
