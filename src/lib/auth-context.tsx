@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  cleanupServiceWorkers,
+  sanitizeStorage,
+  clearAppStorage,
+} from "@/lib/session-recovery";
 
 interface AuthCtx {
   user: User | null;
