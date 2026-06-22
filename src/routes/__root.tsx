@@ -10,6 +10,8 @@ import {
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { clearAppStorage, cleanupServiceWorkers } from "@/lib/session-recovery";
 
 function NotFoundComponent() {
   return (
@@ -30,18 +32,36 @@ function NotFoundComponent() {
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
+
+  const handleRecover = async () => {
+    try {
+      cleanupServiceWorkers();
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error("[recovery] signOut failed", e);
+    }
+    clearAppStorage();
+    window.location.href = "/signin";
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold">Something went wrong</h1>
+        <h1 className="text-xl font-semibold">Something went wrong loading your session.</h1>
         <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
-        <button onClick={reset} className="mt-6 inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground">
-          Try again
-        </button>
+        <div className="mt-6 flex items-center justify-center gap-3">
+          <button onClick={reset} className="inline-flex h-10 items-center rounded-md border border-input px-4 text-sm font-medium">
+            Try again
+          </button>
+          <button onClick={handleRecover} className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground">
+            Sign in again
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({

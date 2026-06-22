@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  cleanupServiceWorkers,
+  sanitizeStorage,
+  clearAppStorage,
+} from "@/lib/session-recovery";
 
 interface AuthCtx {
   user: User | null;
@@ -22,6 +27,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mounted = true;
     const finish = () => { if (mounted) setLoading(false); };
 
+    // Self-heal corrupted local state that breaks normal (non-incognito) tabs.
+    cleanupServiceWorkers();
+    sanitizeStorage();
+
+    const forceSignOut = async () => {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.error("[auth] signOut during recovery failed", e);
+      }
+      clearAppStorage();
+      if (mounted) {
+        setSession(null);
+        setUser(null);
+      }
+    };
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
       if (!mounted) return;
       setSession(s);
@@ -30,11 +52,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       finish();
     });
 
+    // Validate the saved session before letting the app proceed.
     supabase.auth.getSession()
-      .then(({ data }) => {
+      .then(async ({ data, error }) => {
         if (!mounted) return;
-        setSession(data.session);
-        setUser(data.session?.user ?? null);
+        const s = data.session;
+
+        // Error, missing, or expired session → clear it.
+        if (error || !s) {
+          if (error) await forceSignOut();
+          return;
+        }
+        if (s.expires_at && s.expires_at * 1000 < Date.now()) {
+          await forceSignOut();
+          return;
+        }
+
+        // Confirm the user row still exists in profiles.
+        try {
+          const { data: profile, error: pErr } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("id", s.user.id)
+            .maybeSingle();
+          if (pErr) {
+            console.error("[auth] profile check failed", pErr);
+          } else if (!profile) {
+            console.error("[auth] user row missing from profiles, signing out");
+            await forceSignOut();
+            return;
+          }
+        } catch (e) {
+          console.error("[auth] profile validation error", e);
+        }
+
+        if (!mounted) return;
+        setSession(s);
+        setUser(s.user);
       })
       .catch((e) => { console.error("[auth] getSession failed", e); })
       .finally(finish);
@@ -48,6 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       sub.subscription.unsubscribe();
     };
   }, []);
+
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -65,7 +120,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    clearAppStorage();
   };
+
 
   return (
     <Ctx.Provider value={{ user, session, loading, signIn, signUp, signOut }}>
