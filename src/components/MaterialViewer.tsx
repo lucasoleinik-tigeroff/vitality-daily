@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-// pdfjs worker setup (Vite-friendly)
 import * as pdfjsLib from "pdfjs-dist";
 import PdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 pdfjsLib.GlobalWorkerOptions.workerSrc = PdfWorker as string;
@@ -15,6 +14,8 @@ interface Props {
   onClose: () => void;
 }
 
+const ERROR_MESSAGE = "We couldn't display this file right now. Please try again in a moment.";
+
 export function MaterialViewer({ materialId, title, onClose }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [doc, setDoc] = useState<PDFDoc | null>(null);
@@ -24,6 +25,14 @@ export function MaterialViewer({ materialId, title, onClose }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Lock body scroll while viewer is open
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, []);
+
+  // Load PDF bytes
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -43,8 +52,8 @@ export function MaterialViewer({ materialId, title, onClose }: Props) {
         setDoc(loaded);
         setTotal(loaded.numPages);
         setPage(1);
-      } catch (e) {
-        if (!cancelled) setError("We couldn't display this file right now. Please try again in a moment.");
+      } catch {
+        if (!cancelled) setError(ERROR_MESSAGE);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -52,6 +61,7 @@ export function MaterialViewer({ materialId, title, onClose }: Props) {
     return () => { cancelled = true; };
   }, [materialId]);
 
+  // Render current page
   useEffect(() => {
     if (!doc || !canvasRef.current) return;
     let cancelled = false;
@@ -66,7 +76,7 @@ export function MaterialViewer({ materialId, title, onClose }: Props) {
         canvas.height = viewport.height;
         await p.render({ canvasContext: ctx, viewport, canvas }).promise;
       } catch {
-        if (!cancelled) setError("We couldn't display this file right now. Please try again in a moment.");
+        if (!cancelled) setError(ERROR_MESSAGE);
       }
     })();
     return () => { cancelled = true; };
@@ -75,73 +85,137 @@ export function MaterialViewer({ materialId, title, onClose }: Props) {
   return (
     <div
       className="fixed inset-0 z-50 flex flex-col"
-      style={{ background: "rgba(0,0,0,0.92)" }}
+      style={{ background: "var(--color-background)" }}
       onContextMenu={(e) => e.preventDefault()}
     >
-      <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "var(--color-border)" }}>
-        <div className="text-sm font-semibold truncate pr-3" style={{ color: "#F5F5F5" }}>{title}</div>
-        <button onClick={onClose} className="p-1" aria-label="Close">
-          <X size={22} color="#F5F5F5" />
+      {/* Header */}
+      <div
+        className="flex items-center gap-3 px-5 py-4"
+        style={{ borderBottom: "1px solid var(--color-border)", background: "var(--color-surface)" }}
+      >
+        <button
+          onClick={onClose}
+          className="p-1 -ml-1"
+          aria-label="Close"
+          style={{ color: "var(--color-text-foreground)" }}
+        >
+          <X size={22} />
         </button>
+        <div
+          className="flex-1 truncate text-base font-semibold"
+          style={{ color: "var(--color-text-foreground)", letterSpacing: "-0.01em" }}
+        >
+          {title}
+        </div>
       </div>
 
-      <div className="flex-1 overflow-auto flex items-start justify-center p-4">
-        {loading && <div style={{ color: "#B0B0B0", fontSize: 14, marginTop: 40 }}>Loading…</div>}
+      {/* Content */}
+      <div
+        className="flex-1 overflow-auto flex items-start justify-center px-4 py-5"
+        style={{ background: "var(--color-background)" }}
+      >
+        {loading && (
+          <div style={{ color: "var(--color-text-secondary)", fontSize: 14, marginTop: 40 }}>
+            Loading…
+          </div>
+        )}
         {error && !loading && (
-          <div style={{ color: "#E8E8E8", fontSize: 14, marginTop: 40, textAlign: "center", maxWidth: 320 }}>
+          <div
+            className="rounded-[14px] border p-5 text-center"
+            style={{
+              background: "var(--color-surface)",
+              borderColor: "var(--color-border)",
+              color: "var(--color-text-foreground)",
+              fontSize: 14,
+              marginTop: 40,
+              maxWidth: 340,
+              lineHeight: 1.5,
+            }}
+          >
             {error}
           </div>
         )}
         {!error && (
           <canvas
             ref={canvasRef}
-            style={{ maxWidth: "100%", height: "auto", boxShadow: "0 4px 24px rgba(0,0,0,0.5)", background: "#fff" }}
+            style={{
+              maxWidth: "100%",
+              height: "auto",
+              borderRadius: 8,
+              boxShadow: "0 4px 24px rgba(0,0,0,0.5)",
+              background: "#fff",
+            }}
           />
         )}
       </div>
 
+      {/* Footer controls */}
       {doc && !error && (
-        <div className="flex items-center justify-between px-4 py-3 border-t" style={{ borderColor: "var(--color-border)", background: "#1A1A1A" }}>
-          <div className="flex items-center gap-2">
+        <div
+          className="flex items-center justify-between px-4 py-3"
+          style={{ borderTop: "1px solid var(--color-border)", background: "var(--color-surface)" }}
+        >
+          <div className="flex items-center gap-1">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="p-2 rounded disabled:opacity-40"
+              className="p-2 rounded-md disabled:opacity-40"
+              style={{ color: "var(--color-text-foreground)" }}
               aria-label="Previous page"
             >
-              <ChevronLeft size={20} color="#F5F5F5" />
+              <ChevronLeft size={20} />
             </button>
-            <div style={{ color: "#E8E8E8", fontSize: 13, minWidth: 80, textAlign: "center" }}>
+            <div
+              style={{
+                color: "var(--color-text-foreground)",
+                fontSize: 13,
+                fontWeight: 500,
+                minWidth: 92,
+                textAlign: "center",
+              }}
+            >
               Page {page} of {total}
             </div>
             <button
               onClick={() => setPage((p) => Math.min(total, p + 1))}
               disabled={page >= total}
-              className="p-2 rounded disabled:opacity-40"
+              className="p-2 rounded-md disabled:opacity-40"
+              style={{ color: "var(--color-text-foreground)" }}
               aria-label="Next page"
             >
-              <ChevronRight size={20} color="#F5F5F5" />
+              <ChevronRight size={20} />
             </button>
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-1">
             <button
               onClick={() => setZoom((z) => Math.max(0.5, +(z - 0.25).toFixed(2)))}
               disabled={zoom <= 0.5}
-              className="p-2 rounded disabled:opacity-40"
+              className="p-2 rounded-md disabled:opacity-40"
+              style={{ color: "var(--color-text-foreground)" }}
               aria-label="Zoom out"
             >
-              <ZoomOut size={18} color="#F5F5F5" />
+              <ZoomOut size={18} />
             </button>
-            <div style={{ color: "#E8E8E8", fontSize: 13, minWidth: 48, textAlign: "center" }}>
+            <div
+              style={{
+                color: "var(--color-text-secondary)",
+                fontSize: 12,
+                fontWeight: 500,
+                minWidth: 44,
+                textAlign: "center",
+              }}
+            >
               {Math.round(zoom * 100)}%
             </div>
             <button
               onClick={() => setZoom((z) => Math.min(2, +(z + 0.25).toFixed(2)))}
               disabled={zoom >= 2}
-              className="p-2 rounded disabled:opacity-40"
+              className="p-2 rounded-md disabled:opacity-40"
+              style={{ color: "var(--color-text-foreground)" }}
               aria-label="Zoom in"
             >
-              <ZoomIn size={18} color="#F5F5F5" />
+              <ZoomIn size={18} />
             </button>
           </div>
         </div>
