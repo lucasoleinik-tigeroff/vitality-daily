@@ -177,6 +177,9 @@ function CoachPage() {
         )}
       </div>
 
+      {/* Product Materials */}
+      <ProductMaterialsSection userId={user?.id} />
+
       {/* Weekly Message */}
       <div className="mt-5">
         <SectionHeader label="Message of the Week" />
