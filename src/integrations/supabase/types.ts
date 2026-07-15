@@ -317,6 +317,83 @@ export type Database = {
         }
         Relationships: []
       }
+      materials_items: {
+        Row: {
+          active: boolean
+          created_at: string
+          file_url: string
+          id: string
+          material_type: Database["public"]["Enums"]["material_type"]
+          product_id: string
+          sort_order: number
+          title: string
+          unlock_type: Database["public"]["Enums"]["material_unlock_type"]
+          unlock_value: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          file_url: string
+          id?: string
+          material_type?: Database["public"]["Enums"]["material_type"]
+          product_id: string
+          sort_order?: number
+          title: string
+          unlock_type?: Database["public"]["Enums"]["material_unlock_type"]
+          unlock_value?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          file_url?: string
+          id?: string
+          material_type?: Database["public"]["Enums"]["material_type"]
+          product_id?: string
+          sort_order?: number
+          title?: string
+          unlock_type?: Database["public"]["Enums"]["material_unlock_type"]
+          unlock_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materials_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "materials_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materials_products: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           activity_level: Database["public"]["Enums"]["activity_level"] | null
@@ -607,6 +684,8 @@ export type Database = {
         | "very_active"
       app_role: "admin" | "user"
       content_status: "draft" | "published" | "coming_soon"
+      material_type: "user_guide" | "better_results" | "other"
+      material_unlock_type: "immediate" | "log_count"
       score_status: "improving" | "stable" | "needs_attention"
       sleep_quality: "poor" | "ok" | "great"
       stress_level: "low" | "medium" | "high"
@@ -746,6 +825,8 @@ export const Constants = {
       ],
       app_role: ["admin", "user"],
       content_status: ["draft", "published", "coming_soon"],
+      material_type: ["user_guide", "better_results", "other"],
+      material_unlock_type: ["immediate", "log_count"],
       score_status: ["improving", "stable", "needs_attention"],
       sleep_quality: ["poor", "ok", "great"],
       stress_level: ["low", "medium", "high"],
