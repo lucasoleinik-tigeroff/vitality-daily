@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 // pdfjs worker setup (Vite-friendly)
 import * as pdfjsLib from "pdfjs-dist";
-// @ts-expect-error - vite worker import
 import PdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 pdfjsLib.GlobalWorkerOptions.workerSrc = PdfWorker as string;
 

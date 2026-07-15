@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Lock, ChevronRight, BookOpen, Search } from "lucide-react";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Phase2Card } from "@/components/Phase2Card";
+import { ProductMaterialsSection } from "@/components/ProductMaterialsSection";
 import { currentJourneyDay, currentJourneyWeek } from "@/lib/journey";
 import { computeVitalityScore, weakestMetric, type SleepQuality, type StressLevel } from "@/lib/score";
 import { todayIsoDate } from "@/lib/health";
